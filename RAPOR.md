@@ -1,7 +1,7 @@
 # RAPOR
 
 Son güncelleme: 2026-11-24 · **Faz 5 (Gün 5 labları) tamamlandı; onay bekliyor.** Özet, kanıtlar ve doğrulanmayanlar §18'de. Faz 4 onaylandı (K17).
-
+Stef
 ## 1. Faz 3 özeti
 
 Gün 1–3'ün altı labı için öğrenci rehberi, eğitmen çözüm rehberi, çözüm betiği, doğrulama betiği ve checkpoint yazıldı. Altı labın tamamı **ekip-01** ile öğrenci akışı izlenerek koşuldu: komut satırı adımları `workstation`'da, arayüz adımları gerçek tarayıcıda (Playwright; lab CA'sı tanıtılmış, sertifika hatası yok sayılmadan). Checkpoint'ler, sıfırlama ve rol değişimi **ekip-02** üzerinde denendi. Volume silinmedi, ortam yeniden kurulmadı; host bu fazda yanıt vermeme ya da yeniden başlama yaşamadı.
