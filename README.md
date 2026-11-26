@@ -1,7 +1,7 @@
 # BELBİM DevOps Eğitimi — Lab Üretim Görevi
 
 > **Kullanım (insan için):** Boş bir workspace aç. Bu dosyayı köke, beş sunumu ve müfredat PDF'ini `referans/` klasörüne koy. Planning modunda şu mesajla başla: *"ANTIGRAVITY_LAB_PROMPT.md dosyasını oku ve yalnızca Faz 0'ı uygula."* Her fazın sonunda ajan durur; onay verince bir sonraki faza geç.
-
+26 Kasim
 ---
 
 ## 1. Rol ve hedef
