@@ -1,0 +1,11 @@
+# ekip-02 deneyi: proje webhook'una giden son 20 olay (GitLab API: GET /projects/:id/hooks/1/events)
+# webhook: Push events + Merge request events isaretliydi
+{"url":"https://jenkins.kurum.test/project/ekip-02/saha-portal-ekip02","push_events":true,"merge_requests_events":true,"enable_ssl_verification":true,"alert_status":"executable","disabled_until":null}
+
+# olay turu, Jenkins'in yaniti, adet
+      9 merge_request_hooks 409
+     11 push_hooks 200
+
+# 409 yanitinin govdesi (MR olayi: action=merge)
+<title>Error 409 Merge Request Hook is not supported for this project</title>
+<tr><th>MESSAGE:</th><td>Merge Request Hook is not supported for this project</td></tr>

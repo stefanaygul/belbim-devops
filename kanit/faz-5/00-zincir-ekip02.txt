@@ -1,0 +1,48 @@
+
+===== 1 checkpoint lab-04b (final durumundan geri) (17:29:29)
+cikis=0 sure=46s
+    [32mtamam[0m  SonarQube Quality Gate: OK
+    [32mtamam[0m  registry: order-service, product-service, web-ui etiketi 65da295 (develop commit'i)
+[32mcheckpoint/lab-04b ekip-02 icin uygulandi.[0m Denetim: bash dogrula/lab.sh lab-04-b 02 KAYNAK=checkpoint
+
+===== 2 olumsuz yon: lab-05-a dogrulamasi lab-04b durumunda (17:30:15)
+8 gecti, 11 kaldi
+
+===== 3 LAB 05-A tek seferde (17:30:19)
+cikis=0 sure=93s
+19 gecti, 0 kaldi
+
+===== 4 olumsuz yon: lab-05-b dogrulamasi lab-05a durumunda (17:31:56)
+7 gecti, 32 kaldi
+
+===== 5 LAB 05-B tek seferde (17:32:01)
+cikis=0 sure=290s
+49 gecti, 0 kaldi
+
+===== 6 checkpoint lab-05a + dogrulama (17:36:55)
+cikis=0 sure=49s
+18 gecti, 0 kaldi
+
+===== 7 checkpoint final + dogrulama (17:37:49)
+cikis=1 sure=38s
+  [31mKALDI[0m  v1.1.0 icin basarili build yok
+  [31mKALDI[0m  order-service: 1.1.0 (sha256:70cc163770aea0c43b831766ea94a7d6d1bc3f08a4ff14e19bac2e1c3612641c) ve 5772d04 (sha256:5d9871f078e4094a35c27e8a198e82c09dc9b4ac8149f66a68e6a3fb3522c036) ayni degil
+  [31mKALDI[0m  product-service: 1.1.0 (sha256:c2f216e7e31286399627e61eb3c7fb9dece428662e78b918ecfe49ab5191095a) ve 5772d04 (sha256:60e8b1fe0b75dae9a3d5191c587e78749ed1a21a0a0c5828eff1fa473f0dc6f8) ayni degil
+  [31mKALDI[0m  web-ui: 1.1.0 (sha256:2d1c90e2c8c60ecac89ba4e8cf1e38a7fff6423dbe958431ede80b4631ae71ea) ve 5772d04 (sha256:2687f5da712a006ca3e02ce42289cd329fa81b9bf0ed80cd7b37317f7c2a580d) ayni degil
+  [31mKALDI[0m  calisan imajlar: beklenen 'order-service:1.1.0 product-service:1.1.0 web-ui:1.1.0 ', gelen 'order-service:1.0.1 product-service:1.0.1 web-ui:1.0.1 '
+  [31mKALDI[0m  son deploy kaydi: etiket: 'tag=1.1.0' bulunamadi. Gelen: tail: cannot open 'deploy-kayit.log' for reading: No such file or directory
+  [31mKALDI[0m  son deploy kaydi: commit SHA: 'commit=5772d045634732308c7a6268acf0f119554b3516' bulunamadi. Gelen: tail: cannot open 'deploy-kayit.log' for reading: No such file or directory
+  [31mKALDI[0m  son deploy kaydi: order-service digest'i registry'dekiyle ayni: 'order-service@sha256:70cc163770aea0c43b831766ea94a7d6d1bc3f08a4ff14e19bac2e1c3612641c' bulunamadi. Gelen: tail: cannot open 'deploy-kayit.log' for reading: No such file or directory
+  [31mKALDI[0m  son deploy kaydi: Jenkins build adresi: 'kaynak=https://jenkins.kurum.test/job/ekip-02/job/saha-portal-ekip02/job/v1.1.0/' bulunamadi. Gelen: tail: cannot open 'deploy-kayit.log' for reading: No such file or directory
+  [31mKALDI[0m  GET /api/orders/summary (1.1.0'da var): beklenen '200', gelen '404'
+  [31mKALDI[0m  POST quantity=0: beklenen '400', gelen '201'
+26 gecti, 11 kaldi
+  [31mKALDI[0m  develop #1 (commit 2bf882d): beklenen 'SUCCESS', gelen 'FAILURE'
+  [31mKALDI[0m  order-service:2bf882d registry'de yok
+  [31mKALDI[0m  product-service:2bf882d registry'de yok
+15 gecti, 3 kaldi
+
+===== 8 yalitim: ekip-01 (17:38:35)
+YALITIM: ekip-01 AYNI (187 satir)
+
+===== BITTI (17:38:41)

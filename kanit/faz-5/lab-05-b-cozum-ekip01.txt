@@ -1,0 +1,192 @@
+
+[1m### Adim 1a: Jenkins icin ayri bir SSH anahtari; test VM'de yetkilendir[0m
+rol: ekip01-dev
+$ ssh-keygen -q -t ed25519 -N  -C jenkins-ekip01 -f /home/ekip01/.ssh/jenkins-test-vm
+$ ssh-copy-id -i ~/.ssh/jenkins-test-vm.pub deploy@test-vm.kurum.test 2>&1 | tail -n 2
+and check to make sure that only the key(s) you wanted were added.
+
+$ ssh -o IdentitiesOnly=yes -i ~/.ssh/jenkins-test-vm deploy@test-vm.kurum.test 'hostname; ls -ld /opt/saha/ekip01'
+test-vm
+drwxr-xr-x 3 deploy deploy 4096 Nov 23 22:38 /opt/saha/ekip01
+# Ozel anahtar (~/.ssh/jenkins-test-vm) Jenkins'e test-vm-ssh credential'i olarak eklenir; baska yere kopyalanmaz
+
+[1m### Arayuz: jenkins credential 01 test-vm-ssh ssh ekip01-ssh deploy Test VM deploy anahtari (Jenkins) lab-05-b-credential-ssh[0m
+ Container belbim-lab-workstation-1  Running
+  goruntu: lab-rehberleri/img/lab-05-b-credential-ssh.png
+  tamam  credential test-vm-ssh (ssh) ekip-01 klasorune eklendi
+
+[1m### Adim 1b: Deploy, smoke test ve SemVer stage'leri; deploy/deploy.sh[0m
+rol: ekip01-dev
+$ git switch develop
+Already on 'develop'
+Your branch is up to date with 'origin/develop'.
+$ git pull --ff-only
+Already up to date.
+$ git switch -c feature/deploy
+Switched to a new branch 'feature/deploy'
+$ grep -n -E "stage\(|when|sshagent|deploy.sh|curl|TAG_NAME|manifest inspect|docker (tag|push)|disableConcurrentBuilds|TEST_URL|WEB_PORT  " Jenkinsfile
+26:    disableConcurrentBuilds()
+36:    WEB_PORT          = '8081'
+37:    TEST_URL          = "http://test-vm.kurum.test:${WEB_PORT}"
+41:    stage('Restore') {
+48:    stage('Build') {
+49:      when { not { branch 'develop' } }
+55:    stage('Unit Test') {
+56:      when { not { branch 'develop' } }
+68:    stage('Build + Test + SonarQube') {
+69:      when { branch 'develop' }
+80:    stage('Quality Gate') {
+81:      when { branch 'develop' }
+89:    stage('web-ui') {
+104:    stage('Docker Build & Push') {
+105:      when { anyOf { branch 'develop'; branch 'main' } }
+115:                  docker push $IMG/$s:$SHA
+123:    // TAG_NAME tag build'inde tanımlıdır (v1.1.0); SemVer etiketi baştaki v atılarak üretilir.
+124:    stage('Docker: SemVer etiketi') {
+125:      when { buildingTag() }
+131:                SURUM=${TAG_NAME#v}
+135:                  until docker manifest inspect $IMG/$s:$SHA > /dev/null 2>&1; do
+145:                  docker tag $IMG/$s:$SHA $IMG/$s:$SURUM
+146:                  docker push -q $IMG/$s:$SURUM
+153:    // (deploy/deploy.sh) çalışır: önce pull (etiket registry'de yoksa çalışan sürüme dokunmaz),
+155:    stage('Deploy: test') {
+156:      when { anyOf { branch 'develop'; buildingTag() } }
+159:          env.DEPLOY_TAG = env.TAG_NAME ? env.TAG_NAME.replaceFirst(/^v/, '') : sh(script: 'git rev-parse --short HEAD', returnStdout: true).trim()
+162:        sshagent(['test-vm-ssh']) {
+163:          sh 'scp deploy/compose.yaml deploy/deploy.sh $TEST_VM:$VM_DIZIN/'
+166:              script: 'ssh $TEST_VM "sh $VM_DIZIN/deploy.sh $IMG $DEPLOY_TAG $WEB_PORT $DEPLOY_COMMIT $BUILD_URL"').trim()
+176:    stage('Smoke test') {
+177:      when { anyOf { branch 'develop'; buildingTag() } }
+179:        sh '''curl -fsS --retry 10 --retry-connrefused --retry-delay 3 "$TEST_URL/api/products" | grep -q '"code"'
+180:              curl -fsS "$TEST_URL/api/orders" > /dev/null
+181:              echo "smoke test: $TEST_URL yanıt veriyor (TAG=$DEPLOY_TAG)"'''
+$ ls -l deploy/ | cut -c1-10,40-
+total 12
+-rw-r--r--38 compose.yaml
+-rwxr-xr-x20 deploy.sh
+-rw-r--r--38 nginx.conf
+$ git add Jenkinsfile deploy/deploy.sh
+$ git commit -q -m ci: deploy to the test VM and run a smoke test
+$ git push -q -u origin feature/deploy
+remote: 
+remote: To create a merge request for feature/deploy, visit:        
+remote:   https://gitlab.kurum.test/egitim/ekip-01/saha-ekipman-portal/-/merge_requests/new?merge_request%5Bsource_branch%5D=feature%2Fdeploy        
+remote: 
+$ git log --oneline -n 1
+f81c183 ci: deploy to the test VM and run a smoke test
+
+[1m### CI durumu: build feature/deploy SUCCESS skipped due to when|Finished:[0m
+    GitLab  : feature/deploy son commit'i f81c1834
+    Jenkins : ekip-01/saha-portal-ekip01/feature/deploy #1 -> SUCCESS (8 sn), derlenen commit f81c1834 (ayni SHA)
+    GitLab  : commit status jenkins = success (ref feature/deploy) -> https://jenkins.kurum.test/job/ekip-01/job/saha-portal-ekip01/job/feature%252Fdeploy/1/display/redirect
+    Jenkins konsolu (#1):
+      | Stage "Build + Test + SonarQube" skipped due to when conditional
+      | Stage "Quality Gate" skipped due to when conditional
+      | Stage "Docker Build & Push" skipped due to when conditional
+      | Stage "Docker: SemVer etiketi" skipped due to when conditional
+      | Stage "Deploy: test" skipped due to when conditional
+      | Stage "Smoke test" skipped due to when conditional
+      | Finished: SUCCESS
+    [32mtamam[0m  feature/deploy: build SUCCESS, GitLab commit status jenkins=success
+
+[1m### Arayuz: gitlab mr-ac 01 dev feature/deploy develop ci: deploy to the test VM and run a smoke test - evet evet lab-05-b-mr-deploy[0m
+ Container belbim-lab-workstation-1  Running
+  tamam  MR sablonu kendiliginden geldi (.gitlab/merge_request_templates/Default.md)
+  goruntu: lab-rehberleri/img/lab-05-b-mr-deploy-sablon.png
+  tamam  reviewer: ekip01-lead
+  goruntu: lab-rehberleri/img/lab-05-b-mr-deploy-form.png
+  tamam  MR !13 acildi: feature/deploy -> develop (squash: evet, kaynak branch silinsin: evet)
+  goruntu: lab-rehberleri/img/lab-05-b-mr-deploy.png
+
+[1m### CI durumu: mr feature/deploy mergeable[0m
+    MR !13 (feature/deploy): detailed_merge_status=mergeable, head_pipeline=success, sha=f81c1834
+    MR'in son commit'i f81c1834 icin commit status: jenkins=success
+    [32mtamam[0m  MR !13: mergeable
+
+[1m### Arayuz: gitlab mr-merge 01 lead feature/deploy lab-05-b-merge-deploy develop[0m
+ Container belbim-lab-workstation-1  Running
+  goruntu: lab-rehberleri/img/lab-05-b-merge-deploy-oncesi.png
+  tamam  !13: ekip01-lead merge etti
+  goruntu: lab-rehberleri/img/lab-05-b-merge-deploy.png
+
+[1m### CI durumu: build develop SUCCESS KAYIT|smoke test:|Finished:[0m
+    GitLab  : develop son commit'i 78ca4d73
+    Jenkins : ekip-01/saha-portal-ekip01/develop #7 -> SUCCESS (20 sn), derlenen commit 78ca4d73 (ayni SHA)
+    GitLab  : commit status jenkins = success (ref develop) -> https://jenkins.kurum.test/job/ekip-01/job/saha-portal-ekip01/job/develop/7/display/redirect
+    Jenkins konsolu (#7):
+      | KAYIT 2026-11-24T14:21:01Z tag=78ca4d7 commit=78ca4d73bb298ca45075a64ae4c1401a93117ed2 kaynak=https://jenkins.kurum.test/job/ekip-01/job/saha-portal-ekip01/job/develop/7/ product-service@sha256:ea3851376c3f3c72f91c0045a2030fc96ad4af13007853982eb093c6e2d65200 order-service@sha256:30da3e5fb396a7a49c6b7b3b45998c4203a162d7161ba34d57f06e7359f10d4d web-ui@sha256:d32f787021bd5a8ef04bc0558d809453a99f0cf37bf62eb4c35b73260abe6225
+      | + echo smoke test: http://test-vm.kurum.test:8081 yanıt veriyor (TAG=78ca4d7)
+      | smoke test: http://test-vm.kurum.test:8081 yanıt veriyor (TAG=78ca4d7)
+      | Finished: SUCCESS
+    [32mtamam[0m  develop: build SUCCESS, GitLab commit status jenkins=success
+
+[1m### CI durumu: deploy develop[0m
+    Jenkins develop #7 (SUCCESS) aciklama: test VM: TAG=78ca4d7 commit=78ca4d7  product-service@sha256:ea3851376c3f3c72f91c0045a2030fc96ad4af13007853982eb093c6e2d65200  order-service@sha256:30da3e5fb396a7a49c6b7b3b45998c4203a162d7161ba34d57f06e7359f10d4d  web-ui@sha256:d32f787021bd5a8ef04bc0558d809453a99f0cf37bf62eb4c35b73260abe6225
+
+[1m### Arayuz: jenkins sayfa 01 /job/develop/lastBuild/ test VM: TAG= lab-05-b-jenkins-develop-deploy[0m
+ Container belbim-lab-workstation-1  Running
+  tamam  gorunuyor: test VM: TAG=
+  goruntu: lab-rehberleri/img/lab-05-b-jenkins-develop-deploy.png
+rol: ekip01-dev
+$ git switch develop
+Switched to branch 'develop'
+Your branch is up to date with 'origin/develop'.
+$ git pull --ff-only
+From gitlab.kurum.test:egitim/ekip-01/saha-ekipman-portal
+   93a1cb2..78ca4d7  develop    -> origin/develop
+Updating 93a1cb2..78ca4d7
+Fast-forward
+ Jenkinsfile      | 80 +++++++++++++++++++++++++++++++++++++++++++++++++++++++-
+ deploy/deploy.sh | 36 +++++++++++++++++++++++++
+ 2 files changed, 115 insertions(+), 1 deletion(-)
+ create mode 100755 deploy/deploy.sh
+$ git fetch --prune
+From gitlab.kurum.test:egitim/ekip-01/saha-ekipman-portal
+ - [deleted]         (none)     -> origin/feature/deploy
+$ git branch -D feature/deploy
+Deleted branch feature/deploy (was f81c183).
+
+[1m### Test VM: Jenkins'in yaptigi ilk deploy[0m
+$ vm "cat .env; tail -n 1 deploy-kayit.log"
+IMG=gitlab.kurum.test:5050/egitim/ekip-01/saha-ekipman-portal
+TAG=78ca4d7
+WEB_PORT=8081
+2026-11-24T14:21:01Z tag=78ca4d7 commit=78ca4d73bb298ca45075a64ae4c1401a93117ed2 kaynak=https://jenkins.kurum.test/job/ekip-01/job/saha-portal-ekip01/job/develop/7/ product-service@sha256:ea3851376c3f3c72f91c0045a2030fc96ad4af13007853982eb093c6e2d65200 order-service@sha256:30da3e5fb396a7a49c6b7b3b45998c4203a162d7161ba34d57f06e7359f10d4d web-ui@sha256:d32f787021bd5a8ef04bc0558d809453a99f0cf37bf62eb4c35b73260abe6225
+$ curl -fsS $TEST_URL/api/products | head -c 60; echo
+[{"code":"ADP-01","name":"Terminal adaptörü","inStock":tru
+
+[1m### Arayuz: gitlab issue-ac 01 dev Miktarı 1'den küçük talep açılabiliyor Saha personeli miktarı 0 ya da negatif olan talep oluşturabiliyor. Kabul kriteri: POST /api/orders miktar 1'den küçükse 400 döner; web-ui hata mesajını gösterir; geçerli talep kaydedilir. lab-05-b-issue[0m
+ Container belbim-lab-workstation-1  Running
+  goruntu: lab-rehberleri/img/lab-05-b-issue-form.png
+  tamam  issue #7 acildi: Miktarı 1'den küçük talep açılabiliyor
+  goruntu: lab-rehberleri/img/lab-05-b-issue.png
+
+[1m### Adim 2-3: feature/12-miktar-dogrulama; once kirmizi test[0m
+rol: ekip01-dev
+$ git switch develop
+Already on 'develop'
+Your branch is up to date with 'origin/develop'.
+$ git pull --ff-only
+Already up to date.
+$ git switch -c feature/12-miktar-dogrulama
+Switched to a new branch 'feature/12-miktar-dogrulama'
+$ git diff --stat
+$ dotnet test tests/order-service.tests --nologo -v q
+Test run for /home/ekip01/saha-ekipman-portal/tests/order-service.tests/bin/Debug/net10.0/order-service.tests.dll (.NETCoreApp,Version=v10.0)
+A total of 1 test files matched the specified pattern.
+[xUnit.net 00:00:00.58]     SahaPortal.OrderService.Tests.OrdersApiTests.Post_order_with_quantity_below_one_returns_400(quantity: 0) [FAIL]
+[xUnit.net 00:00:00.59]     SahaPortal.OrderService.Tests.OrdersApiTests.Post_order_with_quantity_below_one_returns_400(quantity: -1) [FAIL]
+
+Failed!  - Failed:     2, Passed:    19, Skipped:     0, Total:    21, Duration: 512 ms - order-service.tests.dll (net10.0)
+VSTEST_ARTIFACTS_DIRECTORY environment variable was not found, falling back to a user-private temporary directory. This is most likely caused by an outdated Microsoft.NET.Test.Sdk package reference in the test project.
+# beklenen hata olustu (cikis kodu 1): Failed!
+
+[1m### Adim 3: dogrulama; testler yesil[0m
+rol: ekip01-dev
+$ git switch feature/12-miktar-dogrulama
+Already on 'feature/12-miktar-dogrulama'
+M	tests/order-service.tests/OrdersApiTests.cs
+$ git diff src/order-service | grep -E '^\+' | grep -v '^+++'
+[31mHATA[0m  komut basarisiz (cikis kodu 1)
+TERM environment variable not set.
+[3J

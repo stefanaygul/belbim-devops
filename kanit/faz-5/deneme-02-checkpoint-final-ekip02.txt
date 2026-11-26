@@ -1,0 +1,46 @@
+[1mcheckpoint/final -> ekip-02[0m
+
+[1m==> GitLab: ekip-02 icin checkpoint/final[0m
+    [32mtamam[0m  roller asil durumda; workstation SSH anahtarlari hesaplarda kayitli
+    [32mtamam[0m  proje var: egitim/ekip-02/saha-ekipman-portal
+    [32mtamam[0m  main@c7e1bc8 develop@a955daa v1.0.0  v1.0.1  v1.1.0
+    [32mtamam[0m  varsayilan branch develop; main ve develop korumali (push: No one, merge: Maintainers); v* tag korumali
+    [32mtamam[0m  issue kayitlari hazir (MR gecmisi checkpoint ile geri kurulmaz)
+    [32mtamam[0m  "Pipelines must succeed" acik (Jenkins baglantisi ekip-ci.sh ile kurulur)
+    [32mtamam[0m  deploy token'lar: ekip02-deploy (read+write), ekip02-pull (read)
+
+[1m==> Nexus: ekip-02 paketi[0m
+    [32mtamam[0m  nuget-hosted: Saha.Common.Contracts.Ekip02 silindi (surum: 1.0.0)
+
+[1m==> workstation (ekip02)[0m
+    [32mtamam[0m  onceki calisma kopyasi tasindi: /home/ekip02/yedek/saha-ekipman-portal-20261124-135922
+    [32mtamam[0m  repo: /home/ekip02/saha-ekipman-portal (develop@a955daa), origin = ekip projesi, sablon = starter
+    [32mtamam[0m  Jenkins'in deploy anahtari: ~/.ssh/jenkins-test-vm (test VM'de yetkili, yorum jenkins-ekip02)
+    [32mtamam[0m  Nexus: Saha.Common.Contracts.Ekip02.1.0.0 nuget-hosted'a yayinlandi
+    [32mtamam[0m  paketler kuruldu: dotnet restore, npm ci
+    [32mtamam[0m  imajlar registry'de: order-service, product-service, web-ui (1.0.1 ve 1dd2509)
+    [32mtamam[0m  deploy token'lar: ~/.lab/deploy-tokens (yalnizca bu kullanici okuyabilir)
+
+[1m==> test-vm[0m
+    [32mtamam[0m  test VM: ekip02 projesi ve verisi kaldirildi
+    [32mtamam[0m  test VM: ekip02 calisiyor (TAG=1.0.1, port 8082), ornek talep kaydedildi
+
+[1m==> CI: ekip-02 icin checkpoint/final[0m
+    [32mtamam[0m  Jenkins ekip-02: silinen job: 1, silinen credential: 4
+    [32mtamam[0m  SonarQube: 1 proje silindi; ekip02 kullanicisinin token'lari iptal edildi
+    [32mtamam[0m  Project Access Token: jenkins (api, Maintainer)
+    [32mtamam[0m  webhook: https://jenkins.kurum.test/project/ekip-02/saha-portal-ekip02 (Push events, Tag push events, SSL dogrulamasi acik)
+    [32mtamam[0m  deploy token: ekip02-jenkins (read_registry, write_registry)
+    [32mtamam[0m  SonarQube: proje saha-portal-ekip02 (ana branch develop), Project Analysis Token
+    [32mtamam[0m  Jenkins ekip-02 credential: gitlab-api, gitlab-repo, sonar-token, gitlab-registry, test-vm-ssh
+    [32mtamam[0m  Multibranch job: ekip-02/saha-portal-ekip02 (Git, HTTPS, credential gitlab-repo; tag kesfi, tag build stratejisi; arayuzden kaydedilebilir)
+    [32mtamam[0m  webhook testi: Push events Jenkins'e ulasti (HTTP 201); branch taramasi basladi
+    [32mtamam[0m  develop build #1: SUCCESS (commit a955daa7)
+    [32mtamam[0m  GitLab commit status: jenkins = success
+    [32mtamam[0m  SonarQube Quality Gate: OK
+    [32mtamam[0m  registry: order-service, product-service, web-ui etiketi a955daa (develop commit'i)
+    [32mtamam[0m  main build #1: SUCCESS (commit c7e1bc8f; SHA imaji registry'de)
+    [32mtamam[0m  v1.1.0 tag build'i #1: SUCCESS (SemVer etiketi, test VM'e deploy, smoke test)
+
+[32mcheckpoint/final ekip-02 icin uygulandi.[0m Denetim: bash dogrula/lab.sh final 02 KAYNAK=checkpoint
+caffeinate -i bash bootstrap/checkpoint-uygula.sh 02 final  1.43s user 1.11s system 0% cpu 9:19.30 total

@@ -1,0 +1,11 @@
+== GitLab (ekip-99)
+proje yok
+== test VM (/opt/saha/ekip99)
+ls: cannot access '/opt/saha/ekip99': No such file or directory
+== workstation (ekip99)
+no users found
+
+== Nexus (ekip-99)
+== test VM deploy kaydi (ekip-99)
+jenkins-anahtari 0
+== CI (ekip-99): GitLab baglantisi, Jenkins, SonarQube

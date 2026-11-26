@@ -1,0 +1,107 @@
+# Faz 1 kanit: NU1605 iki yonlu dogrulama (lab/01a-conflict)
+# tarih: 2026-11-23 15:42 +03 | host: Darwin arm64 | dotnet 10.0.102 | git 2.50.1 | repo: portal-starter main@174fe06
+# Kaynak: nuget.org (--source; Nexus Faz 2'de)
+
+## 1. Hata: hazir branch'te restore durur
+
+$ git switch lab/01a-conflict
+Switched to a new branch 'lab/01a-conflict'
+branch 'lab/01a-conflict' set up to track 'origin/lab/01a-conflict'.
+[cikis kodu: 0]
+
+$ git log --oneline -2
+59562d2 chore(order): reference ef core directly
+174fe06 chore: starter project
+[cikis kodu: 0]
+
+$ grep -n PackageReference src/order-service/order-service.csproj
+11:    <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="10.0.15" />
+12:    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.23" />
+13:    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="10.0.15" />
+14:    <PackageReference Include="Swashbuckle.AspNetCore.SwaggerUI" Version="11.0.1" />
+[cikis kodu: 0]
+
+$ dotnet restore SahaPortal.sln --source https://api.nuget.org/v3/index.json --nologo
+  Determining projects to restore...
+  Restored src/common-contracts/common-contracts.csproj (in 39 ms).
+src/order-service/order-service.csproj : error NU1605: Warning As Error: Detected package downgrade: Microsoft.EntityFrameworkCore from 10.0.15 to 9.0.23. Reference the package directly from the project to select a different version.  [SahaPortal.sln]
+src/order-service/order-service.csproj : error NU1605:  order-service -> Microsoft.EntityFrameworkCore.Sqlite 10.0.15 -> Microsoft.EntityFrameworkCore.Sqlite.Core 10.0.15 -> Microsoft.EntityFrameworkCore.Relational 10.0.15 -> Microsoft.EntityFrameworkCore (>= 10.0.15)  [SahaPortal.sln]
+src/order-service/order-service.csproj : error NU1605:  order-service -> Microsoft.EntityFrameworkCore (>= 9.0.23) [SahaPortal.sln]
+  Restored src/product-service/product-service.csproj (in 83 ms).
+  Failed to restore src/order-service/order-service.csproj (in 86 ms).
+tests/order-service.tests/order-service.tests.csproj : error NU1605: Warning As Error: Detected package downgrade: Microsoft.EntityFrameworkCore from 10.0.15 to 9.0.23. Reference the package directly from the project to select a different version.  [SahaPortal.sln]
+tests/order-service.tests/order-service.tests.csproj : error NU1605:  order-service.tests -> order-service -> Microsoft.EntityFrameworkCore.Sqlite 10.0.15 -> Microsoft.EntityFrameworkCore.Sqlite.Core 10.0.15 -> Microsoft.EntityFrameworkCore.Relational 10.0.15 -> Microsoft.EntityFrameworkCore (>= 10.0.15)  [SahaPortal.sln]
+tests/order-service.tests/order-service.tests.csproj : error NU1605:  order-service.tests -> order-service -> Microsoft.EntityFrameworkCore (>= 9.0.23) [SahaPortal.sln]
+  Restored tests/product-service.tests/product-service.tests.csproj (in 102 ms).
+  Failed to restore tests/order-service.tests/order-service.tests.csproj (in 102 ms).
+[cikis kodu: 1]
+
+## 2. Cozum A: dogrudan referansi hizala
+
+$ dotnet add src/order-service package Microsoft.EntityFrameworkCore -v 10.0.15 --source https://api.nuget.org/v3/index.json
+info : X.509 certificate chain validation will use the fallback certificate bundle at '/usr/local/share/dotnet/sdk/10.0.102/trustedroots/codesignctl.pem'.
+info : X.509 certificate chain validation will use the fallback certificate bundle at '/usr/local/share/dotnet/sdk/10.0.102/trustedroots/timestampctl.pem'.
+info : Adding PackageReference for package 'Microsoft.EntityFrameworkCore' into project 'src/order-service/order-service.csproj'.
+info : Restoring packages for src/order-service/order-service.csproj...
+info :   CACHE https://api.nuget.org/v3/vulnerabilities/index.json
+info :   CACHE https://api.nuget.org/v3-vulnerabilities/2026.11.20.05.34.20/vulnerability.base.json
+info :   CACHE https://api.nuget.org/v3-vulnerabilities/2026.11.20.05.34.20/2026.11.22.23.34.36/vulnerability.update.json
+info : Package 'Microsoft.EntityFrameworkCore' is compatible with all the specified frameworks in project 'src/order-service/order-service.csproj'.
+info : PackageReference for package 'Microsoft.EntityFrameworkCore' version '10.0.15' updated in file 'src/order-service/order-service.csproj'.
+info : Generating MSBuild file src/order-service/obj/order-service.csproj.nuget.g.props.
+info : Writing assets file to disk. Path: src/order-service/obj/project.assets.json
+log  : Restored src/order-service/order-service.csproj (in 122 ms).
+[cikis kodu: 0]
+
+$ grep -n PackageReference src/order-service/order-service.csproj
+11:    <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="10.0.15" />
+12:    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="10.0.15" />
+13:    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="10.0.15" />
+14:    <PackageReference Include="Swashbuckle.AspNetCore.SwaggerUI" Version="11.0.1" />
+[cikis kodu: 0]
+
+$ dotnet restore SahaPortal.sln --source https://api.nuget.org/v3/index.json --nologo
+  Determining projects to restore...
+  Restored src/order-service/order-service.csproj (in 116 ms).
+  Restored tests/order-service.tests/order-service.tests.csproj (in 124 ms).
+  3 of 5 projects are up-to-date for restore.
+[cikis kodu: 0]
+
+$ dotnet build SahaPortal.sln -c Release --no-restore --nologo -v q
+
+Build succeeded.
+    0 Warning(s)
+    0 Error(s)
+
+Time Elapsed 00:00:00.76
+[cikis kodu: 0]
+
+$ dotnet test SahaPortal.sln -c Release --no-build --nologo
+Test run for tests/product-service.tests/bin/Release/net10.0/product-service.tests.dll (.NETCoreApp,Version=v10.0)
+Test run for tests/order-service.tests/bin/Release/net10.0/order-service.tests.dll (.NETCoreApp,Version=v10.0)
+A total of 1 test files matched the specified pattern.
+A total of 1 test files matched the specified pattern.
+
+Passed!  - Failed:     0, Passed:     5, Skipped:     0, Total:     5, Duration: 198 ms - product-service.tests.dll (net10.0)
+
+Passed!  - Failed:     0, Passed:     4, Skipped:     0, Total:     4, Duration: 888 ms - order-service.tests.dll (net10.0)
+[cikis kodu: 0]
+
+## 3. Cozum B: gereksiz dogrudan referansi kaldir
+
+$ git checkout -- src/order-service/order-service.csproj
+[cikis kodu: 0]
+
+$ dotnet remove src/order-service package Microsoft.EntityFrameworkCore
+info : Removing PackageReference for package 'Microsoft.EntityFrameworkCore' from project 'src/order-service/order-service.csproj'.
+[cikis kodu: 0]
+
+$ git diff --stat main -- src/order-service/order-service.csproj
+[cikis kodu: 0]
+
+$ dotnet restore SahaPortal.sln --source https://api.nuget.org/v3/index.json --nologo
+  Determining projects to restore...
+  Restored src/order-service/order-service.csproj (in 114 ms).
+  Restored tests/order-service.tests/order-service.tests.csproj (in 122 ms).
+  3 of 5 projects are up-to-date for restore.
+[cikis kodu: 0]

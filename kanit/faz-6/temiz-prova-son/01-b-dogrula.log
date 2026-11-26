@@ -1,0 +1,23 @@
+
+[1mLAB 01-B (ekip-99)[0m
+  [32mGECTI[0m  branch var: feature/katalog-sarj-unitesi@301ec3c
+  [32mGECTI[0m  yarim kalmis merge yok
+
+[1mKatalog[0m
+  [32mGECTI[0m  catalog.json gecerli JSON
+  [32mGECTI[0m  SRJ-04 kaydi (tek olmali): 1
+  [32mGECTI[0m  SRJ-04 adi: Şarj ünitesi
+  [32mGECTI[0m  conflict isareti kalmamis
+  [32mGECTI[0m  test SRJ-04 kaydini bekliyor
+
+[1mMerge ve gecmis[0m
+  [32mGECTI[0m  lab/01b-rename merge edilmis
+  [32mGECTI[0m  lab/01b-rename'i getiren merge commit'i: 1
+  [32mGECTI[0m  commit mesajlari Conventional Commits biciminde (1 commit)
+
+[1mTestler (feature/katalog-sarj-unitesi)[0m
+  [32mGECTI[0m  dotnet test (cikis kodu): 0
+         Passed!  - Failed:     0, Passed:     5, Skipped:     0, Total:     5, Duration: 109 ms - product-service.tests.dll (net10.0)
+         Passed!  - Failed:     0, Passed:     4, Skipped:     0, Total:     4, Duration: 480 ms - order-service.tests.dll (net10.0)
+
+11 gecti, 0 kaldi

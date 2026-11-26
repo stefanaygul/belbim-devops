@@ -1,0 +1,31 @@
+
+[1mGit TLS: yanlis CA -> dogru CA[0m
+  [32mGECTI[0m  yanlis CA ile Git reddedildi
+  [32mGECTI[0m  dogru CA ile Git basarili
+
+[1mDocker soket izni: yetkisiz -> ekip kullanicisi[0m
+  [32mGECTI[0m  yetkisiz kullanici Docker soketine erisemedi
+  [32mGECTI[0m  ekip kullanicisi Docker kullanabiliyor
+
+[1mPort cakismasi -> bos port[0m
+  [32mGECTI[0m  ikinci container ayni porta baglanamadi
+  [32mGECTI[0m  ikinci container bos portta basladi
+
+[1mNU1101: bos feed -> Nexus group[0m
+  [32mGECTI[0m  bos feed NU1101 uretti
+  [32mGECTI[0m  Nexus group ile ayni proje restore edildi
+
+[1mRegistry: olmayan etiket -> 1.1.0[0m
+  [32mGECTI[0m  olmayan etiket reddedildi
+  [32mGECTI[0m  var olan 1.1.0 cekildi
+
+[1mOlmayan etiketle deploy calisan surume dokunmaz[0m
+  [32mGECTI[0m  deploy pull asamasinda durdu
+  [32mGECTI[0m  env, deploy kaydi, container kimlikleri ve imajlari ayni: 0f6d3a61ca59b96cb423d3ddf2bd96352ecd3ae3046772dc4af2a58420022ef9  deploy-kayit.log
+107270e548148dcc8208d229dd77e6726c25a4b88ed2d60dcbd6cc98d3c421df  .env
+538ec49b3eb8 gitlab.kurum.test:5050/egitim/ekip-99/saha-ekipman-portal/web-ui:1.1.0
+c9c0b4248e2b gitlab.kurum.test:5050/egitim/ekip-99/saha-ekipman-portal/order-service:1.1.0
+de061df07fd3 gitlab.kurum.test:5050/egitim/ekip-99/saha-ekipman-portal/product-service:1.1.0
+  [32mGECTI[0m  mevcut uygulama cevap veriyor: 200
+
+13 gecti, 0 kaldi

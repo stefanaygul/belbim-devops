@@ -1,0 +1,60 @@
+$ make up
+ Network belbim-lab_lab  Creating
+ Network belbim-lab_lab  Created
+server.crt: OK
+CA parmak izi (SHA-256): 73:AC:BE:40:11:00:D3:59:2E:BE:0B:1E:61:A1:66:2A:83:DB:0B:7B:2F:EA:2E:29:9C:46:C0:64:2A:1D:EE:EA
+Servis sertifikasi bitis: Jan 31 17:57:19 2029 GMT
+Compose can now delegate builds to bake for better performance.
+ To do so, set COMPOSE_BAKE=true.
+ test-vm  Built
+ workstation  Built
+ Volume "belbim-lab_gitlab-data"  Creating
+ Volume "belbim-lab_gitlab-data"  Created
+ Volume "belbim-lab_workstation-home"  Creating
+ Volume "belbim-lab_workstation-home"  Created
+ Volume "belbim-lab_testvm-docker"  Creating
+ Volume "belbim-lab_testvm-docker"  Created
+ Volume "belbim-lab_testvm-hostkeys"  Creating
+ Volume "belbim-lab_testvm-hostkeys"  Created
+ Volume "belbim-lab_nexus-data"  Creating
+ Volume "belbim-lab_nexus-data"  Created
+ Volume "belbim-lab_workstation-docker"  Creating
+ Volume "belbim-lab_workstation-docker"  Created
+ Volume "belbim-lab_testvm-saha"  Creating
+ Volume "belbim-lab_testvm-saha"  Created
+ Volume "belbim-lab_testvm-home"  Creating
+ Volume "belbim-lab_testvm-home"  Created
+ Volume "belbim-lab_gitlab-config"  Creating
+ Volume "belbim-lab_gitlab-config"  Created
+ Volume "belbim-lab_gitlab-logs"  Creating
+ Volume "belbim-lab_gitlab-logs"  Created
+ Container belbim-lab-workstation-1  Creating
+ Container belbim-lab-nexus-1  Creating
+ Container belbim-lab-test-vm-1  Creating
+ Container belbim-lab-dns-1  Creating
+ Container belbim-lab-gitlab-1  Creating
+ Container belbim-lab-proxy-1  Creating
+ Container belbim-lab-test-vm-1  Created
+ Container belbim-lab-dns-1  Created
+ Container belbim-lab-proxy-1  Created
+ Container belbim-lab-nexus-1  Created
+ Container belbim-lab-gitlab-1  Created
+ Container belbim-lab-workstation-1  Created
+ Container belbim-lab-dns-1  Starting
+ Container belbim-lab-workstation-1  Starting
+ Container belbim-lab-test-vm-1  Starting
+ Container belbim-lab-gitlab-1  Starting
+ Container belbim-lab-proxy-1  Starting
+ Container belbim-lab-nexus-1  Starting
+ Container belbim-lab-dns-1  Started
+ Container belbim-lab-proxy-1  Started
+ Container belbim-lab-gitlab-1  Started
+ Container belbim-lab-nexus-1  Started
+ Container belbim-lab-workstation-1  Started
+ Container belbim-lab-test-vm-1  Started
+workstation bekleniyor . hazir (6s)
+test-vm    bekleniyor  hazir (0s)
+nexus      bekleniyor . hazir (HTTP 200, 17s)
+gitlab     bekleniyor ........ hazir (HTTP 200, 86s)
+registry   bekleniyor  hazir (HTTP 401, 1s)
+[sure: 117 sn, cikis kodu: 0]

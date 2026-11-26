@@ -1,0 +1,368 @@
+# LAB 02-B, ekip-01, cozum adimlari (2026-11-24 01:09)
+
+### Adim 1-2: release/1.0.0, CHANGELOG
+rol: ekip01-dev
+$ git switch develop
+Already on 'develop'
+Your branch is up to date with 'origin/develop'.
+$ git pull --ff-only
+Already up to date.
+$ git switch -c release/1.0.0
+Switched to a new branch 'release/1.0.0'
+$ git diff | cat
+$ git add CHANGELOG.md
+$ git commit -m chore(release): 1.0.0
+[release/1.0.0 ec6ed8f] chore(release): 1.0.0
+ 1 file changed, 7 insertions(+)
+$ git push -u origin release/1.0.0
+remote: 
+remote: To create a merge request for release/1.0.0, visit:        
+remote:   https://gitlab.kurum.test/egitim/ekip-01/saha-ekipman-portal/-/merge_requests/new?merge_request%5Bsource_branch%5D=release%2F1.0.0        
+remote: 
+To gitlab.kurum.test:egitim/ekip-01/saha-ekipman-portal.git
+ * [new branch]      release/1.0.0 -> release/1.0.0
+branch 'release/1.0.0' set up to track 'origin/release/1.0.0'.
+
+### Arayuz: gitlab mr-ac 01 dev release/1.0.0 main chore(release): 1.0.0 - hayir hayir lab-02-b-mr-release
+  tamam  MR sablonu kendiliginden geldi (.gitlab/merge_request_templates/Default.md)
+  goruntu: lab-rehberleri/img/lab-02-b-mr-release-sablon.png
+  tamam  reviewer: ekip01-lead
+  goruntu: lab-rehberleri/img/lab-02-b-mr-release-form.png
+  tamam  MR !3 acildi: release/1.0.0 -> main (squash: hayir, kaynak branch silinsin: hayir)
+  goruntu: lab-rehberleri/img/lab-02-b-mr-release.png
+
+### Arayuz: gitlab mr-merge 01 lead release/1.0.0 lab-02-b-release-merge main
+  goruntu: lab-rehberleri/img/lab-02-b-release-merge-oncesi.png
+  tamam  !3: ekip01-lead merge etti
+  goruntu: lab-rehberleri/img/lab-02-b-release-merge.png
+
+### Arayuz: gitlab tag-koru 01 v*
+  goruntu: lab-rehberleri/img/lab-02-b-korumali-tag-form.png
+  tamam  korumali tag: v* (olusturabilen: Maintainers)
+  goruntu: lab-rehberleri/img/lab-02-b-korumali-tag.png
+
+### Adim 3 (kontrol): Developer korumali tag olusturamaz
+rol: ekip01-dev
+$ git switch main
+Switched to branch 'main'
+Your branch is up to date with 'origin/main'.
+$ git pull --ff-only
+From gitlab.kurum.test:egitim/ekip-01/saha-ekipman-portal
+   a554780..d46692d  main       -> origin/main
+Updating a554780..d46692d
+Fast-forward
+ CHANGELOG.md                                     |  7 +++++++
+ src/common-contracts/ProductDto.cs               |  2 +-
+ src/product-service/Data/catalog.json            |  8 ++++----
+ src/web-ui/src/components/CatalogList.jsx        |  2 ++
+ src/web-ui/src/components/CatalogList.test.jsx   | 14 +++++++++++---
+ tests/product-service.tests/CatalogStoreTests.cs | 22 ++++++++++++++++++++++
+ tests/product-service.tests/ProductsApiTests.cs  | 13 ++++++++++++-
+ 7 files changed, 59 insertions(+), 9 deletions(-)
+$ git tag -a v1.0.0 -m release: v1.0.0
+$ git push origin v1.0.0
+remote: GitLab: You are not allowed to create this tag as it is protected.
+To gitlab.kurum.test:egitim/ekip-01/saha-ekipman-portal.git
+ ! [remote rejected] v1.0.0 -> v1.0.0 (pre-receive hook declined)
+error: failed to push some refs to 'gitlab.kurum.test:egitim/ekip-01/saha-ekipman-portal.git'
+# beklenen hata olustu (cikis kodu 1): You are not allowed to create this tag as it is protected
+$ git tag -d v1.0.0
+Deleted tag 'v1.0.0' (was ccf5e18)
+
+### Annotated tag: v1.0.0 (main uzerinde)
+rol: ekip01-lead
+$ git switch main
+Already on 'main'
+Your branch is up to date with 'origin/main'.
+$ git pull --ff-only
+Already up to date.
+$ git tag -a v1.0.0 -m release: v1.0.0
+$ git push origin v1.0.0
+To gitlab.kurum.test:egitim/ekip-01/saha-ekipman-portal.git
+ * [new tag]         v1.0.0 -> v1.0.0
+$ git describe --tags
+v1.0.0
+$ git cat-file -t v1.0.0
+tag
+
+### Arayuz: gitlab mr-ac 01 dev release/1.0.0 develop chore(release): merge 1.0.0 back into develop - hayir evet lab-02-b-mr-release-geri
+  tamam  MR sablonu kendiliginden geldi (.gitlab/merge_request_templates/Default.md)
+  goruntu: lab-rehberleri/img/lab-02-b-mr-release-geri-sablon.png
+  tamam  reviewer: ekip01-lead
+  goruntu: lab-rehberleri/img/lab-02-b-mr-release-geri-form.png
+  tamam  MR !4 acildi: release/1.0.0 -> develop (squash: hayir, kaynak branch silinsin: evet)
+  goruntu: lab-rehberleri/img/lab-02-b-mr-release-geri.png
+
+### Arayuz: gitlab mr-merge 01 lead release/1.0.0 lab-02-b-release-geri-merge develop
+  goruntu: lab-rehberleri/img/lab-02-b-release-geri-merge-oncesi.png
+  tamam  !4: ekip01-lead merge etti
+  goruntu: lab-rehberleri/img/lab-02-b-release-geri-merge.png
+
+### Arayuz: gitlab issue-ac 01 dev Boş ekipman koduyla talep açılabiliyor v1.0.0'da ekipman seçilmeden gönderilen talep kaydediliyor. Beklenen: POST /api/orders boş productId için 400 dönmeli. lab-02-b-issue
+  goruntu: lab-rehberleri/img/lab-02-b-issue-form.png
+  tamam  issue #2 acildi: Boş ekipman koduyla talep açılabiliyor
+  goruntu: lab-rehberleri/img/lab-02-b-issue.png
+
+### Adim 5: hotfix/1.0.1 (main'deki v1.0.0'dan)
+rol: ekip01-dev
+$ git fetch --tags origin
+From gitlab.kurum.test:egitim/ekip-01/saha-ekipman-portal
+   9a4da9a..67c4184  develop    -> origin/develop
+$ git switch -c hotfix/1.0.1 v1.0.0
+Switched to a new branch 'hotfix/1.0.1'
+# Once hatayi gosteren test: bos ekipman koduyla talep 400 donmeli
+$ dotnet test tests/order-service.tests
+  order-service -> /home/ekip01/saha-ekipman-portal/src/order-service/bin/Debug/net10.0/order-service.dll
+  order-service.tests -> /home/ekip01/saha-ekipman-portal/tests/order-service.tests/bin/Debug/net10.0/order-service.tests.dll
+Test run for /home/ekip01/saha-ekipman-portal/tests/order-service.tests/bin/Debug/net10.0/order-service.tests.dll (.NETCoreApp,Version=v10.0)
+A total of 1 test files matched the specified pattern.
+[xUnit.net 00:00:00.52]     SahaPortal.OrderService.Tests.OrdersApiTests.Post_order_without_a_product_id_returns_400(productId: "") [FAIL]
+[xUnit.net 00:00:00.52]     SahaPortal.OrderService.Tests.OrdersApiTests.Post_order_without_a_product_id_returns_400(productId: "   ") [FAIL]
+  Failed SahaPortal.OrderService.Tests.OrdersApiTests.Post_order_without_a_product_id_returns_400(productId: "") [3 ms]
+  Error Message:
+   Assert.Equal() Failure: Values differ
+Expected: BadRequest
+Actual:   Created
+  Stack Trace:
+     at SahaPortal.OrderService.Tests.OrdersApiTests.Post_order_without_a_product_id_returns_400(String productId) in /home/ekip01/saha-ekipman-portal/tests/order-service.tests/OrdersApiTests.cs:line 35
+--- End of stack trace from previous location ---
+  Failed SahaPortal.OrderService.Tests.OrdersApiTests.Post_order_without_a_product_id_returns_400(productId: "   ") [1 ms]
+  Error Message:
+   Assert.Equal() Failure: Values differ
+Expected: BadRequest
+Actual:   Created
+  Stack Trace:
+     at SahaPortal.OrderService.Tests.OrdersApiTests.Post_order_without_a_product_id_returns_400(String productId) in /home/ekip01/saha-ekipman-portal/tests/order-service.tests/OrdersApiTests.cs:line 35
+--- End of stack trace from previous location ---
+
+Failed!  - Failed:     2, Passed:     4, Skipped:     0, Total:     6, Duration: 453 ms - order-service.tests.dll (net10.0)
+VSTEST_ARTIFACTS_DIRECTORY environment variable was not found, falling back to a user-private temporary directory. This is most likely caused by an outdated Microsoft.NET.Test.Sdk package reference in the test project.
+# beklenen hata olustu (cikis kodu 1): Failed!
+# Duzeltme
+$ git diff HEAD -- src | cat
+diff --git a/src/order-service/Endpoints/OrderEndpoints.cs b/src/order-service/Endpoints/OrderEndpoints.cs
+index 408c34c..7d804a7 100644
+--- a/src/order-service/Endpoints/OrderEndpoints.cs
++++ b/src/order-service/Endpoints/OrderEndpoints.cs
+@@ -15,6 +15,11 @@ public static class OrderEndpoints
+ 
+     private static async Task<IResult> CreateAsync(CreateOrderRequest request, OrdersDbContext db)
+     {
++        if (string.IsNullOrWhiteSpace(request.ProductId))
++        {
++            return Results.BadRequest(new { error = "Ekipman kodu boş olamaz." });
++        }
++
+         var order = new Order
+         {
+             ProductId = request.ProductId,
+$ dotnet test SahaPortal.sln
+  Determining projects to restore...
+  All projects are up-to-date for restore.
+  common-contracts -> /home/ekip01/saha-ekipman-portal/src/common-contracts/bin/Debug/net10.0/common-contracts.dll
+  product-service -> /home/ekip01/saha-ekipman-portal/src/product-service/bin/Debug/net10.0/product-service.dll
+  order-service -> /home/ekip01/saha-ekipman-portal/src/order-service/bin/Debug/net10.0/order-service.dll
+  order-service.tests -> /home/ekip01/saha-ekipman-portal/tests/order-service.tests/bin/Debug/net10.0/order-service.tests.dll
+Test run for /home/ekip01/saha-ekipman-portal/tests/order-service.tests/bin/Debug/net10.0/order-service.tests.dll (.NETCoreApp,Version=v10.0)
+  product-service.tests -> /home/ekip01/saha-ekipman-portal/tests/product-service.tests/bin/Debug/net10.0/product-service.tests.dll
+Test run for /home/ekip01/saha-ekipman-portal/tests/product-service.tests/bin/Debug/net10.0/product-service.tests.dll (.NETCoreApp,Version=v10.0)
+A total of 1 test files matched the specified pattern.
+A total of 1 test files matched the specified pattern.
+
+Passed!  - Failed:     0, Passed:     8, Skipped:     0, Total:     8, Duration: 122 ms - product-service.tests.dll (net10.0)
+VSTEST_ARTIFACTS_DIRECTORY environment variable was not found, falling back to a user-private temporary directory. This is most likely caused by an outdated Microsoft.NET.Test.Sdk package reference in the test project.
+
+Passed!  - Failed:     0, Passed:     6, Skipped:     0, Total:     6, Duration: 473 ms - order-service.tests.dll (net10.0)
+VSTEST_ARTIFACTS_DIRECTORY environment variable was not found, falling back to a user-private temporary directory. This is most likely caused by an outdated Microsoft.NET.Test.Sdk package reference in the test project.
+$ git add src tests
+$ git commit -m fix(order): reject empty product id
+[hotfix/1.0.1 e2a876e] fix(order): reject empty product id
+ 2 files changed, 17 insertions(+)
+$ git add CHANGELOG.md
+$ git commit -m chore(release): 1.0.1
+[hotfix/1.0.1 2ddb896] chore(release): 1.0.1
+ 1 file changed, 6 insertions(+)
+$ git push -u origin hotfix/1.0.1
+remote: 
+remote: To create a merge request for hotfix/1.0.1, visit:        
+remote:   https://gitlab.kurum.test/egitim/ekip-01/saha-ekipman-portal/-/merge_requests/new?merge_request%5Bsource_branch%5D=hotfix%2F1.0.1        
+remote: 
+To gitlab.kurum.test:egitim/ekip-01/saha-ekipman-portal.git
+ * [new branch]      hotfix/1.0.1 -> hotfix/1.0.1
+branch 'hotfix/1.0.1' set up to track 'origin/hotfix/1.0.1'.
+
+### Arayuz: gitlab mr-ac 01 dev hotfix/1.0.1 main fix(order): reject empty product id 2 hayir hayir lab-02-b-mr-hotfix
+  tamam  MR sablonu kendiliginden geldi (.gitlab/merge_request_templates/Default.md)
+  goruntu: lab-rehberleri/img/lab-02-b-mr-hotfix-sablon.png
+  tamam  reviewer: ekip01-lead
+  goruntu: lab-rehberleri/img/lab-02-b-mr-hotfix-form.png
+  tamam  MR !5 acildi: hotfix/1.0.1 -> main (squash: hayir, kaynak branch silinsin: hayir)
+  goruntu: lab-rehberleri/img/lab-02-b-mr-hotfix.png
+
+### Arayuz: gitlab mr-merge 01 lead hotfix/1.0.1 lab-02-b-hotfix-merge main
+  goruntu: lab-rehberleri/img/lab-02-b-hotfix-merge-oncesi.png
+  tamam  !5: ekip01-lead merge etti
+  goruntu: lab-rehberleri/img/lab-02-b-hotfix-merge.png
+
+### Annotated tag: v1.0.1 (main uzerinde)
+rol: ekip01-lead
+$ git switch main
+Switched to branch 'main'
+Your branch is up to date with 'origin/main'.
+$ git pull --ff-only
+From gitlab.kurum.test:egitim/ekip-01/saha-ekipman-portal
+   d46692d..bc02722  main       -> origin/main
+Updating d46692d..bc02722
+Fast-forward
+ CHANGELOG.md                                  |  6 ++++++
+ src/order-service/Endpoints/OrderEndpoints.cs |  5 +++++
+ tests/order-service.tests/OrdersApiTests.cs   | 12 ++++++++++++
+ 3 files changed, 23 insertions(+)
+$ git tag -a v1.0.1 -m release: v1.0.1
+$ git push origin v1.0.1
+To gitlab.kurum.test:egitim/ekip-01/saha-ekipman-portal.git
+ * [new tag]         v1.0.1 -> v1.0.1
+$ git describe --tags
+v1.0.1
+$ git cat-file -t v1.0.1
+tag
+
+### Arayuz: gitlab mr-ac 01 dev hotfix/1.0.1 develop fix(order): merge hotfix 1.0.1 into develop 2 hayir evet lab-02-b-mr-hotfix-geri
+  tamam  MR sablonu kendiliginden geldi (.gitlab/merge_request_templates/Default.md)
+  goruntu: lab-rehberleri/img/lab-02-b-mr-hotfix-geri-sablon.png
+  tamam  reviewer: ekip01-lead
+  goruntu: lab-rehberleri/img/lab-02-b-mr-hotfix-geri-form.png
+  tamam  MR !6 acildi: hotfix/1.0.1 -> develop (squash: hayir, kaynak branch silinsin: evet)
+  goruntu: lab-rehberleri/img/lab-02-b-mr-hotfix-geri.png
+
+### Arayuz: gitlab mr-merge 01 lead hotfix/1.0.1 lab-02-b-hotfix-geri-merge develop
+  goruntu: lab-rehberleri/img/lab-02-b-hotfix-geri-merge-oncesi.png
+  tamam  !6: ekip01-lead merge etti
+  goruntu: lab-rehberleri/img/lab-02-b-hotfix-geri-merge.png
+
+### Arayuz: gitlab sayfa 01 dev /-/tags v1.0.0|v1.0.1 lab-02-b-tags
+  tamam  gorunuyor: v1.0.0
+  tamam  gorunuyor: v1.0.1
+  goruntu: lab-rehberleri/img/lab-02-b-tags.png
+
+### Arayuz: gitlab sayfa 01 dev /-/merge_requests?scope=all&state=merged fix(order): reject empty product id|chore(release): 1.0.0 lab-02-b-mr-gecmisi
+  tamam  gorunuyor: fix(order): reject empty product id
+  tamam  gorunuyor: chore(release): 1.0.0
+  goruntu: lab-rehberleri/img/lab-02-b-mr-gecmisi.png
+
+### Arayuz: gitlab sayfa 01 dev /-/issues/2 Closed lab-02-b-issue-kapandi
+  tamam  gorunuyor: Closed
+  goruntu: lab-rehberleri/img/lab-02-b-issue-kapandi.png
+
+### Adim 7: grafigi dogrula
+rol: ekip01-dev
+$ git fetch --prune --tags origin
+From gitlab.kurum.test:egitim/ekip-01/saha-ekipman-portal
+ - [deleted]         (none)     -> origin/hotfix/1.0.1
+ - [deleted]         (none)     -> origin/release/1.0.0
+   67c4184..ac9504a  develop    -> origin/develop
+$ git switch develop
+Switched to branch 'develop'
+Your branch is behind 'origin/develop' by 6 commits, and can be fast-forwarded.
+  (use "git pull" to update your local branch)
+$ git pull --ff-only
+Updating 9a4da9a..ac9504a
+Fast-forward
+ CHANGELOG.md                                  | 13 +++++++++++++
+ src/order-service/Endpoints/OrderEndpoints.cs |  5 +++++
+ tests/order-service.tests/OrdersApiTests.cs   | 12 ++++++++++++
+ 3 files changed, 30 insertions(+)
+$ git log --oneline --graph origin/main origin/develop | head -n 30
+*   ac9504a Merge branch 'hotfix/1.0.1' into 'develop'
+|\  
+* \   67c4184 Merge branch 'release/1.0.0' into 'develop'
+|\ \  
+| | | *   bc02722 Merge branch 'hotfix/1.0.1' into 'main'
+| | | |\  
+| | | |/  
+| | |/|   
+| | * | 2ddb896 chore(release): 1.0.1
+| | * | e2a876e fix(order): reject empty product id
+| | |/  
+| | *   d46692d Merge branch 'release/1.0.0' into 'main'
+| | |\  
+| | |/  
+| |/|   
+| * | ec6ed8f chore(release): 1.0.0
+|/ /  
+* |   9a4da9a Merge branch 'feature/3-stok-durumu-arayuz' into 'develop'
+|\ \  
+| * | d783ff6 feat(web-ui): show stock status
+|/ /  
+* |   265d5ee Merge branch 'feature/3-stok-durumu' into 'develop'
+|\ \  
+| |/  
+|/|   
+| * 6ea71d3 feat(catalog): add stock status
+|/  
+* a554780 chore: add merge request template and CODEOWNERS
+*   fb33620 Merge branch 'feature/katalog-sarj-unitesi'
+|\  
+$ git branch -r --contains bc0272270abef45683d121fbf9735ba6b665b244 | grep origin/
+  origin/main
+$ git tag -l v*
+v1.0.0
+v1.0.1
+$ git branch -D release/1.0.0 hotfix/1.0.1 2>/dev/null; git branch
+Deleted branch release/1.0.0 (was ec6ed8f).
+Deleted branch hotfix/1.0.1 (was 2ddb896).
+* develop
+  feature/katalog-sarj-unitesi
+  lab/01a-conflict
+  main
+
+### Checkpoint karsilastirmasi
+# agac ayni: origin/develop == checkpoint/lab-02b (haric: .gitlab/CODEOWNERS)
+# agac ayni: origin/main == checkpoint/lab-02b-main (haric: .gitlab/CODEOWNERS)
+# agac ayni: v1.0.0 == checkpoint/lab-02b-main~1 (haric: .gitlab/CODEOWNERS)
+
+LAB 02-b cozumu ekip-01 icin uygulandi.
+cikis kodu: 0
+
+# Dogrulama: dogrula/lab.sh lab-02-b 01
+
+LAB 02-B (ekip-01)
+
+Tag'ler
+  GECTI  v1.0.0 annotated tag: "release: v1.0.0"
+  GECTI  v1.0.0 main uzerinde: evet
+  GECTI  v1.0.1 annotated tag: "release: v1.0.1"
+  GECTI  v1.0.1 main uzerinde: evet
+  GECTI  v* tag'ini olusturabilen: Maintainers
+
+CHANGELOG (main)
+  GECTI  1.0.0 bolumu
+  GECTI  1.0.1 bolumu
+
+Hotfix iki yerde
+  GECTI  main'de: e2a876e fix(order): reject empty product id
+  GECTI  develop'ta: e2a876e fix(order): reject empty product id
+  GECTI  release geri merge edilmis (v1.0.0 develop gecmisinde): evet
+
+Davranis: bos ekipman kodu
+  GECTI  v1.0.0: bos ekipman kodu kabul ediliyor (hata surumde duruyor): 201
+  GECTI  v1.0.1: bos ekipman kodu reddediliyor: 400
+  GECTI  v1.0.1: gecerli talep: 201
+
+MR gecmisi
+  GECTI  MR !3: release/1.0.0 -> main merge edilmis
+  GECTI  MR !5: hotfix/1.0.1 -> main merge edilmis
+  GECTI  MR !4: release/1.0.0 -> develop merge edilmis
+  GECTI  MR !6: hotfix/1.0.1 -> develop merge edilmis
+
+17 gecti, 0 kaldi
+cikis kodu: 0
+
+# Ek kontrol (2026-11-24 02:58): duzeltme commit'i iki branch'te (grafik adimindaki komut merge commit'ini buluyordu; --no-merges eklendi)
+$ git branch -r --contains e2a876e
+  origin/develop
+  origin/main
+# issue #2 ne zaman kapandi (MR !5 main'e 22:10:44'te, MR !6 develop'a 22:10:54'te merge edildi)
+issue #2 closed_at=2026-11-23T22:10:54.450Z
+MR !5 (hotfix -> main) merged_at=2026-11-23T22:10:44.172Z
+MR !6 (hotfix -> develop) merged_at=2026-11-23T22:10:54.190Z

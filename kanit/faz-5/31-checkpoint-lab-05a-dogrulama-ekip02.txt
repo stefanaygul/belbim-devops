@@ -1,0 +1,26 @@
+[1mLAB 05-A (ekip-02)[0m
+[1mRepo (develop): paket kimligi, PackageReference, Dockerfile'lar[0m
+  [32mGECTI[0m  PackageId (ekip sonekiyle): <PackageId>Saha.Common.Contracts.Ekip02</PackageId>
+  [32mGECTI[0m  Version: <Version>1.0.0</Version>
+  [32mGECTI[0m  order-service: PackageReference Saha.Common.Contracts.Ekip02 1.0.0
+  [32mGECTI[0m  order-service: ProjectReference kaldirilmis
+  [32mGECTI[0m  order-service Dockerfile: common-contracts kaynagi kopyalanmiyor (restore Nexus'tan)
+  [32mGECTI[0m  product-service: PackageReference Saha.Common.Contracts.Ekip02 1.0.0
+  [32mGECTI[0m  product-service: ProjectReference kaldirilmis
+  [32mGECTI[0m  product-service Dockerfile: common-contracts kaynagi kopyalanmiyor (restore Nexus'tan)
+  [32mGECTI[0m  NuGet.config: <clear />
+  [32mGECTI[0m  NuGet.config: tek kaynak (Nexus nuget-group): 1 https://nexus.kurum.test/repository/nuget-group/index.json
+[1mNexus: paket nuget-hosted'da[0m
+  [32mGECTI[0m  Saha.Common.Contracts.Ekip02 surumleri (nuget-hosted): 1.0.0
+  [32mGECTI[0m  ekip soneki olmayan Saha.Common.Contracts paketi yok (ekipler cakismiyor)
+[1mRestore: paket Nexus'tan geliyor (bos bir NuGet onbellegiyle)[0m
+  [32mGECTI[0m  restore basarili
+  [32mGECTI[0m  paket Nexus nuget-group'tan indirildi
+  [32mGECTI[0m  restore nuget.org'a gitmedi
+[1mJenkins ve registry: develop yesil, imaj paketle derlendi[0m
+  [32mGECTI[0m  develop #1 (commit 254c6f6): SUCCESS
+  [32mGECTI[0m  order-service:254c6f6 registry'de
+  [32mGECTI[0m  product-service:254c6f6 registry'de
+[1mMerge Request[0m
+  ATLANDI MR gecmisi (checkpoint bunu geri kurmaz)
+18 gecti, 0 kaldi

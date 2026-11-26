@@ -1,0 +1,11 @@
+
+[1m### Arayuz: gitlab webhook-tag 01 https://jenkins.kurum.test/project/ekip-01/saha-portal-ekip01 lab-05-b-webhook-tag[0m
+HATA   webhook-tag: locator.check: Clicking the checkbox did not change its state
+       Call log:
+         - waiting for locator('#webhooks-tagPushEvents')
+           - locator resolved to <input value="true" type="checkbox" id="webhooks-tagPushEvents" class="custom-control-input" name="hook[tag_push_events]"/>
+         - attempting click action
+           - scrolling into view if needed
+       sayfa: https://gitlab.kurum.test/egitim/ekip-01/saha-ekipman-portal/-/hooks/4/edit
+       goruntu: lab-ortami/.cache/ui/hata-webhook-tag-1795530379268.png
+

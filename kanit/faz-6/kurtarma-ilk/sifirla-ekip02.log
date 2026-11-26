@@ -1,0 +1,27 @@
+
+[1m==> GitLab: ekip-02 sifirlaniyor[0m
+    [32mtamam[0m  registry: 15 imaj etiketi silindi
+    [32mtamam[0m  proje silindi: egitim/ekip-02/saha-ekipman-portal-deletion_scheduled-4
+    [32mtamam[0m  ekip hesaplarinin SSH anahtarlari ve token'lari kaldirildi
+    ekip02-lead: Maintainer   ekip02-dev: Developer   (egitim/ekip-02)
+
+[1m==> Nexus: ekip-02 paketi[0m
+    [32mtamam[0m  nuget-hosted: Saha.Common.Contracts.Ekip02 silindi (surum: 1.0.0)
+
+[1m==> Jenkins ve SonarQube: ekip-02 kaynaklari kaldiriliyor[0m
+    [32mtamam[0m  Jenkins ekip-02: silinen job: 1, silinen credential: 5
+    [32mtamam[0m  SonarQube: 1 proje silindi; ekip02 kullanicisinin token'lari iptal edildi
+
+[1m==> Jenkins agent (ekip-02)[0m
+    [32mtamam[0m  0 calisma dizini ve 9 imaj etiketi silindi
+
+[1m==> test-vm[0m
+    [32mtamam[0m  test VM: ekip02 projesi ve verisi kaldirildi
+    [32mtamam[0m  test VM: Jenkins'in ekip anahtari (jenkins-ekip02) kaldirildi
+    [32mtamam[0m  test VM: /opt/saha/ekip02 bosaltildi, ekibin imajlari silindi
+    [32mtamam[0m  test VM temiz
+
+[1m==> workstation (ekip02)[0m
+    [32mtamam[0m  repo, yedekler, registry girisi ve git kimligi silindi; SSH anahtarlari ve paket onbellekleri duruyor
+
+[32mekip-02 baslangic durumunda.[0m

@@ -1,0 +1,345 @@
+
+[1m### Baslangic: develop guncel, repoda .gitlab-ci.yml yok, Jenkinsfile iskelet[0m
+rol: ekip02-dev
+$ git switch develop
+Already on 'develop'
+Your branch is up to date with 'origin/develop'.
+$ git pull --ff-only
+Already up to date.
+$ git ls-files | grep -c -x '.gitlab-ci.yml' || true
+0
+$ grep -c -E '^\s*(pipeline|stage)' Jenkinsfile || true
+0
+$ echo $JENKINS_URL/job/ekip-$EKIP/
+https://jenkins.kurum.test/job/ekip-02/
+
+[1m### Arayuz: gitlab access-token 02 jenkins Maintainer api ekip02-pat lab-04-a-access-token[0m
+ Container belbim-lab-workstation-1  Running
+  goruntu: lab-rehberleri/img/lab-04-a-access-token-form.png
+  tamam  Project Access Token olusturuldu: jenkins (rol Maintainer, scope api); deger yalnizca bir kez gosterilir
+  goruntu: lab-rehberleri/img/lab-04-a-access-token.png
+
+[1m### Arayuz: jenkins credential 02 gitlab-api gitlab-api ekip02-pat - GitLab Project Access Token (commit status) lab-04-a-credential-gitlab-api[0m
+ Container belbim-lab-workstation-1  Running
+  goruntu: lab-rehberleri/img/lab-04-a-credential-gitlab-api-tur.png
+  goruntu: lab-rehberleri/img/lab-04-a-credential-gitlab-api.png
+  tamam  credential gitlab-api (gitlab-api) ekip-02 klasorune eklendi
+
+[1m### Arayuz: jenkins credential 02 gitlab-repo userpass ekip02-pat jenkins GitLab Project Access Token (repo okuma) lab-04-a-credential-gitlab-repo[0m
+ Container belbim-lab-workstation-1  Running
+  goruntu: lab-rehberleri/img/lab-04-a-credential-gitlab-repo.png
+  tamam  credential gitlab-repo (userpass) ekip-02 klasorune eklendi
+
+[1m### Arayuz: jenkins credentials 02 gitlab-api,gitlab-repo lab-04-a-credentials[0m
+ Container belbim-lab-workstation-1  Running
+  tamam  credential var: gitlab-api
+  tamam  credential var: gitlab-repo
+  goruntu: lab-rehberleri/img/lab-04-a-credentials.png
+
+[1m### Arayuz: jenkins multibranch 02 lab-04-a-multibranch[0m
+ Container belbim-lab-workstation-1  Running
+  goruntu: lab-rehberleri/img/lab-04-a-multibranch-yeni.png
+  goruntu: lab-rehberleri/img/lab-04-a-multibranch-kaynak.png
+  tamam  Multibranch Pipeline olusturuldu: ekip-02/saha-portal-ekip02
+    Checking branches...
+    Checking branch develop
+    ‘Jenkinsfile’ found
+    Met criteria
+    Scheduled build for branch: develop
+    Checking branch main
+    ‘Jenkinsfile’ found
+    Met criteria
+    Scheduled build for branch: main
+    Finished: SUCCESS
+  goruntu: lab-rehberleri/img/lab-04-a-multibranch.png
+
+[1m### Arayuz: gitlab webhook 02 https://jenkins.kurum.test/project/ekip-02/saha-portal-ekip02 lab-04-a-webhook[0m
+ Container belbim-lab-workstation-1  Running
+  goruntu: lab-rehberleri/img/lab-04-a-webhook-form.png
+  goruntu: lab-rehberleri/img/lab-04-a-webhook-form-ssl.png
+  tamam  webhook eklendi: https://jenkins.kurum.test/project/ekip-02/saha-portal-ekip02 (Push events; SSL verification acik)
+  goruntu: lab-rehberleri/img/lab-04-a-webhook-liste.png
+  tamam  Test > Push events: Hook executed successfully: HTTP 200
+  goruntu: lab-rehberleri/img/lab-04-a-webhook.png
+
+[1m### Arayuz: gitlab issue-ac 02 dev Her push'ta build ve test: Jenkins pipeline Her push'ta Jenkins build ve testleri çalıştırmalı; sonuç MR'da görünmeli. Kabul kriteri: kırılan test merge'ü engeller. lab-04-a-issue[0m
+ Container belbim-lab-workstation-1  Running
+  goruntu: lab-rehberleri/img/lab-04-a-issue-form.png
+  tamam  issue #6 acildi: Her push'ta build ve test: Jenkins pipeline
+  goruntu: lab-rehberleri/img/lab-04-a-issue.png
+
+[1m### Adim 4: Jenkinsfile - Restore, Build, Unit Test, web-ui[0m
+rol: ekip02-dev
+$ git switch develop
+Already on 'develop'
+Your branch is up to date with 'origin/develop'.
+$ git pull --ff-only
+Already up to date.
+$ git switch -c feature/pipeline
+Switched to a new branch 'feature/pipeline'
+$ grep -n -E "agent|gitLabConnection|gitlabBuilds|stage\(|junit|updateGitlabCommitStatus" Jenkinsfile
+6:  agent { label 'dotnet-docker' }
+11:    gitLabConnection(gitLabConnection: 'gitlab', jobCredentialId: 'gitlab-api', useAlternativeCredential: true)
+13:    gitlabBuilds(builds: ['jenkins'])
+23:    stage('Restore') {
+29:    stage('Build') {
+35:    stage('Unit Test') {
+38:          --no-build --logger "junit;LogFileName=junit.xml"'''
+41:        always { junit '**/TestResults/junit.xml' }
+45:    stage('web-ui') {
+54:        always { junit 'src/web-ui/junit.xml' }
+60:    success { updateGitlabCommitStatus name: 'jenkins', state: 'success' }
+61:    failure { updateGitlabCommitStatus name: 'jenkins', state: 'failed' }
+62:    aborted { updateGitlabCommitStatus name: 'jenkins', state: 'canceled' }
+$ git add Jenkinsfile
+$ git commit -q -m ci: add Jenkins pipeline
+$ git push -q -u origin feature/pipeline
+remote: 
+remote: To create a merge request for feature/pipeline, visit:        
+remote:   https://gitlab.kurum.test/egitim/ekip-02/saha-ekipman-portal/-/merge_requests/new?merge_request%5Bsource_branch%5D=feature%2Fpipeline        
+remote: 
+$ git log --oneline -n 1
+9527c05 ci: add Jenkins pipeline
+
+[1m### CI durumu: hook [0m
+    webhook 5: https://jenkins.kurum.test/project/ekip-02/saha-portal-ekip02  push=true mr=false ssl=true durum=executable
+    2026-11-24T10:44:03.150Z  push_hooks  ref=refs/heads/feature/pipeline  HTTP 200
+    2026-11-24T10:43:58.977Z  push_hooks  ref=refs/heads/develop  HTTP 200
+
+[1m### CI durumu: build feature/pipeline SUCCESS Checking out Revision|^\[Pipeline\] \{ \(|Passed!|Finished:[0m
+    GitLab  : feature/pipeline son commit'i 9527c050
+    Jenkins : ekip-02/saha-portal-ekip02/feature/pipeline #1 -> SUCCESS (31 sn), derlenen commit 9527c050 (ayni SHA)
+    GitLab  : commit status jenkins = success (ref feature/pipeline) -> https://jenkins.kurum.test/job/ekip-02/job/saha-portal-ekip02/job/feature%252Fpipeline/1/display/redirect
+    Jenkins konsolu (#1):
+      | [Pipeline] { (Declarative: Checkout SCM)
+      | Checking out Revision 9527c050a649e9c40963c5e48ddfa4a12016dbc2 (feature/pipeline)
+      | [Pipeline] { (Restore)
+      | [Pipeline] { (Build)
+      | [Pipeline] { (Unit Test)
+      | Passed!  - Failed:     0, Passed:     8, Skipped:     0, Total:     8, Duration: 111 ms - product-service.tests.dll (net10.0)
+      | Passed!  - Failed:     0, Passed:     6, Skipped:     0, Total:     6, Duration: 470 ms - order-service.tests.dll (net10.0)
+      | [Pipeline] { (web-ui)
+      | [Pipeline] { (Declarative: Post Actions)
+      | Finished: SUCCESS
+    [32mtamam[0m  feature/pipeline: build SUCCESS, GitLab commit status jenkins=success
+
+[1m### Arayuz: jenkins sayfa 02 /job/feature%252Fpipeline/lastBuild/  lab-04-a-build[0m
+ Container belbim-lab-workstation-1  Running
+  goruntu: lab-rehberleri/img/lab-04-a-build.png
+
+[1m### Arayuz: jenkins sayfa 02 /job/feature%252Fpipeline/lastBuild/testReport/  lab-04-a-test-sonuclari[0m
+ Container belbim-lab-workstation-1  Running
+  goruntu: lab-rehberleri/img/lab-04-a-test-sonuclari.png
+
+[1m### Arayuz: gitlab mr-ac 02 dev feature/pipeline develop ci: add Jenkins pipeline 4 evet evet lab-04-a-mr[0m
+ Container belbim-lab-workstation-1  Running
+  tamam  MR sablonu kendiliginden geldi (.gitlab/merge_request_templates/Default.md)
+  goruntu: lab-rehberleri/img/lab-04-a-mr-sablon.png
+  tamam  reviewer: ekip02-lead
+  goruntu: lab-rehberleri/img/lab-04-a-mr-form.png
+  tamam  MR !1 acildi: feature/pipeline -> develop (squash: evet, kaynak branch silinsin: evet)
+  goruntu: lab-rehberleri/img/lab-04-a-mr.png
+
+[1m### Arayuz: gitlab mr-durum 02 dev feature/pipeline Pipeline #\d+ passed lab-04-a-mr-pipeline-yesil[0m
+ Container belbim-lab-workstation-1  Running
+  tamam  !1: gorunuyor: Pipeline #\d+ passed
+  goruntu: lab-rehberleri/img/lab-04-a-mr-pipeline-yesil.png
+
+[1m### Arayuz: gitlab pipeline-zorunlu 02 lab-04-a-pipelines-must-succeed[0m
+ Container belbim-lab-workstation-1  Running
+  goruntu: lab-rehberleri/img/lab-04-a-pipelines-must-succeed.png
+  tamam  MR ayari: Pipelines must succeed acik
+
+[1m### Adim 6: bir testi boz (bos ekipman kodu icin 400 yerine 200 bekle)[0m
+rol: ekip02-dev
+$ git switch feature/pipeline
+Already on 'feature/pipeline'
+Your branch is up to date with 'origin/feature/pipeline'.
+$ sed -i s/Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);/Assert.Equal(HttpStatusCode.OK, response.StatusCode);/ tests/order-service.tests/OrdersApiTests.cs
+$ git diff --stat
+ tests/order-service.tests/OrdersApiTests.cs | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+# Lokalde de kirmizi:
+$ dotnet test tests/order-service.tests --nologo -v q
+Test run for /home/ekip02/saha-ekipman-portal/tests/order-service.tests/bin/Debug/net10.0/order-service.tests.dll (.NETCoreApp,Version=v10.0)
+A total of 1 test files matched the specified pattern.
+[xUnit.net 00:00:00.53]     SahaPortal.OrderService.Tests.OrdersApiTests.Post_order_without_a_product_id_returns_400(productId: "") [FAIL]
+[xUnit.net 00:00:00.54]     SahaPortal.OrderService.Tests.OrdersApiTests.Post_order_without_a_product_id_returns_400(productId: "   ") [FAIL]
+
+Failed!  - Failed:     2, Passed:     4, Skipped:     0, Total:     6, Duration: 471 ms - order-service.tests.dll (net10.0)
+VSTEST_ARTIFACTS_DIRECTORY environment variable was not found, falling back to a user-private temporary directory. This is most likely caused by an outdated Microsoft.NET.Test.Sdk package reference in the test project.
+# beklenen hata olustu (cikis kodu 1): Failed!
+$ git commit -q -am test(order): expect 200 for an empty product id
+$ git push -q
+remote: 
+remote: View merge request for feature/pipeline:        
+remote:   https://gitlab.kurum.test/egitim/ekip-02/saha-ekipman-portal/-/merge_requests/1        
+remote: 
+$ git log --oneline -n 1
+6d871c4 test(order): expect 200 for an empty product id
+
+[1m### CI durumu: build feature/pipeline FAILURE Failed |Failed!|ERROR:|Finished:[0m
+    GitLab  : feature/pipeline son commit'i 6d871c41
+    Jenkins : ekip-02/saha-portal-ekip02/feature/pipeline #2 -> FAILURE (5 sn), derlenen commit 6d871c41 (ayni SHA)
+    GitLab  : commit status jenkins = failed (ref feature/pipeline) -> https://jenkins.kurum.test/job/ekip-02/job/saha-portal-ekip02/job/feature%252Fpipeline/2/display/redirect
+    Jenkins konsolu (#2):
+      |   Failed SahaPortal.OrderService.Tests.OrdersApiTests.Post_order_without_a_product_id_returns_400(productId: "") [4 ms]
+      |   Failed SahaPortal.OrderService.Tests.OrdersApiTests.Post_order_without_a_product_id_returns_400(productId: "   ") [1 ms]
+      | Failed!  - Failed:     2, Passed:     4, Skipped:     0, Total:     6, Duration: 500 ms - order-service.tests.dll (net10.0)
+      | ERROR: script returned exit code 1
+      | Finished: FAILURE
+    [32mtamam[0m  feature/pipeline: build FAILURE, GitLab commit status jenkins=failed
+
+[1m### CI durumu: mr feature/pipeline ci_must_pass[0m
+    MR !1 (feature/pipeline): detailed_merge_status=ci_must_pass, head_pipeline=failed, sha=6d871c41
+    MR'in son commit'i 6d871c41 icin commit status: jenkins=failed
+    [32mtamam[0m  MR !1: ci_must_pass
+
+[1m### Arayuz: gitlab mr-durum 02 lead feature/pipeline Pipeline #\d+ failed lab-04-a-mr-pipeline-kirmizi[0m
+ Container belbim-lab-workstation-1  Running
+  tamam  !1: gorunuyor: Pipeline #\d+ failed
+  goruntu: lab-rehberleri/img/lab-04-a-mr-pipeline-kirmizi.png
+
+[1m### Arayuz: gitlab mr-engel 02 lead feature/pipeline Pipeline must succeed lab-04-a-merge-engeli[0m
+ Container belbim-lab-workstation-1  Running
+  tamam  !1: ekip02-lead merge edemiyor: "Pipeline must succeed"
+  goruntu: lab-rehberleri/img/lab-04-a-merge-engeli.png
+
+[1m### API: ekip02-lead merge etmeyi deniyor (reddedilmeli)[0m
+    MR !1 (ekip02-lead): user.can_merge=true, detailed_merge_status=ci_must_pass
+    PUT .../merge_requests/1/merge (ekip02-lead) -> HTTP 405 405 Method Not Allowed
+    [32mtamam[0m  ekip02-lead merge edemiyor (beklenen)
+
+[1m### Arayuz: jenkins sayfa 02 /job/feature%252Fpipeline/lastBuild/testReport/  lab-04-a-test-kirmizi[0m
+ Container belbim-lab-workstation-1  Running
+  goruntu: lab-rehberleri/img/lab-04-a-test-kirmizi.png
+
+[1m### CI durumu: agent offline[0m
+    agent-1 temporarilyOffline=true online=false
+
+[1m### Adim 7: duzelt (bozan commit'i geri al) ve push et[0m
+rol: ekip02-dev
+$ git switch feature/pipeline
+Already on 'feature/pipeline'
+Your branch is up to date with 'origin/feature/pipeline'.
+$ git revert --no-edit HEAD
+[feature/pipeline c438bdb] Revert "test(order): expect 200 for an empty product id"
+ Date: Tue Nov 24 10:45:29 2026 +0000
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+$ dotnet test tests/order-service.tests --nologo -v q 2>&1 | tail -n 3
+
+Passed!  - Failed:     0, Passed:     6, Skipped:     0, Total:     6, Duration: 458 ms - order-service.tests.dll (net10.0)
+VSTEST_ARTIFACTS_DIRECTORY environment variable was not found, falling back to a user-private temporary directory. This is most likely caused by an outdated Microsoft.NET.Test.Sdk package reference in the test project.
+$ git push -q
+remote: 
+remote: View merge request for feature/pipeline:        
+remote:   https://gitlab.kurum.test/egitim/ekip-02/saha-ekipman-portal/-/merge_requests/1        
+remote: 
+$ git log --oneline -n 3
+c438bdb Revert "test(order): expect 200 for an empty product id"
+6d871c4 test(order): expect 200 for an empty product id
+9527c05 ci: add Jenkins pipeline
+
+[1m### CI durumu: kuyruk [0m
+    kuyrukta: feature%252Fpipeline  neden: Finished waiting
+
+[1m### CI durumu: mr feature/pipeline ci_must_pass,ci_still_running[0m
+    MR !1 (feature/pipeline): detailed_merge_status=ci_must_pass, head_pipeline=failed, sha=c438bdb4
+    MR'in son commit'i c438bdb4 icin commit status: yok (Jenkins henuz yazmadi)
+    [32mtamam[0m  MR !1: ci_must_pass
+
+[1m### API: ekip02-lead merge etmeyi deniyor (reddedilmeli)[0m
+    MR !1 (ekip02-lead): user.can_merge=true, detailed_merge_status=ci_must_pass
+    PUT .../merge_requests/1/merge (ekip02-lead) -> HTTP 405 405 Method Not Allowed
+    [32mtamam[0m  ekip02-lead merge edemiyor (beklenen)
+
+[1m### CI durumu: agent online[0m
+    agent-1 temporarilyOffline=false online=true
+
+[1m### CI durumu: mr feature/pipeline ci_still_running[0m
+    MR !1 (feature/pipeline): detailed_merge_status=ci_still_running, head_pipeline=pending, sha=c438bdb4
+    MR'in son commit'i c438bdb4 icin commit status: jenkins=pending
+    [32mtamam[0m  MR !1: ci_still_running
+
+[1m### API: ekip02-lead merge etmeyi deniyor (reddedilmeli)[0m
+    MR !1 (ekip02-lead): user.can_merge=true, detailed_merge_status=ci_still_running
+    PUT .../merge_requests/1/merge (ekip02-lead) -> HTTP 405 405 Method Not Allowed
+    [32mtamam[0m  ekip02-lead merge edemiyor (beklenen)
+
+[1m### CI durumu: build feature/pipeline SUCCESS Passed!|Finished:[0m
+    GitLab  : feature/pipeline son commit'i c438bdb4
+    Jenkins : ekip-02/saha-portal-ekip02/feature/pipeline #3 -> SUCCESS (11 sn), derlenen commit c438bdb4 (ayni SHA)
+    GitLab  : commit status jenkins = success (ref feature/pipeline) -> https://jenkins.kurum.test/job/ekip-02/job/saha-portal-ekip02/job/feature%252Fpipeline/3/display/redirect
+    Jenkins konsolu (#3):
+      | Passed!  - Failed:     0, Passed:     8, Skipped:     0, Total:     8, Duration: 105 ms - product-service.tests.dll (net10.0)
+      | Passed!  - Failed:     0, Passed:     6, Skipped:     0, Total:     6, Duration: 470 ms - order-service.tests.dll (net10.0)
+      | Finished: SUCCESS
+    [32mtamam[0m  feature/pipeline: build SUCCESS, GitLab commit status jenkins=success
+
+[1m### CI durumu: mr feature/pipeline mergeable[0m
+    MR !1 (feature/pipeline): detailed_merge_status=mergeable, head_pipeline=success, sha=c438bdb4
+    MR'in son commit'i c438bdb4 icin commit status: jenkins=success
+    [32mtamam[0m  MR !1: mergeable
+
+[1m### Arayuz: gitlab mr-merge 02 lead feature/pipeline lab-04-a-merge develop[0m
+ Container belbim-lab-workstation-1  Running
+  goruntu: lab-rehberleri/img/lab-04-a-merge-oncesi.png
+  tamam  !1: ekip02-lead merge etti
+  goruntu: lab-rehberleri/img/lab-04-a-merge.png
+
+[1m### CI durumu: build develop SUCCESS Finished:[0m
+    GitLab  : develop son commit'i f3d61e2d
+    Jenkins : ekip-02/saha-portal-ekip02/develop #2 -> SUCCESS (8 sn), derlenen commit f3d61e2d (ayni SHA)
+    GitLab  : commit status jenkins = success (ref develop) -> https://jenkins.kurum.test/job/ekip-02/job/saha-portal-ekip02/job/develop/2/display/redirect
+    Jenkins konsolu (#2):
+      | Finished: SUCCESS
+    [32mtamam[0m  develop: build SUCCESS, GitLab commit status jenkins=success
+
+[1m### CI durumu: hook [0m
+    webhook 5: https://jenkins.kurum.test/project/ekip-02/saha-portal-ekip02  push=true mr=false ssl=true durum=executable
+    2026-11-24T10:45:59.608Z  push_hooks  ref=refs/heads/feature/pipeline  HTTP 200
+    2026-11-24T10:45:59.166Z  push_hooks  ref=refs/heads/develop  HTTP 200
+    2026-11-24T10:45:32.429Z  push_hooks  ref=refs/heads/feature/pipeline  HTTP 200
+    2026-11-24T10:45:03.645Z  push_hooks  ref=refs/heads/feature/pipeline  HTTP 200
+    2026-11-24T10:44:03.150Z  push_hooks  ref=refs/heads/feature/pipeline  HTTP 200
+    2026-11-24T10:43:58.977Z  push_hooks  ref=refs/heads/develop  HTTP 200
+
+[1m### Arayuz: gitlab sayfa 02 dev /-/issues/4 Closed lab-04-a-issue-kapandi[0m
+ Container belbim-lab-workstation-1  Running
+  tamam  gorunuyor: Closed
+  goruntu: lab-rehberleri/img/lab-04-a-issue-kapandi.png
+
+[1m### Adim 7: merge sonrasi[0m
+rol: ekip02-dev
+$ git switch develop
+Switched to branch 'develop'
+Your branch is up to date with 'origin/develop'.
+$ git pull --ff-only
+From gitlab.kurum.test:egitim/ekip-02/saha-ekipman-portal
+   1dd2509..f3d61e2  develop    -> origin/develop
+Updating 1dd2509..f3d61e2
+Fast-forward
+ Jenkinsfile | 66 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++-----
+ 1 file changed, 61 insertions(+), 5 deletions(-)
+$ git fetch --prune
+From gitlab.kurum.test:egitim/ekip-02/saha-ekipman-portal
+ - [deleted]         (none)     -> origin/feature/pipeline
+$ git branch -D feature/pipeline
+Deleted branch feature/pipeline (was c438bdb).
+$ git log --oneline --graph -n 4 origin/develop
+*   f3d61e2 Merge branch 'feature/pipeline' into 'develop'
+|\  
+| * caf6fba ci: add Jenkins pipeline
+|/  
+*   1dd2509 Merge branch 'feature/9-docker' into 'develop'
+|\  
+| * 116ee44 build(docker): add Dockerfiles and compose deployment
+|/  
+$ git ls-files | grep -c -x '.gitlab-ci.yml' || true
+0
+
+[1m### Checkpoint karsilastirmasi[0m
+# agac ayni: origin/develop == checkpoint/lab-04a (haric: .gitlab/CODEOWNERS Jenkinsfile)
+# Jenkinsfile: checkpoint/lab-04a ile ayni (NN yerine 02)
+
+[32mLAB 04-a cozumu ekip-02 icin uygulandi.[0m

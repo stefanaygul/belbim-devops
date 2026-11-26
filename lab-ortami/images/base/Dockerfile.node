@@ -1,0 +1,10 @@
+# Node.js (Alpine) imaji + lab CA'si: docker build icindeki `npm ci` Nexus'a HTTPS ile gider.
+# Node isletim sisteminin guven deposunu kullanmaz; CA'yi NODE_EXTRA_CA_CERTS ile okur.
+ARG KAYNAK
+FROM ${KAYNAK}
+ARG KAYNAK
+ARG CA_PARMAK_IZI=
+COPY ca.crt /usr/local/share/ca-certificates/kurum-ca.crt
+RUN cat /usr/local/share/ca-certificates/kurum-ca.crt >> /etc/ssl/certs/ca-certificates.crt
+ENV NODE_EXTRA_CA_CERTS=/usr/local/share/ca-certificates/kurum-ca.crt
+LABEL lab.kaynak="${KAYNAK}" lab.ca="${CA_PARMAK_IZI}"

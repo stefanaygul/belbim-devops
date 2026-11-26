@@ -1,0 +1,60 @@
+
+[1mOrtam dosyasi (lab.env)[0m
+  [32mGECTI[0m  GITLAB_URL=https://gitlab.kurum.test
+  [32mGECTI[0m  GITLAB_HOST=gitlab.kurum.test
+  [32mGECTI[0m  REGISTRY=gitlab.kurum.test:5050
+  [32mGECTI[0m  NEXUS_URL=https://nexus.kurum.test
+  [32mGECTI[0m  TEST_VM=test-vm.kurum.test
+  [32mGECTI[0m  TEST_VM_USER=deploy
+  [32mGECTI[0m  GITLAB_GROUP=egitim
+  [32mGECTI[0m  TEMPLATE_PROJECT=egitim/sablonlar/portal-starter
+  [32mGECTI[0m  MCR=gitlab.kurum.test:5050/egitim/base
+  [32mGECTI[0m  HUB=gitlab.kurum.test:5050/egitim/base
+  [32mGECTI[0m  NUGET_GROUP_URL=https://nexus.kurum.test/repository/nuget-group/index.json
+  [32mGECTI[0m  NPM_GROUP_URL=https://nexus.kurum.test/repository/npm-group/
+  [32mGECTI[0m  CA_CERT=/etc/lab/kurum-ca.crt
+  [32mGECTI[0m  kurum CA dosyasi var: /etc/lab/kurum-ca.crt
+
+[1mAraclar[0m
+  [32mGECTI[0m  .NET SDK: 10.0.404
+  [32mGECTI[0m  Node.js: v24.22.3
+  [32mGECTI[0m  git var
+  [32mGECTI[0m  npm var
+  [32mGECTI[0m  curl var
+  [32mGECTI[0m  jq var
+  [32mGECTI[0m  ssh var
+  [32mGECTI[0m  scp var
+
+[1mKurum CA'si: isletim sistemi (git, curl, dotnet, npm)[0m
+  [32mGECTI[0m  GitLab'e HTTPS (dogrulama acik): 200
+  [32mGECTI[0m  NuGet group deposu: 200
+  [32mGECTI[0m  npm group deposu: 200
+  [32mGECTI[0m  sablon proje okunuyor: egitim/sablonlar/portal-starter
+
+[1mDocker[0m
+  [32mGECTI[0m  Docker daemon'ina sudo olmadan erisiliyor (Engine 29.10.0)
+  [32mGECTI[0m  docker compose: 5.7.1
+  [32mGECTI[0m  varsayilan builder surucusu: docker (yerel imajlari kullanir)
+
+[1mTemel imajlar (LAB 03-A): makinede hazir mi?[0m
+  [32mGECTI[0m  gitlab.kurum.test:5050/egitim/base/dotnet/sdk:10.0
+         kimlik 9d554a2a58dc  kaynak mcr.microsoft.com/dotnet/sdk:10.0.404
+  [32mGECTI[0m  gitlab.kurum.test:5050/egitim/base/dotnet/aspnet:10.0
+         kimlik 9484cb26f9fe  kaynak mcr.microsoft.com/dotnet/aspnet:10.0.15
+  [32mGECTI[0m  gitlab.kurum.test:5050/egitim/base/library/node:24-alpine
+         kimlik 2bfc39fee670  kaynak node:24.22.3-alpine3.24
+  [32mGECTI[0m  gitlab.kurum.test:5050/egitim/base/nginxinc/nginx-unprivileged:stable-alpine
+         kimlik 2d9ed44554d1  kaynak nginxinc/nginx-unprivileged:1.31.7-alpine3.24
+
+[1mTemel imajlarin ici: kurum CA'si ve Nexus erisimi (docker build icindeki restore / npm ci)[0m
+  [32mGECTI[0m  SDK imajindan NuGet group deposu: 200
+  [32mGECTI[0m  Node imajindan npm group deposu: 200
+
+[1mDeneme build'i: registry'ye baglanmadan[0m
+  [32mGECTI[0m  docker build (dort temel imaj, cikis kodu): 0
+
+[1mDocker daemon'i registry'ye guveniyor mu? (LAB 03-B)[0m
+  BILGI  guvenmiyor: LAB 03-B'de 'docker login' x509 hatasi verir ve katilimci CA'yi certs.d altina ekler (beklenen akis)
+  [32mGECTI[0m  daemon.json icinde insecure-registries yok
+
+37 gecti, 0 kaldi

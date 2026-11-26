@@ -1,0 +1,15 @@
+# Lab adlari. {$...} degerleri container ortam degiskenlerinden gelir.
+{$LAB_DOMAIN}:53 {
+    hosts {
+        {$LAB_SUBNET}.10 gitlab.{$LAB_DOMAIN} jenkins.{$LAB_DOMAIN} sonar.{$LAB_DOMAIN} nexus.{$LAB_DOMAIN}
+        {$LAB_SUBNET}.20 test-vm.{$LAB_DOMAIN}
+    }
+    errors
+}
+
+# Diger her sey Docker'in cozumleyicisine gider.
+.:53 {
+    forward . /etc/resolv.conf
+    cache 30
+    errors
+}

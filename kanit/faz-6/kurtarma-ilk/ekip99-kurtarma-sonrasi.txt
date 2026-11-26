@@ -1,0 +1,191 @@
+== GitLab (ekip-99)
+uye ekip99-dev 30
+uye ekip99-lead 40
+uye root 50
+ssh-anahtari ekip99-lead 22509434ecc9 (1)
+ssh-anahtari ekip99-dev c36f897ba16c (1)
+proje id=3 default=develop olusturma=2026-11-24T15:48:48.680Z
+branch develop 591162bddbc6a770719f13032858dbd16a421d37 korumali=true
+branch main 876e5f853bcf368bb4602f5301bc229cc268897d korumali=true
+tag v1.0.0 fe6f018ac7677f6532cf23aa89fd50f5c91221c1
+tag v1.0.1 0d8732939a9a0f5e9124023036a05f8fb9ac3ab4
+tag v1.1.0 ff5a0e9ba2c78ef192cb000383e221204759fdd9
+koruma develop push=[0] merge=[40]
+koruma main push=[0] merge=[40]
+tag-koruma v* [40]
+issue #1 closed 2026-11-24T15:50:14.531Z
+issue #2 closed 2026-11-24T15:52:15.444Z
+issue #3 closed 2026-11-24T15:54:23.321Z
+issue #4 closed 2026-11-24T15:56:39.249Z
+issue #5 closed 2026-11-24T15:57:56.416Z
+issue #6 closed 2026-11-24T16:04:53.387Z
+issue #7 closed 2026-11-24T16:07:36.894Z
+mr !1 merged 2026-11-24T15:50:14.594Z
+mr !10 merged 2026-11-24T15:59:36.352Z
+mr !11 merged 2026-11-24T16:00:57.134Z
+mr !12 merged 2026-11-24T16:04:53.440Z
+mr !13 merged 2026-11-24T16:06:17.558Z
+mr !14 merged 2026-11-24T16:07:36.944Z
+mr !15 merged 2026-11-24T16:08:40.667Z
+mr !16 merged 2026-11-24T16:09:08.113Z
+mr !2 merged 2026-11-24T15:50:40.813Z
+mr !3 merged 2026-11-24T15:50:58.813Z
+mr !4 merged 2026-11-24T15:51:44.808Z
+mr !5 merged 2026-11-24T15:52:03.856Z
+mr !6 merged 2026-11-24T15:52:15.507Z
+mr !7 merged 2026-11-24T15:54:23.386Z
+mr !8 merged 2026-11-24T15:56:39.325Z
+mr !9 merged 2026-11-24T15:57:56.499Z
+deploy-token ekip99-deploy read_registry,write_registry id=1
+deploy-token ekip99-jenkins read_registry,write_registry id=3
+deploy-token ekip99-pull read_registry id=2
+imaj egitim/ekip-99/saha-ekipman-portal/order-service:1.0.1 sha256:9e728a5f9b19a22073850ebac969630fd0e7ef3dea05e172192f15204b8bccfe
+imaj egitim/ekip-99/saha-ekipman-portal/order-service:1.1.0 sha256:540d20196c0c627291f49375a79bf36482a5cf994fd1157cc584b18a04d25f2c
+imaj egitim/ekip-99/saha-ekipman-portal/order-service:591162b sha256:c6605e522741270dbf77ba859a5db061d346a7041bcd1b7ceac55578516f3b28
+imaj egitim/ekip-99/saha-ekipman-portal/order-service:7d5e823 sha256:6e368ebfcbec80b45d75165d3fa0d56ad63fb126a7a185da618c9d276bc1869d
+imaj egitim/ekip-99/saha-ekipman-portal/order-service:876e5f8 sha256:540d20196c0c627291f49375a79bf36482a5cf994fd1157cc584b18a04d25f2c
+imaj egitim/ekip-99/saha-ekipman-portal/order-service:9a03b55 sha256:75ed4c16779f8baebd7900b8a813278f6bedc8c81cfa49a9c0e3826681827a8c
+imaj egitim/ekip-99/saha-ekipman-portal/order-service:9c7b083 sha256:e5bde75cf4db417fcdacda507a63c72239d2c35b437b48aeaaa2167cb47ea93d
+imaj egitim/ekip-99/saha-ekipman-portal/order-service:c476ded sha256:64fbd5c08202b2297259765526482f19f0f36c490a3be2413be9eefb8a962b5d
+imaj egitim/ekip-99/saha-ekipman-portal/order-service:cbb88c4 sha256:9e728a5f9b19a22073850ebac969630fd0e7ef3dea05e172192f15204b8bccfe
+imaj egitim/ekip-99/saha-ekipman-portal/order-service:ef25983 sha256:fff2e051414cdf8f66d228e4707b27541e57f7af45f48eb39462dd2a8b300e6e
+imaj egitim/ekip-99/saha-ekipman-portal/order-service:f6e6221 sha256:ac62989252fefe1da68c8457cb37b51fcc0bcd5d800c41bbfe586876bb8f470d
+imaj egitim/ekip-99/saha-ekipman-portal/product-service:1.0.1 sha256:2eb62b44c0734db9d9016e808967acdc88d22e6a9a72fea94f9f53e9a7d0d691
+imaj egitim/ekip-99/saha-ekipman-portal/product-service:1.1.0 sha256:f2ebf08ac0b6b80a002f857d9ff45a9dd681c4156546e49a3f9777140d6c42b1
+imaj egitim/ekip-99/saha-ekipman-portal/product-service:591162b sha256:d08ef1935b581accb0a90af3238de273aca917684b9e009b905157aec7e5c660
+imaj egitim/ekip-99/saha-ekipman-portal/product-service:7d5e823 sha256:d7319c766ae25c14c40938102ad337fe5f33c3533f9a1d438c89f1f8e7c3d32b
+imaj egitim/ekip-99/saha-ekipman-portal/product-service:876e5f8 sha256:f2ebf08ac0b6b80a002f857d9ff45a9dd681c4156546e49a3f9777140d6c42b1
+imaj egitim/ekip-99/saha-ekipman-portal/product-service:9a03b55 sha256:03aa003e5a78f92495cb1e4b537bf47b9db7aad67eca39b537da05bff89e40f7
+imaj egitim/ekip-99/saha-ekipman-portal/product-service:9c7b083 sha256:5adaa5f41517008666898b94200ebc86847e54770a67aff4f77001930c131f1e
+imaj egitim/ekip-99/saha-ekipman-portal/product-service:c476ded sha256:af6d6fd2f8ad7e82f96db5122f9899943a5ccad578a9f0a705f69e7a54d58394
+imaj egitim/ekip-99/saha-ekipman-portal/product-service:cbb88c4 sha256:2eb62b44c0734db9d9016e808967acdc88d22e6a9a72fea94f9f53e9a7d0d691
+imaj egitim/ekip-99/saha-ekipman-portal/product-service:ef25983 sha256:ca27631c838f755dfa75ef9df54ff6fa88aa9a8e369e94121be981ff4fc35f4b
+imaj egitim/ekip-99/saha-ekipman-portal/product-service:f6e6221 sha256:3a62e957974471bcf3ab631b472eb021d5eb3dc594f9aab382af2d62926ce806
+imaj egitim/ekip-99/saha-ekipman-portal/web-ui:1.0.1 sha256:92a05f49e846ba4bb1669063605a5ab3e146951c7ccc2f9e4119e59b6f3f2003
+imaj egitim/ekip-99/saha-ekipman-portal/web-ui:1.1.0 sha256:f048fa95a7d802094659f0781dffbeea91b30232d7f822b6e1b0304cf5ab6d1e
+imaj egitim/ekip-99/saha-ekipman-portal/web-ui:591162b sha256:3dd9e90e94ef177a10292ffd5c572a84ea7578adb0c16c621bd8a2336a19b181
+imaj egitim/ekip-99/saha-ekipman-portal/web-ui:7d5e823 sha256:745d85f8e7e4d1084fbff25ba9c9e2f2286187ad46de068a18c08f82ee9ac01c
+imaj egitim/ekip-99/saha-ekipman-portal/web-ui:876e5f8 sha256:f048fa95a7d802094659f0781dffbeea91b30232d7f822b6e1b0304cf5ab6d1e
+imaj egitim/ekip-99/saha-ekipman-portal/web-ui:9a03b55 sha256:12c04d12a1dfa0dd79005d8ef0ede570bc4529a5f4cd707d1ac33d04922229e6
+imaj egitim/ekip-99/saha-ekipman-portal/web-ui:9c7b083 sha256:a5f55a23c4b8c6b0d920771b7dcafaa8c871f8414259507e032aa7f1787f5655
+imaj egitim/ekip-99/saha-ekipman-portal/web-ui:acd175a sha256:7506e69287ff88629eb4c883230d782f18da78b43cff13d2b05b11fd245ce495
+imaj egitim/ekip-99/saha-ekipman-portal/web-ui:c476ded sha256:ab883cd227716df480c43f327e73238912bb51663e724f3aaa4ff6cf9583a417
+imaj egitim/ekip-99/saha-ekipman-portal/web-ui:cbb88c4 sha256:92a05f49e846ba4bb1669063605a5ab3e146951c7ccc2f9e4119e59b6f3f2003
+imaj egitim/ekip-99/saha-ekipman-portal/web-ui:ef25983 sha256:51055c3f0dd47cdca97b10d523380290fae957031a9d4d09cce4b112574af0fc
+imaj egitim/ekip-99/saha-ekipman-portal/web-ui:f6e6221 sha256:053fa4649ada08749d5892d89b50a8aca7045fb145a1ac5b905c13ab9d5d6d79
+== test VM (/opt/saha/ekip99)
+drwxr-xr-x 4096 1795536408 .
+drwxr-xr-x 4096 1795535274 ..
+drwxr-xr-x 4096 1795535646 .docker
+-rw-r--r-- 86 1795536630 .env
+-rw-r--r-- 704 1795536629 compose.yaml
+-rw-r--r-- 2389 1795536631 deploy-kayit.log
+-rwxr-xr-x 1448 1795536629 deploy.sh
+container ekip99-order-service-1 c9c0b4248e2b gitlab.kurum.test:5050/egitim/ekip-99/saha-ekipman-portal/order-service:1.1.0 running
+container ekip99-product-service-1 de061df07fd3 gitlab.kurum.test:5050/egitim/ekip-99/saha-ekipman-portal/product-service:1.1.0 running
+container ekip99-web-ui-1 538ec49b3eb8 gitlab.kurum.test:5050/egitim/ekip-99/saha-ekipman-portal/web-ui:1.1.0 running
+volume ekip99_orders-data
+imaj gitlab.kurum.test:5050/egitim/ekip-99/saha-ekipman-portal/order-service:1.0.1 9e728a5f9b19
+imaj gitlab.kurum.test:5050/egitim/ekip-99/saha-ekipman-portal/order-service:1.1.0 540d20196c0c
+imaj gitlab.kurum.test:5050/egitim/ekip-99/saha-ekipman-portal/order-service:591162b c6605e522741
+imaj gitlab.kurum.test:5050/egitim/ekip-99/saha-ekipman-portal/order-service:7d5e823 6e368ebfcbec
+imaj gitlab.kurum.test:5050/egitim/ekip-99/saha-ekipman-portal/order-service:ef25983 fff2e051414c
+imaj gitlab.kurum.test:5050/egitim/ekip-99/saha-ekipman-portal/product-service:1.0.1 2eb62b44c073
+imaj gitlab.kurum.test:5050/egitim/ekip-99/saha-ekipman-portal/product-service:1.1.0 f2ebf08ac0b6
+imaj gitlab.kurum.test:5050/egitim/ekip-99/saha-ekipman-portal/product-service:591162b d08ef1935b58
+imaj gitlab.kurum.test:5050/egitim/ekip-99/saha-ekipman-portal/product-service:7d5e823 d7319c766ae2
+imaj gitlab.kurum.test:5050/egitim/ekip-99/saha-ekipman-portal/product-service:ef25983 ca27631c838f
+imaj gitlab.kurum.test:5050/egitim/ekip-99/saha-ekipman-portal/web-ui:1.0.1 92a05f49e846
+imaj gitlab.kurum.test:5050/egitim/ekip-99/saha-ekipman-portal/web-ui:1.1.0 f048fa95a7d8
+imaj gitlab.kurum.test:5050/egitim/ekip-99/saha-ekipman-portal/web-ui:591162b 3dd9e90e94ef
+imaj gitlab.kurum.test:5050/egitim/ekip-99/saha-ekipman-portal/web-ui:7d5e823 745d85f8e7e4
+imaj gitlab.kurum.test:5050/egitim/ekip-99/saha-ekipman-portal/web-ui:ef25983 51055c3f0dd4
+talepler cf7a19f95977
+== workstation (ekip99)
+ev .docker
+ev .gitconfig
+ev .lab-log
+ev .profile
+ev .ssh
+ev saha-ekipman-portal
+repo HEAD 591162bddbc6a770719f13032858dbd16a421d37 develop
+ref refs/heads/develop 591162bddbc6a770719f13032858dbd16a421d37
+ref refs/heads/feature/katalog-sarj-unitesi 8fd9500644a2a6770f5be9a64c8ef28ac9f1fb9b
+ref refs/heads/lab/01a-conflict d563fc63bf83db556983eaeae120a27a06ef1cb8
+ref refs/heads/main 696325088ea7437164a040cf6dc3327c1d77f048
+ref refs/tags/v1.0.0 fe6f018ac7677f6532cf23aa89fd50f5c91221c1
+ref refs/tags/v1.0.1 0d8732939a9a0f5e9124023036a05f8fb9ac3ab4
+ref refs/tags/v1.1.0 ff5a0e9ba2c78ef192cb000383e221204759fdd9
+calisma-agaci e3b0c44298fc
+docker-giris 94f4e928d23e
+gitconfig 837672e3569e
+imaj gitlab.kurum.test:5050/egitim/ekip-99/saha-ekipman-portal/order-service:1.0.1 9e728a5f9b19
+imaj gitlab.kurum.test:5050/egitim/ekip-99/saha-ekipman-portal/order-service:1.1.0 540d20196c0c
+imaj gitlab.kurum.test:5050/egitim/ekip-99/saha-ekipman-portal/order-service:9c7b083 e5bde75cf4db
+imaj gitlab.kurum.test:5050/egitim/ekip-99/saha-ekipman-portal/order-service:cbb88c4 9e728a5f9b19
+imaj gitlab.kurum.test:5050/egitim/ekip-99/saha-ekipman-portal/product-service:1.0.1 2eb62b44c073
+imaj gitlab.kurum.test:5050/egitim/ekip-99/saha-ekipman-portal/product-service:9c7b083 5adaa5f41517
+imaj gitlab.kurum.test:5050/egitim/ekip-99/saha-ekipman-portal/product-service:cbb88c4 2eb62b44c073
+imaj gitlab.kurum.test:5050/egitim/ekip-99/saha-ekipman-portal/web-ui:1.0.1 92a05f49e846
+imaj gitlab.kurum.test:5050/egitim/ekip-99/saha-ekipman-portal/web-ui:9c7b083 a5f55a23c4b8
+imaj gitlab.kurum.test:5050/egitim/ekip-99/saha-ekipman-portal/web-ui:acd175a 7506e69287ff
+imaj gitlab.kurum.test:5050/egitim/ekip-99/saha-ekipman-portal/web-ui:cbb88c4 92a05f49e846
+== Nexus (ekip-99)
+nexus-paket Saha.Common.Contracts.Ekip99 1.0.0 6a25d271f561c578ef0ace45a3e6873b1f68ff9f
+nexus-paket Saha.Common.Contracts.Ekip99 1.0.1 1d883d7a639bea755c9dc3bd4186e7149900d3d9
+== test VM deploy kaydi (ekip-99)
+deploy-kaydi 2026-11-24T16:06:48Z tag=7d5e823 commit=7d5e82306c2de3a32434ca5bdd1acd055ea278d7 kaynak=https://jenkins.kurum.test/job/ekip-99/job/saha-portal-ekip99/job/develop/7/ product-service@sha256:d7319c766ae25c14c40938102ad337fe5f33c3533f9a1d438c89f1f8e7c3d32b order-service@sha256:6e368ebfcbec80b45d75165d3fa0d56ad63fb126a7a185da618c9d276bc1869d web-ui@sha256:745d85f8e7e4d1084fbff25ba9c9e2f2286187ad46de068a18c08f82ee9ac01c
+deploy-kaydi 2026-11-24T16:08:13Z tag=ef25983 commit=ef259831ed9c3e83d909a51b4bc333bee5fd6ac7 kaynak=https://jenkins.kurum.test/job/ekip-99/job/saha-portal-ekip99/job/develop/8/ product-service@sha256:ca27631c838f755dfa75ef9df54ff6fa88aa9a8e369e94121be981ff4fc35f4b order-service@sha256:fff2e051414cdf8f66d228e4707b27541e57f7af45f48eb39462dd2a8b300e6e web-ui@sha256:51055c3f0dd47cdca97b10d523380290fae957031a9d4d09cce4b112574af0fc
+deploy-kaydi 2026-11-24T16:09:36Z tag=591162b commit=591162bddbc6a770719f13032858dbd16a421d37 kaynak=https://jenkins.kurum.test/job/ekip-99/job/saha-portal-ekip99/job/develop/9/ product-service@sha256:d08ef1935b581accb0a90af3238de273aca917684b9e009b905157aec7e5c660 order-service@sha256:c6605e522741270dbf77ba859a5db061d346a7041bcd1b7ceac55578516f3b28 web-ui@sha256:3dd9e90e94ef177a10292ffd5c572a84ea7578adb0c16c621bd8a2336a19b181
+deploy-kaydi 2026-11-24T16:10:07Z tag=1.1.0 commit=876e5f853bcf368bb4602f5301bc229cc268897d kaynak=https://jenkins.kurum.test/job/ekip-99/job/saha-portal-ekip99/job/v1.1.0/1/ product-service@sha256:f2ebf08ac0b6b80a002f857d9ff45a9dd681c4156546e49a3f9777140d6c42b1 order-service@sha256:540d20196c0c627291f49375a79bf36482a5cf994fd1157cc584b18a04d25f2c web-ui@sha256:f048fa95a7d802094659f0781dffbeea91b30232d7f822b6e1b0304cf5ab6d1e
+deploy-kaydi 2026-11-24T16:10:19Z tag=1.0.1 commit=- kaynak=elle product-service@sha256:2eb62b44c0734db9d9016e808967acdc88d22e6a9a72fea94f9f53e9a7d0d691 order-service@sha256:9e728a5f9b19a22073850ebac969630fd0e7ef3dea05e172192f15204b8bccfe web-ui@sha256:92a05f49e846ba4bb1669063605a5ab3e146951c7ccc2f9e4119e59b6f3f2003
+deploy-kaydi 2026-11-24T16:10:31Z tag=1.1.0 commit=876e5f853bcf368bb4602f5301bc229cc268897d kaynak=https://jenkins.kurum.test/job/ekip-99/job/saha-portal-ekip99/job/v1.1.0/2/ product-service@sha256:f2ebf08ac0b6b80a002f857d9ff45a9dd681c4156546e49a3f9777140d6c42b1 order-service@sha256:540d20196c0c627291f49375a79bf36482a5cf994fd1157cc584b18a04d25f2c web-ui@sha256:f048fa95a7d802094659f0781dffbeea91b30232d7f822b6e1b0304cf5ab6d1e
+jenkins-anahtari 1
+== CI (ekip-99): GitLab baglantisi, Jenkins, SonarQube
+pipelines-must-succeed true
+webhook 1 https://jenkins.kurum.test/project/ekip-99/saha-portal-ekip99 push=true mr=false
+access-token 6 jenkins api
+jenkins-credential gitlab-api (GitLab API token)
+jenkins-credential gitlab-registry (Username with password)
+jenkins-credential gitlab-repo (Username with password)
+jenkins-credential sonar-token (Secret text)
+jenkins-credential test-vm-ssh (SSH Username with private key)
+jenkins-build saha-portal-ekip99/develop #9=SUCCESS #8=SUCCESS #7=SUCCESS #6=SUCCESS #5=SUCCESS #4=FAILURE #3=SUCCESS #2=SUCCESS #1=SUCCESS
+jenkins-build saha-portal-ekip99/main #2=SUCCESS #1=SUCCESS
+jenkins-build saha-portal-ekip99/v1.0.0 #1=SUCCESS
+jenkins-build saha-portal-ekip99/v1.0.1 #1=SUCCESS
+jenkins-build saha-portal-ekip99/v1.1.0 #2=SUCCESS #1=SUCCESS
+sonar-analiz 2026-11-24T16:12:28+0000 591162bd
+sonar-analiz 2026-11-24T16:11:38+0000 591162bd
+sonar-analiz 2026-11-24T16:09:24+0000 591162bd
+sonar-analiz 2026-11-24T16:07:54+0000 ef259831
+sonar-analiz 2026-11-24T16:06:34+0000 7d5e8230
+sonar-analiz 2026-11-24T16:05:09+0000 f6e62215
+sonar-analiz 2026-11-24T16:01:15+0000 c476dedd
+sonar-analiz 2026-11-24T15:59:56+0000 7cfe0566
+sonar-analiz 2026-11-24T15:58:16+0000 9a03b55b
+sonar-token jenkins-saha-portal-ekip99 PROJECT_ANALYSIS_TOKEN 2026-11-24T15:57:16+0000
+agent-imaj gitlab.kurum.test:5050/egitim/ekip-99/saha-ekipman-portal/order-service:1.1.0 540d20196c0c
+agent-imaj gitlab.kurum.test:5050/egitim/ekip-99/saha-ekipman-portal/order-service:591162b c6605e522741
+agent-imaj gitlab.kurum.test:5050/egitim/ekip-99/saha-ekipman-portal/order-service:7d5e823 6e368ebfcbec
+agent-imaj gitlab.kurum.test:5050/egitim/ekip-99/saha-ekipman-portal/order-service:876e5f8 540d20196c0c
+agent-imaj gitlab.kurum.test:5050/egitim/ekip-99/saha-ekipman-portal/order-service:9a03b55 75ed4c16779f
+agent-imaj gitlab.kurum.test:5050/egitim/ekip-99/saha-ekipman-portal/order-service:c476ded 64fbd5c08202
+agent-imaj gitlab.kurum.test:5050/egitim/ekip-99/saha-ekipman-portal/order-service:ef25983 fff2e051414c
+agent-imaj gitlab.kurum.test:5050/egitim/ekip-99/saha-ekipman-portal/order-service:f6e6221 ac62989252fe
+agent-imaj gitlab.kurum.test:5050/egitim/ekip-99/saha-ekipman-portal/product-service:1.1.0 f2ebf08ac0b6
+agent-imaj gitlab.kurum.test:5050/egitim/ekip-99/saha-ekipman-portal/product-service:591162b d08ef1935b58
+agent-imaj gitlab.kurum.test:5050/egitim/ekip-99/saha-ekipman-portal/product-service:7d5e823 d7319c766ae2
+agent-imaj gitlab.kurum.test:5050/egitim/ekip-99/saha-ekipman-portal/product-service:876e5f8 f2ebf08ac0b6
+agent-imaj gitlab.kurum.test:5050/egitim/ekip-99/saha-ekipman-portal/product-service:9a03b55 03aa003e5a78
+agent-imaj gitlab.kurum.test:5050/egitim/ekip-99/saha-ekipman-portal/product-service:c476ded af6d6fd2f8ad
+agent-imaj gitlab.kurum.test:5050/egitim/ekip-99/saha-ekipman-portal/product-service:ef25983 ca27631c838f
+agent-imaj gitlab.kurum.test:5050/egitim/ekip-99/saha-ekipman-portal/product-service:f6e6221 3a62e9579744
+agent-imaj gitlab.kurum.test:5050/egitim/ekip-99/saha-ekipman-portal/web-ui:1.1.0 f048fa95a7d8
+agent-imaj gitlab.kurum.test:5050/egitim/ekip-99/saha-ekipman-portal/web-ui:591162b 3dd9e90e94ef
+agent-imaj gitlab.kurum.test:5050/egitim/ekip-99/saha-ekipman-portal/web-ui:7d5e823 745d85f8e7e4
+agent-imaj gitlab.kurum.test:5050/egitim/ekip-99/saha-ekipman-portal/web-ui:876e5f8 f048fa95a7d8
+agent-imaj gitlab.kurum.test:5050/egitim/ekip-99/saha-ekipman-portal/web-ui:9a03b55 12c04d12a1df
+agent-imaj gitlab.kurum.test:5050/egitim/ekip-99/saha-ekipman-portal/web-ui:c476ded ab883cd22771
+agent-imaj gitlab.kurum.test:5050/egitim/ekip-99/saha-ekipman-portal/web-ui:ef25983 51055c3f0dd4
+agent-imaj gitlab.kurum.test:5050/egitim/ekip-99/saha-ekipman-portal/web-ui:f6e6221 053fa4649ada

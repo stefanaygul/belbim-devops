@@ -1,0 +1,69 @@
+# Katilimci makinesi on kontrolu (2026-11-24 00:33) - dogrula/lab.sh workstation-onkontrol 01
+
+Ortam dosyasi (lab.env)
+  GECTI  GITLAB_URL=https://gitlab.kurum.test
+  GECTI  GITLAB_HOST=gitlab.kurum.test
+  GECTI  REGISTRY=gitlab.kurum.test:5050
+  GECTI  NEXUS_URL=https://nexus.kurum.test
+  GECTI  TEST_VM=test-vm.kurum.test
+  GECTI  TEST_VM_USER=deploy
+  GECTI  GITLAB_GROUP=egitim
+  GECTI  TEMPLATE_PROJECT=egitim/sablonlar/portal-starter
+  GECTI  MCR=gitlab.kurum.test:5050/egitim/base
+  GECTI  HUB=gitlab.kurum.test:5050/egitim/base
+  GECTI  NUGET_GROUP_URL=https://nexus.kurum.test/repository/nuget-group/index.json
+  GECTI  NPM_GROUP_URL=https://nexus.kurum.test/repository/npm-group/
+  GECTI  CA_CERT=/etc/lab/kurum-ca.crt
+  GECTI  kurum CA dosyasi var: /etc/lab/kurum-ca.crt
+
+Araclar
+  GECTI  .NET SDK: 10.0.404
+  GECTI  Node.js: v24.22.3
+  GECTI  git var
+  GECTI  npm var
+  GECTI  curl var
+  GECTI  jq var
+  GECTI  ssh var
+  GECTI  scp var
+
+Kurum CA'si: isletim sistemi (git, curl, dotnet, npm)
+  GECTI  GitLab'e HTTPS (dogrulama acik): 200
+  GECTI  NuGet group deposu: 200
+  GECTI  npm group deposu: 200
+  GECTI  sablon proje okunuyor: egitim/sablonlar/portal-starter
+
+Docker
+  GECTI  Docker daemon'ina sudo olmadan erisiliyor (Engine 29.10.0)
+  GECTI  docker compose: 5.7.1
+  GECTI  varsayilan builder surucusu: docker (yerel imajlari kullanir)
+
+Temel imajlar (LAB 03-A): makinede hazir mi?
+  GECTI  gitlab.kurum.test:5050/egitim/base/dotnet/sdk:10.0
+         kimlik 17691e344e15  kaynak mcr.microsoft.com/dotnet/sdk:10.0.404
+  GECTI  gitlab.kurum.test:5050/egitim/base/dotnet/aspnet:10.0
+         kimlik 9484cb26f9fe  kaynak mcr.microsoft.com/dotnet/aspnet:10.0.15
+  GECTI  gitlab.kurum.test:5050/egitim/base/library/node:24-alpine
+         kimlik 459e32c18a03  kaynak node:24.22.3-alpine3.24
+  GECTI  gitlab.kurum.test:5050/egitim/base/nginxinc/nginx-unprivileged:stable-alpine
+         kimlik 2d9ed44554d1  kaynak nginxinc/nginx-unprivileged:1.31.7-alpine3.24
+
+Temel imajlarin ici: kurum CA'si ve Nexus erisimi (docker build icindeki restore / npm ci)
+  GECTI  SDK imajindan NuGet group deposu: 200
+  GECTI  Node imajindan npm group deposu: 200
+
+Deneme build'i: registry'ye baglanmadan
+  GECTI  docker build (dort temel imaj, cikis kodu): 0
+
+Docker daemon'i registry'ye guveniyor mu? (LAB 03-B)
+  BILGI  guvenmiyor: LAB 03-B'de 'docker login' x509 hatasi verir ve katilimci CA'yi certs.d altina ekler (beklenen akis)
+  GECTI  daemon.json icinde insecure-registries yok
+
+37 gecti, 0 kaldi
+cikis kodu: 0
+
+# Olumsuz yon: temel imajlar makinede yokmus gibi (MCR baska bir yola cevrildi) - KALDI beklenir
+  KALDI  gitlab.kurum.test:5050/egitim/yok/dotnet/sdk:10.0 makinede yok. Yukleme: docker load -i <imaj>.tar (bkz. lab-ortami/README.md)
+  KALDI  gitlab.kurum.test:5050/egitim/yok/dotnet/aspnet:10.0 makinede yok. Yukleme: docker load -i <imaj>.tar (bkz. lab-ortami/README.md)
+  KALDI  temel imajlar makinede yok VE daemon registry'ye guvenmiyor: LAB 03-A'nin ilk build'i x509 ile durur
+32 gecti, 3 kaldi
+cikis kodu: 

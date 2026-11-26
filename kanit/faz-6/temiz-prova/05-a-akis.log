@@ -1,0 +1,72 @@
+
+[1m### Arayuz: gitlab issue-ac 99 dev Ortak sözleşmeler Nexus'ta NuGet paketi olarak Servisler common-contracts'ı kaynak olarak değil, Nexus'taki sürümlü paketten almalı. Kabul kriteri: paket Nexus'ta; servisler paketten restore ediyor; aynı sürüm ikinci kez yayınlanamıyor. lab-05-a-issue[0m
+ Container belbim-lab-workstation-1  Running
+  goruntu: /lab/cikti/prova-20261124T154746Z/lab-05-a-issue-form.png
+  tamam  issue #6 acildi: Ortak sözleşmeler Nexus'ta NuGet paketi olarak
+  goruntu: /lab/cikti/prova-20261124T154746Z/lab-05-a-issue.png
+
+[1m### Adim 1: PackageId (ekip sonekiyle) ve Version[0m
+rol: ekip99-dev
+$ git switch develop
+Already on 'develop'
+Your branch is up to date with 'origin/develop'.
+$ git pull --ff-only
+Already up to date.
+$ git switch -c feature/ortak-paket
+Switched to a new branch 'feature/ortak-paket'
+$ grep -n -E 'PackageId|<Version>|Description' src/common-contracts/common-contracts.csproj
+12:    <PackageId>Saha.Common.Contracts.Ekip99</PackageId>
+13:    <Version>1.0.0</Version>
+14:    <Description>Saha Ekipman Talep Portalı: servisler arası sözleşmeler (DTO'lar).</Description>
+
+[1m### Adim 2: dotnet pack; paketin icini incele[0m
+$ dotnet pack src/common-contracts -c Release -o out
+  Determining projects to restore...
+  Restored /home/ekip99/saha-ekipman-portal/src/common-contracts/common-contracts.csproj (in 35 ms).
+  common-contracts -> /home/ekip99/saha-ekipman-portal/src/common-contracts/bin/Release/net10.0/common-contracts.dll
+  The package Saha.Common.Contracts.Ekip99.1.0.0 is missing a readme. Go to https://aka.ms/nuget/authoring-best-practices/readme to learn why package readmes are important.
+  Successfully created package '/home/ekip99/saha-ekipman-portal/out/Saha.Common.Contracts.Ekip99.1.0.0.nupkg'.
+$ ls out/
+Saha.Common.Contracts.Ekip99.1.0.0.nupkg
+$ unzip -l out/Saha.Common.Contracts.Ekip99.1.0.0.nupkg
+Archive:  out/Saha.Common.Contracts.Ekip99.1.0.0.nupkg
+  Length      Date    Time    Name
+---------  ---------- -----   ----
+      491  2026-11-24 16:02   _rels/.rels
+      529  2026-11-24 16:02   Saha.Common.Contracts.Ekip99.nuspec
+    10240  2026-11-24 16:02   lib/net10.0/common-contracts.dll
+      459  2026-11-24 16:02   [Content_Types].xml
+      683  2026-11-24 16:02   package/services/metadata/core-properties/nuget.psmdcp
+---------                     -------
+    12402                     5 files
+$ unzip -p out/Saha.Common.Contracts.Ekip99.1.0.0.nupkg Saha.Common.Contracts.Ekip99.nuspec | grep -E '<id>|<version>|<dependencies|<group'
+    <id>Saha.Common.Contracts.Ekip99</id>
+    <version>1.0.0</version>
+    <dependencies>
+      <group targetFramework="net10.0" />
+
+[1m### Arayuz: nexus api-anahtari 99 lab-05-a-api-anahtari[0m
+ Container belbim-lab-workstation-1  Running
+  goruntu: /lab/cikti/prova-20261124T154746Z/lab-05-a-api-anahtari-sayfa.png
+  goruntu: /lab/cikti/prova-20261124T154746Z/lab-05-a-api-anahtari-parola.png
+  tamam  ekip99: NuGet API anahtari alindi (deger ekrana yazilmadi)
+  goruntu: /lab/cikti/prova-20261124T154746Z/lab-05-a-api-anahtari.png
+
+[1m### Adim 3: 1.0.0'i Nexus hosted depoya push et[0m
+$ dotnet nuget push out/Saha.Common.Contracts.Ekip99.1.0.0.nupkg --source https://nexus.kurum.test/repository/nuget-hosted/ --api-key "$NEXUS_APIKEY"
+Pushing Saha.Common.Contracts.Ekip99.1.0.0.nupkg to 'https://nexus.kurum.test/repository/nuget-hosted/'...
+  PUT https://nexus.kurum.test/repository/nuget-hosted/
+  Created https://nexus.kurum.test/repository/nuget-hosted/ 127ms
+Your package was pushed.
+
+[1m### Arayuz: nexus paket 99 1.0.0 lab-05-a-nexus-paket[0m
+ Container belbim-lab-workstation-1  Running
+HATA   paket: expect(locator).toBeVisible() failed
+       
+       Locator: getByText('1.0.0', { exact: true }).first()
+       Expected: visible
+       Timeout: 15000ms
+       Error: element(s) not found
+       sayfa: https://nexus.kurum.test/#browse/browse:nuget-hosted:Saha.Common.Contracts.Ekip99
+       goruntu: lab-ortami/.cache/ui/hata-paket-1795536146465.png
+

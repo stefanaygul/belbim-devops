@@ -1,0 +1,51 @@
+# make bootstrap: jenkins ve sonarqube adimlari (2026-11-24 12:40)
+# Onceki denemelerde bulunanlar: (1) SonarQube yerel ag adresine webhook'u reddetti -> sonar.validateWebhooks ayari;
+# (2) SonarQube parola kurali ozel karakter istiyor -> ekip parolasi buna gore turetiliyor.
+
+==> Jenkins
+    surum: 2.580.2
+    tamam  controller executor 0; agent true label=dotnet-docker executor=2
+    tamam  GitLab connection: gitlab; SonarQube sunucusu: sonarqube
+    tamam  kullanici ekip01 (var)
+    tamam  klasor ekip-01 (var)
+    tamam  kullanici ekip02 (var)
+    tamam  klasor ekip-02 (var)
+
+==> SonarQube
+    tamam  yonetici parolasi gecerli
+    surum: 26.11.0.134175 (UP)
+    tamam  sunucu adresi: https://sonar.kurum.test
+    tamam  yerel aga webhook izni (sonar.validateWebhooks=false)
+    tamam  webhook jenkins -> https://jenkins.kurum.test/sonarqube-webhook/ (var)
+    tamam  kullanici ekip01 (olusturuldu)
+    tamam  kullanici ekip02 (olusturuldu)
+    tamam  ekip kullanicilari proje olusturabilir ve analiz gonderebilir
+    varsayilan Quality Gate: Sonar way
+
+Bootstrap tamamlandi. Denetim icin: make dogrula
+cikis kodu: 0
+
+# ikinci calistirma (hicbir sey yeniden olusturulmamali)
+
+==> Jenkins
+    surum: 2.580.2
+    tamam  controller executor 0; agent true label=dotnet-docker executor=2
+    tamam  GitLab connection: gitlab; SonarQube sunucusu: sonarqube
+    tamam  kullanici ekip01 (var)
+    tamam  klasor ekip-01 (var)
+    tamam  kullanici ekip02 (var)
+    tamam  klasor ekip-02 (var)
+
+==> SonarQube
+    tamam  yonetici parolasi gecerli
+    surum: 26.11.0.134175 (UP)
+    tamam  sunucu adresi: https://sonar.kurum.test
+    tamam  yerel aga webhook izni (sonar.validateWebhooks=false)
+    tamam  webhook jenkins -> https://jenkins.kurum.test/sonarqube-webhook/ (var)
+    tamam  kullanici ekip01 (var)
+    tamam  kullanici ekip02 (var)
+    tamam  ekip kullanicilari proje olusturabilir ve analiz gonderebilir
+    varsayilan Quality Gate: Sonar way
+
+Bootstrap tamamlandi. Denetim icin: make dogrula
+cikis kodu: 0

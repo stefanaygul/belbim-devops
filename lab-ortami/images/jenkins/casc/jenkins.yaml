@@ -1,0 +1,83 @@
+# Jenkins'in global yapilandirmasi (Configuration as Code).
+# Burada olanlar yonetici isidir: executor 0, agent, yetki modeli, GitLab baglantisi,
+# SonarQube sunucu tanimi, agent ortam degiskenleri.
+# Ekip klasorleri ve kullanicilari bootstrap (60-jenkins.sh) kurar.
+# Ekip credential'lari, Multibranch job ve webhook KATILIMCI adimidir; burada yoktur.
+jenkins:
+  systemMessage: "BELBIM DevOps egitimi - lab ortami"
+  numExecutors: 0
+  mode: EXCLUSIVE
+  securityRealm:
+    local:
+      allowsSignup: false
+      users:
+        - id: "admin"
+          password: "${JENKINS_ADMIN_PASSWORD}"
+  # Giris yapan herkes Jenkins'i gorur; isleri ve credential'lari yalnizca kendi
+  # klasorunde gorur (klasor yetkilerini bootstrap verir).
+  authorizationStrategy:
+    projectMatrix:
+      entries:
+        - user:
+            name: "admin"
+            permissions:
+              - "Overall/Administer"
+        - group:
+            name: "authenticated"
+            permissions:
+              - "Overall/Read"
+  nodes:
+    - permanent:
+        name: "agent-1"
+        labelString: "dotnet-docker"
+        numExecutors: 2
+        remoteFS: "/home/jenkins/agent"
+        launcher:
+          inbound:
+            webSocket: true
+  # Agent'taki build'lerin gordugu ortak degerler: temel imajlarin ic aynasi.
+  globalNodeProperties:
+    - envVars:
+        env:
+          - key: "MCR"
+            value: "gitlab.${LAB_DOMAIN}:5050/egitim/base"
+          - key: "HUB"
+            value: "gitlab.${LAB_DOMAIN}:5050/egitim/base"
+unclassified:
+  location:
+    url: "https://jenkins.${LAB_DOMAIN}/"
+  # GitLab baglantisi globaldir ve token tasimaz: her ekip kendi Project Access Token'ini
+  # klasorunde `gitlab-api` kimligiyle saklar ve Jenkinsfile'da jobCredentialId ile verir.
+  gitLabConnectionConfig:
+    useAuthenticatedEndpoint: false
+    connections:
+      - name: "gitlab"
+        url: "https://gitlab.${LAB_DOMAIN}"
+        clientBuilderId: "autodetect"
+        connectionTimeout: 10
+        readTimeout: 10
+  # SonarQube sunucu tanimi globaldir ve token tasimaz: her ekip kendi token'ini
+  # klasorunde `sonar-token` kimligiyle saklar.
+  sonarGlobalConfiguration:
+    buildWrapperEnabled: false
+    installations:
+      - name: "sonarqube"
+        serverUrl: "https://sonar.${LAB_DOMAIN}"
+  # NuGet yapilandirmasi (managed file `nuget-config`): okuma group'tan, yazma hosted depoya.
+  # LAB 05-A bonusundaki `Pack & Publish` stage'i kullanir (configFileProvider). Sir icermez;
+  # API anahtari ekibin klasorunde `nexus-nuget-key` credential'idir.
+  globalConfigFiles:
+    configs:
+      - xml:
+          id: "nuget-config"
+          name: "NuGet.config (Nexus)"
+          comment: "nexus: nuget-group (restore), nexus-hosted: nuget-hosted (yayin)"
+          content: |
+            <?xml version="1.0" encoding="utf-8"?>
+            <configuration>
+              <packageSources>
+                <clear />
+                <add key="nexus" value="https://nexus.${LAB_DOMAIN}/repository/nuget-group/index.json" />
+                <add key="nexus-hosted" value="https://nexus.${LAB_DOMAIN}/repository/nuget-hosted/" />
+              </packageSources>
+            </configuration>

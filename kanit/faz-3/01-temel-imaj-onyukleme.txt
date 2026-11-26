@@ -1,0 +1,62 @@
+# Temel imajlarin workstation daemon'ina onceden yuklenmesi (2026-11-24 00:25)
+
+## 1. Once: denetle (yuklu degil -> cikis 1 beklenir)
+
+==> Temel imajlar: workstation Docker daemon'i
+    eksik  gitlab.kurum.test:5050/egitim/base/dotnet/sdk:10.0 (yuklu degil ya da registry ile ayni degil)
+    eksik  gitlab.kurum.test:5050/egitim/base/dotnet/aspnet:10.0 (yuklu degil ya da registry ile ayni degil)
+    eksik  gitlab.kurum.test:5050/egitim/base/library/node:24-alpine (yuklu degil ya da registry ile ayni degil)
+    eksik  gitlab.kurum.test:5050/egitim/base/nginxinc/nginx-unprivileged:stable-alpine (yuklu degil ya da registry ile ayni degil)
+cikis kodu: 1
+
+## 2. Yukle (ilk calistirma)
+
+==> Temel imajlar: workstation Docker daemon'i
+    tamam  gitlab.kurum.test:5050/egitim/base/dotnet/sdk:10.0 (yuklendi)
+           kaynak mcr.microsoft.com/dotnet/sdk:10.0.404  registry sha256:c761b1d0f1acf5ed598d7a94f5e40ea2398b3eaff6be304832a630dbfa5db770
+    tamam  gitlab.kurum.test:5050/egitim/base/dotnet/aspnet:10.0 (yuklendi)
+           kaynak mcr.microsoft.com/dotnet/aspnet:10.0.15  registry sha256:2002c8f9b83df8925c6b273c7d39cf48b39898058fe9234d73d36f7b5b978811
+    tamam  gitlab.kurum.test:5050/egitim/base/library/node:24-alpine (yuklendi)
+           kaynak node:24.22.3-alpine3.24  registry sha256:1002babad2d4bfa723cedf62ac3f02bc2be59d8d2b5ce6aa0b006d67810b49e0
+    tamam  gitlab.kurum.test:5050/egitim/base/nginxinc/nginx-unprivileged:stable-alpine (yuklendi)
+           kaynak nginxinc/nginx-unprivileged:1.31.7-alpine3.24  registry sha256:e05a7b295f344531cb861af0efd10dae5907496a275b2e9d206e6efaf540911e
+cikis kodu: 0  sure: 29 sn
+
+## 3. Yukle (ikinci calistirma: yeniden yuklememeli)
+
+==> Temel imajlar: workstation Docker daemon'i
+    tamam  gitlab.kurum.test:5050/egitim/base/dotnet/sdk:10.0 (yuklu, guncel)
+           kaynak mcr.microsoft.com/dotnet/sdk:10.0.404  registry sha256:c761b1d0f1acf5ed598d7a94f5e40ea2398b3eaff6be304832a630dbfa5db770
+    tamam  gitlab.kurum.test:5050/egitim/base/dotnet/aspnet:10.0 (yuklu, guncel)
+           kaynak mcr.microsoft.com/dotnet/aspnet:10.0.15  registry sha256:2002c8f9b83df8925c6b273c7d39cf48b39898058fe9234d73d36f7b5b978811
+    tamam  gitlab.kurum.test:5050/egitim/base/library/node:24-alpine (yuklu, guncel)
+           kaynak node:24.22.3-alpine3.24  registry sha256:1002babad2d4bfa723cedf62ac3f02bc2be59d8d2b5ce6aa0b006d67810b49e0
+    tamam  gitlab.kurum.test:5050/egitim/base/nginxinc/nginx-unprivileged:stable-alpine (yuklu, guncel)
+           kaynak nginxinc/nginx-unprivileged:1.31.7-alpine3.24  registry sha256:e05a7b295f344531cb861af0efd10dae5907496a275b2e9d206e6efaf540911e
+cikis kodu: 0  sure: 3 sn
+
+## 4. Denetle (yuklu -> cikis 0 beklenir)
+
+==> Temel imajlar: workstation Docker daemon'i
+    tamam  gitlab.kurum.test:5050/egitim/base/dotnet/sdk:10.0 (yuklu, guncel)
+           kaynak mcr.microsoft.com/dotnet/sdk:10.0.404  registry sha256:c761b1d0f1acf5ed598d7a94f5e40ea2398b3eaff6be304832a630dbfa5db770
+    tamam  gitlab.kurum.test:5050/egitim/base/dotnet/aspnet:10.0 (yuklu, guncel)
+           kaynak mcr.microsoft.com/dotnet/aspnet:10.0.15  registry sha256:2002c8f9b83df8925c6b273c7d39cf48b39898058fe9234d73d36f7b5b978811
+    tamam  gitlab.kurum.test:5050/egitim/base/library/node:24-alpine (yuklu, guncel)
+           kaynak node:24.22.3-alpine3.24  registry sha256:1002babad2d4bfa723cedf62ac3f02bc2be59d8d2b5ce6aa0b006d67810b49e0
+    tamam  gitlab.kurum.test:5050/egitim/base/nginxinc/nginx-unprivileged:stable-alpine (yuklu, guncel)
+           kaynak nginxinc/nginx-unprivileged:1.31.7-alpine3.24  registry sha256:e05a7b295f344531cb861af0efd10dae5907496a275b2e9d206e6efaf540911e
+cikis kodu: 0
+
+## 5. workstation: docker images
+REPOSITORY                                                       TAG             IMAGE ID       SIZE      DIGEST
+gitlab.kurum.test:5050/egitim/base/library/node                  24-alpine       459e32c18a03   346MB     sha256:459e32c18a03821aac6785efced298bef87670cd2f158c02b112357521b16d79
+gitlab.kurum.test:5050/egitim/base/dotnet/sdk                    10.0            17691e344e15   1.98GB    sha256:17691e344e15817d632181aa5f7f688ca8056d1ddb8ba43180fdb14210f4b933
+gitlab.kurum.test:5050/egitim/base/dotnet/aspnet                 10.0            9484cb26f9fe   542MB     sha256:9484cb26f9fe289db887096a498d697c988dd13a8319e17209ef917ad7eab1c6
+gitlab.kurum.test:5050/egitim/base/nginxinc/nginx-unprivileged   stable-alpine   2d9ed44554d1   127MB     sha256:2d9ed44554d136ee365d59f056c632263141cfc6d8f4242afc7e78bf6a04dc31
+
+## 6. workstation: daemon registry'ye hala guvenmiyor (x509 beklenir)
+Error response from daemon: failed to resolve reference "gitlab.kurum.test:5050/egitim/base/dotnet/aspnet:10.0": failed to do request: Head "https://gitlab.kurum.test:5050/v2/egitim/base/dotnet/aspnet/manifests/10.0": tls: failed to verify certificate: x509: certificate signed by unknown authority
+
+cikis kodu: 
+0

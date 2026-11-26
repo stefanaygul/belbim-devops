@@ -1,0 +1,3 @@
+[submodule "portal-starter"]
+	path = portal-starter
+	url = ../portal-starter.git

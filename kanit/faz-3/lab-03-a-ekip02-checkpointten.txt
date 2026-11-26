@@ -1,0 +1,224 @@
+# LAB 03-A cozumu, ekip-02: baslangic checkpoint/lab-02b (2026-11-24 00:52)
+
+### Adim 1: feature/9-docker
+rol: ekip02-dev
+$ git switch develop
+Already on 'develop'
+Your branch is up to date with 'origin/develop'.
+$ git pull --ff-only
+Already up to date.
+$ git switch -c feature/9-docker
+Switched to a new branch 'feature/9-docker'
+
+### Adim 2: order-service icin multi-stage Dockerfile
+rol: ekip02-dev
+$ cat src/order-service/Dockerfile
+# Build context: repo koku.  docker build -f src/order-service/Dockerfile .
+ARG MCR=mcr.microsoft.com
+FROM ${MCR}/dotnet/sdk:10.0 AS build
+WORKDIR /src
+COPY NuGet.config ./
+COPY src/common-contracts/ src/common-contracts/
+COPY src/order-service/*.csproj src/order-service/
+RUN dotnet restore src/order-service
+COPY src/order-service/ src/order-service/
+RUN dotnet publish src/order-service -c Release -o /app
+
+FROM ${MCR}/dotnet/aspnet:10.0
+WORKDIR /app
+COPY --from=build /app .
+USER $APP_UID
+ENTRYPOINT ["dotnet", "order-service.dll"]
+$ docker build -q -f src/order-service/Dockerfile --build-arg MCR=gitlab.kurum.test:5050/egitim/base -t order-service:dev .
+sha256:0f9c37addae40a6d98cc47e9a624f176c12322e1cfb35c8e1293cfc3918293b1
+$ git add src/order-service/Dockerfile
+$ git commit -m build(order): add multi-stage Dockerfile
+[feature/9-docker 4dd9d40] build(order): add multi-stage Dockerfile
+ 1 file changed, 16 insertions(+)
+ create mode 100644 src/order-service/Dockerfile
+
+### Adim 3: ayni kalip product-service icin
+rol: ekip02-dev
+$ diff src/order-service/Dockerfile src/product-service/Dockerfile || true
+1c1
+< # Build context: repo koku.  docker build -f src/order-service/Dockerfile .
+---
+> # Build context: repo koku.  docker build -f src/product-service/Dockerfile .
+7,10c7,10
+< COPY src/order-service/*.csproj src/order-service/
+< RUN dotnet restore src/order-service
+< COPY src/order-service/ src/order-service/
+< RUN dotnet publish src/order-service -c Release -o /app
+---
+> COPY src/product-service/*.csproj src/product-service/
+> RUN dotnet restore src/product-service
+> COPY src/product-service/ src/product-service/
+> RUN dotnet publish src/product-service -c Release -o /app
+16c16
+< ENTRYPOINT ["dotnet", "order-service.dll"]
+---
+> ENTRYPOINT ["dotnet", "product-service.dll"]
+$ git add src/product-service/Dockerfile
+$ git commit -m build(product): add multi-stage Dockerfile
+[feature/9-docker 207ef9e] build(product): add multi-stage Dockerfile
+ 1 file changed, 16 insertions(+)
+ create mode 100644 src/product-service/Dockerfile
+
+### Adim 4: web-ui icin Node + Nginx Dockerfile
+rol: ekip02-dev
+$ cat src/web-ui/Dockerfile
+# Build context: repo koku.  docker build -f src/web-ui/Dockerfile .
+ARG HUB=docker.io
+FROM ${HUB}/library/node:24-alpine AS build
+WORKDIR /app
+# .npmrc da kopyalanir: npm ci paketleri Nexus npm-group deposundan alir.
+COPY src/web-ui/package*.json src/web-ui/.npmrc ./
+RUN npm ci
+COPY src/web-ui/ ./
+RUN npm run build
+
+FROM ${HUB}/nginxinc/nginx-unprivileged:stable-alpine
+COPY deploy/nginx.conf /etc/nginx/conf.d/default.conf
+COPY --from=build /app/dist /usr/share/nginx/html
+EXPOSE 8080
+HEALTHCHECK --interval=30s --timeout=3s CMD wget -q -O /dev/null http://127.0.0.1:8080/ || exit 1
+$ cat deploy/nginx.conf
+# deploy/nginx.conf - web-ui imajındaki Nginx ayarı
+#
+# Şimdilik yalnızca statik dosyaları sunar. /api isteklerini servislere
+# yönlendiren kurallar LAB 03-B'de eklenecek.
+server {
+  listen 8080;
+  root /usr/share/nginx/html;
+
+  location / { try_files $uri /index.html; }
+}
+$ git add src/web-ui/Dockerfile deploy/nginx.conf
+$ git commit -m build(web-ui): add Node and Nginx Dockerfile
+[feature/9-docker dace2e3] build(web-ui): add Node and Nginx Dockerfile
+ 2 files changed, 24 insertions(+), 4 deletions(-)
+ create mode 100644 src/web-ui/Dockerfile
+
+### Adim 5: .dockerignore, context boyutu
+rol: ekip02-dev
+$ du -sh .git src/web-ui/node_modules 2>/dev/null
+1.1M	.git
+130M	src/web-ui/node_modules
+# Build context'e ne giriyor? Gecici bir imajda olculur.
+$ printf 'FROM %s\nCOPY . /ctx\nRUN du -sh /ctx\n' "$HUB/library/node:24-alpine" | docker build --no-cache --progress=plain -f - . 2>&1 | grep -E '[0-9.]+[KMG]?[[:space:]]+/ctx$'
+#6 [2/3] COPY . /ctx
+#7 0.138 131.7M	/ctx
+$ cat .dockerignore
+# Build context'e girmeyecekler. .gitignore'dan farkli olarak desenler yalnizca
+# context kokune gore eslesir; alt klasorler icin **/ gerekir.
+.git/
+**/bin/
+**/obj/
+**/node_modules/
+**/dist/
+**/coverage/
+**/TestResults/
+**/*.db
+**/*.db-shm
+**/*.db-wal
+.env
+$ printf 'FROM %s\nCOPY . /ctx\nRUN du -sh /ctx\n' "$HUB/library/node:24-alpine" | docker build --no-cache --progress=plain -f - . 2>&1 | grep -E '[0-9.]+[KMG]?[[:space:]]+/ctx$'
+#6 [2/3] COPY . /ctx
+#7 0.080 600.0K	/ctx
+$ git add .dockerignore
+$ git commit -m build: add .dockerignore
+[feature/9-docker be3a26e] build: add .dockerignore
+ 1 file changed, 13 insertions(+)
+ create mode 100644 .dockerignore
+
+### Adim 6: uc imaji build et, boyutlara bak
+rol: ekip02-dev
+$ docker build -q -f src/order-service/Dockerfile --build-arg MCR=gitlab.kurum.test:5050/egitim/base -t order-service:dev .
+sha256:8ea1edf0e3f424689f490fa4cfb251c2b8bcfed2e77f23ffa7957f74d7eb115d
+$ docker build -q -f src/product-service/Dockerfile --build-arg MCR=gitlab.kurum.test:5050/egitim/base -t product-service:dev .
+sha256:eba140d7bbc35d4f3df854077ecbbc717bb7d77d1770ff2018ed5badbbbc11c2
+$ docker build -q -f src/web-ui/Dockerfile --build-arg HUB=gitlab.kurum.test:5050/egitim/base -t web-ui:dev .
+sha256:06029f17cf6d96fcc5728be48e444b87571ccdaf022a9fb81a31d50ab49ea562
+$ docker images --format 'table {{.Repository}}\t{{.Tag}}\t{{.Size}}' | grep -E 'REPOSITORY|^(order-service|product-service|web-ui) |dotnet/sdk|dotnet/aspnet|library/node|nginx-unprivileged'
+REPOSITORY                                                       TAG             SIZE
+web-ui                                                           dev             127MB
+product-service                                                  dev             545MB
+order-service                                                    dev             604MB
+gitlab.kurum.test:5050/egitim/base/library/node                  24-alpine       346MB
+gitlab.kurum.test:5050/egitim/base/dotnet/sdk                    10.0            1.98GB
+gitlab.kurum.test:5050/egitim/base/dotnet/aspnet                 10.0            542MB
+gitlab.kurum.test:5050/egitim/base/nginxinc/nginx-unprivileged   stable-alpine   127MB
+# Ikinci build: kaynak kod degisti, restore ve npm ci onbellekten gelmeli
+$ docker build --progress=plain -f src/order-service/Dockerfile --build-arg MCR=$MCR -t order-service:dev . 2>&1 | grep -E 'CACHED|RUN dotnet (restore|publish)' | sed 's/^#[0-9]* //' | sort -u
+CACHED
+[build 6/8] RUN dotnet restore src/order-service
+[build 8/8] RUN dotnet publish src/order-service -c Release -o /app
+$ git checkout src/order-service/Program.cs
+Updated 1 path from the index
+$ docker build --progress=plain -f src/web-ui/Dockerfile --build-arg HUB=$HUB -t web-ui:dev . 2>&1 | grep -E 'CACHED|RUN npm (ci|run build)' | sed 's/^#[0-9]* //' | sort -u
+CACHED
+[build 4/6] RUN npm ci
+[build 6/6] RUN npm run build
+$ git checkout src/web-ui/src/styles.css
+Updated 1 path from the index
+# Kaynak eski haline dondu; imajlari yeniden uret
+$ docker build -q -f src/order-service/Dockerfile --build-arg MCR=gitlab.kurum.test:5050/egitim/base -t order-service:dev .
+sha256:51777580d64875a3a18eeaf9e56b8737f501176af5fd61cd60fe340a8f1a811f
+$ docker build -q -f src/web-ui/Dockerfile --build-arg HUB=gitlab.kurum.test:5050/egitim/base -t web-ui:dev .
+sha256:be0682f2fb731902095a2872b77b60b719014b959ac0449e2033e6269faf220e
+
+### Adim 7: tek tek calistir, /health ve loglar
+$ docker run -d --name product -p 8080:8080 product-service:dev
+56607283dbbeba346e7bb3e1d6d5b2c53b44c9f9cd8441138f2bd621f2d13a43
+$ curl -s http://localhost:8080/health; echo
+Healthy
+$ curl -s http://localhost:8080/api/products | head -c 70; echo
+[{"code":"ADP-01","name":"Terminal adaptörü","inStock":true},{"code"
+$ docker exec product whoami
+app
+$ docker logs product 2>&1 | tail -n 4
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Production
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /app
+$ docker rm -f product
+product
+# order-service SQLite dosyasina yazar; simdilik /tmp (kalici veri LAB 03-B'nin konusu)
+$ docker run -d --name order -p 8080:8080 -e ConnectionStrings__Orders=Data Source=/tmp/orders.db order-service:dev
+0d886afe378d13d7f809bc90a5f0caa852b59d63c636f38897c2b2b9d8c78fde
+$ curl -s http://localhost:8080/health; echo
+Healthy
+$ curl -s -o /dev/null -w '%{http_code}\n' -X POST http://localhost:8080/api/orders -H 'Content-Type: application/json' -d '{ "productId": "ADP-01", "quantity": 2 }'
+201
+$ docker exec order whoami
+app
+$ docker rm -f order
+order
+$ docker run -d --name web -p 8080:8080 web-ui:dev
+a881c5c7b398dbc51d476b055e9eb21fcdfef23db8feb1b542433f8469e9770f
+$ curl -s -o /dev/null -w '%{http_code}\n' http://localhost:8080/
+200
+$ docker exec web id -u
+101
+$ docker inspect --format '{{.Config.User}}' product-service:dev order-service:dev web-ui:dev
+1654
+1654
+101
+$ docker rm -f web
+web
+rol: ekip02-dev
+$ git status --short
+$ git push -u origin feature/9-docker
+remote: 
+remote: To create a merge request for feature/9-docker, visit:        
+remote:   https://gitlab.kurum.test/egitim/ekip-02/saha-ekipman-portal/-/merge_requests/new?merge_request%5Bsource_branch%5D=feature%2F9-docker        
+remote: 
+To gitlab.kurum.test:egitim/ekip-02/saha-ekipman-portal.git
+ * [new branch]      feature/9-docker -> feature/9-docker
+branch 'feature/9-docker' set up to track 'origin/feature/9-docker'.
+
+### Checkpoint karsilastirmasi
+# agac ayni: HEAD == checkpoint/lab-03a (haric: .gitlab/CODEOWNERS)
+
+LAB 03-a cozumu ekip-02 icin uygulandi.
+cikis kodu: 0

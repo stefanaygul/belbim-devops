@@ -1,0 +1,44 @@
+
+[1mDNS, HTTPS ve CA guveni[0m
+  [32mGECTI[0m  https://gitlab.kurum.test/users/sign_in
+  [32mGECTI[0m  https://jenkins.kurum.test/login
+  [32mGECTI[0m  https://sonar.kurum.test/api/system/status: UP, SonarQube 26.11.0.134175
+  [32mGECTI[0m  https://nexus.kurum.test/service/rest/v1/status
+  [32mGECTI[0m  registry TLS/erisim: HTTP 401
+
+[1mGitLab surumu ve kullanilacak akis[0m
+  [32mGECTI[0m  GitLab 19.6.1
+  BILGI  Lab akisi: Free ile uyumlu (push kapali, merge Maintainer). GITLAB_TIER=free beyanidir; lisans yetkisi dogrulanmadi.
+
+[1mJenkins pluginleri ve agent[0m
+  [32mGECTI[0m  plugin git
+  [32mGECTI[0m  plugin gitlab-plugin
+  [32mGECTI[0m  plugin workflow-multibranch
+  [32mGECTI[0m  plugin workflow-aggregator
+  [32mGECTI[0m  plugin sonar
+  [32mGECTI[0m  plugin junit
+  [32mGECTI[0m  plugin credentials-binding
+  [32mGECTI[0m  plugin ssh-agent
+  [32mGECTI[0m  plugin config-file-provider
+  [32mGECTI[0m  plugin basic-branch-build-strategies
+  [32mGECTI[0m  dotnet-docker agent online
+
+[1mSonarQube ve webhook[0m
+  [32mGECTI[0m  Community: analiz yalnizca develop
+  [32mGECTI[0m  SonarQube webhook URL dogru
+
+[1mNexus depolari ve realm[0m
+  [32mGECTI[0m  depo nuget.org-proxy
+  [32mGECTI[0m  depo nuget-hosted
+  [32mGECTI[0m  depo nuget-group
+  [32mGECTI[0m  depo npm-proxy
+  [32mGECTI[0m  depo npm-hosted
+  [32mGECTI[0m  depo npm-group
+  [32mGECTI[0m  NuGet API Key realm
+  [32mGECTI[0m  nuget-hosted redeploy kapali: ALLOW_ONCE
+
+[1mTest VM: SSH, Docker, ekip dizini[0m
+  [32mGECTI[0m  SSH guvenli; Docker/Compose ve ekip01 dizini hazir
+  BILGI  Job/credential olusturma yetkisi, iki kullanici review akisi ve gercek pipeline calismasi ayrica kurumda sinanmalidir.
+
+28 gecti, 0 kaldi

@@ -1,0 +1,6 @@
+.env
+lab.env
+certs/*
+!certs/README.md
+.cache/
+ortam-karti.local.md

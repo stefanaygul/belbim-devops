@@ -1,0 +1,82 @@
+# Faz 1 kanit: calisan API'ler (main), host uzerinde dotnet run
+# tarih: 2026-11-23 15:44 +03 | repo: portal-starter main@174fe06 | product-service :5101, order-service :5102 (launchSettings.json)
+
+## 1. Saglik ve sozlesme
+
+$ curl http://localhost:5101/health
+Healthy
+[HTTP 200]
+
+$ curl http://localhost:5102/health
+Healthy
+[HTTP 200]
+
+$ curl http://localhost:5101/api/products
+[{"code":"ADP-01","name":"Terminal adaptörü"},{"code":"KBL-02","name":"Bağlantı kablosu"},{"code":"STD-03","name":"Cihaz standı"}]
+[HTTP 200]
+
+$ curl -o /dev/null http://localhost:5101/swagger/index.html
+
+[HTTP 200]
+
+$ curl -o /dev/null http://localhost:5102/swagger/index.html
+
+[HTTP 200]
+
+$ curl http://localhost:5102/openapi/v1.json   # yollar
+{'/api/orders': ['get', 'post']}
+
+## 2. Talep olusturma ve listeleme
+
+$ curl -i -X POST http://localhost:5102/api/orders -H Content-Type: application/json -d { "productId": "ADP-01", "quantity": 2 }
+HTTP/1.1 201 Created
+Content-Type: application/json; charset=utf-8
+Date: Mon, 23 Nov 2026 12:44:17 GMT
+Server: Kestrel
+Location: /api/orders/1
+Transfer-Encoding: chunked
+
+{"id":1,"productId":"ADP-01","quantity":2,"createdAt":"2026-11-23T12:44:17.372026Z"}
+[HTTP 201]
+
+$ curl http://localhost:5102/api/orders
+[{"id":1,"productId":"ADP-01","quantity":2,"createdAt":"2026-11-23T12:44:17.372026Z"}]
+[HTTP 200]
+
+## 3. Bilincli birakilan eksikler (lablar duzeltecek; starter'da hepsi kabul edilmeli)
+# Eksik 1: bos productId kabul edilir -> LAB 02-B hotfix (v1.0.1)
+
+$ curl -X POST http://localhost:5102/api/orders -H Content-Type: application/json -d { "productId": "", "quantity": 1 }
+{"id":2,"productId":"","quantity":1,"createdAt":"2026-11-23T12:44:17.55832Z"}
+[HTTP 201]
+# Eksik 2: quantity 0 ve negatif kabul edilir -> LAB 05-B (400 donmeli)
+
+$ curl -X POST http://localhost:5102/api/orders -H Content-Type: application/json -d { "productId": "KBL-02", "quantity": 0 }
+{"id":3,"productId":"KBL-02","quantity":0,"createdAt":"2026-11-23T12:44:17.566852Z"}
+[HTTP 201]
+
+$ curl -X POST http://localhost:5102/api/orders -H Content-Type: application/json -d { "productId": "KBL-02", "quantity": -3 }
+{"id":4,"productId":"KBL-02","quantity":-3,"createdAt":"2026-11-23T12:44:17.573991Z"}
+[HTTP 201]
+# Eksik 3: katalogda stok alani yok -> LAB 02-A inStock ekler
+
+$ curl http://localhost:5101/api/products | grep -c inStock
+0
+
+## 4. Ortam degiskeni appsettings degerini eziyor (ConnectionStrings__Orders)
+
+$ ConnectionStrings__Orders="Data Source=<gecici>/env-override.db" dotnet run --project src/order-service
+
+$ curl http://localhost:5102/api/orders
+[]
+[HTTP 200]
+
+$ ls -la <gecici>/env-override.db
+4096 bayt <gecici>/env-override.db
+
+## 5. Log stdout'a gidiyor (order-service)
+Using launch settings from <repo>/src/order-service/Properties/launchSettings.json...
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://localhost:5102
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.

@@ -1,0 +1,357 @@
+# Faz 3 kapanis kosusu (2026-11-24 04:01): alti labin dogrulamasi, betiklerin son haliyle
+# ekip-01 (LAB 03-B sonunda): make dogrula-lab LAB=<lab> EKIP=01
+
+## make dogrula-lab LAB=01-a EKIP=01
+
+LAB 01-A (ekip-01)
+  GECTI  repo var: /home/ekip01/saha-ekipman-portal (develop@36433a1)
+
+Build ve testler
+  GECTI  dotnet build (cikis kodu): 0
+  GECTI  dotnet test (cikis kodu): 0
+         Passed!  - Failed:     0, Passed:     8, Skipped:     0, Total:     8, Duration: 115 ms - product-service.tests.dll (net10.0)
+         Passed!  - Failed:     0, Passed:     6, Skipped:     0, Total:     6, Duration: 462 ms - order-service.tests.dll (net10.0)
+  GECTI  npm test (cikis kodu): 0
+         Tests:       15 passed, 15 total
+
+Surum cakismasi (NU1605)
+  GECTI  hazir branch'te hata uretiliyor: origin lab/01a-conflict -> NU1605
+  GECTI  cozulmus branch'te dotnet restore (cikis kodu): 0
+
+Calisan uygulama (gecici portlarda, gecici veritabaniyla)
+  GECTI  product-service /health: Healthy
+  GECTI  order-service /health: Healthy
+  GECTI  katalog listeleniyor (ADP-01 Terminal adaptörü)
+  GECTI  katalogdaki urun sayisi en az 3: evet
+  GECTI  /swagger: 200
+  GECTI  talep olusturma: POST /api/orders: 201
+  GECTI  talep listede: GET /api/orders
+  BILGI  tarayicidaki arayuz bu betikle denetlenmez; kaniti lab-rehberleri/img/lab-01-a-arayuz.png
+
+13 gecti, 0 kaldi
+cikis kodu: 0
+
+## make dogrula-lab LAB=01-b EKIP=01
+
+LAB 01-B (ekip-01)
+  GECTI  branch var: feature/katalog-sarj-unitesi@8e9c753
+  GECTI  yarim kalmis merge yok
+
+Katalog
+  GECTI  catalog.json gecerli JSON
+  GECTI  SRJ-04 kaydi (tek olmali): 1
+  GECTI  SRJ-04 adi: Şarj ünitesi
+  GECTI  conflict isareti kalmamis
+  GECTI  test SRJ-04 kaydini bekliyor
+
+Merge ve gecmis
+  GECTI  lab/01b-rename merge edilmis
+  GECTI  lab/01b-rename'i getiren merge commit'i: 1
+  GECTI  commit mesajlari Conventional Commits biciminde (1 commit)
+
+Testler (feature/katalog-sarj-unitesi)
+  GECTI  dotnet test (cikis kodu): 0
+         Passed!  - Failed:     0, Passed:     5, Skipped:     0, Total:     5, Duration: 106 ms - product-service.tests.dll (net10.0)
+         Passed!  - Failed:     0, Passed:     4, Skipped:     0, Total:     4, Duration: 482 ms - order-service.tests.dll (net10.0)
+
+11 gecti, 0 kaldi
+cikis kodu: 0
+
+## make dogrula-lab LAB=02-a EKIP=01
+
+LAB 02-A (ekip-01)
+  GECTI  proje var: egitim/ekip-01/saha-ekipman-portal
+  GECTI  gorunurluk: private
+  GECTI  varsayilan branch: develop
+
+Korumali branch'ler
+  GECTI  main: Allowed to push and merge: No one
+  GECTI  main: Allowed to merge: Maintainers
+  GECTI  main: force push: false
+  GECTI  develop: Allowed to push and merge: No one
+  GECTI  develop: Allowed to merge: Maintainers
+  GECTI  develop: force push: false
+  GECTI  merge yontemi: merge
+  GECTI  cozulmemis thread varken merge kapali: true
+
+Repo icerigi (develop)
+  GECTI  .gitlab/merge_request_templates/Default.md var
+  GECTI  .gitlab/CODEOWNERS var
+  GECTI  katalogdaki her kayitta inStock (true/false): true
+  GECTI  SRJ-04 develop'ta: Şarj ünitesi
+
+Merge Request sureci
+  GECTI  MR !1 merge edilmis: feat(catalog): add stock status
+  GECTI  yazar (ekip01-dev) ve merge eden (ekip01-lead) farkli kisiler
+  GECTI  yazar disinda birinin actigi, cozulmus thread (en az 1): evet
+  GECTI  cozulmemis thread: 0
+  GECTI  kaynak branch silinmis
+  GECTI  MR'in kapattigi issue #1: closed
+  GECTI  MR aciklamasi sablondan gelmis
+
+Testler (develop)
+  GECTI  dotnet test (cikis kodu): 0
+         Passed!  - Failed:     0, Passed:     8, Skipped:     0, Total:     8, Duration: 120 ms - product-service.tests.dll (net10.0)
+         Passed!  - Failed:     0, Passed:     6, Skipped:     0, Total:     6, Duration: 501 ms - order-service.tests.dll (net10.0)
+
+23 gecti, 0 kaldi
+cikis kodu: 0
+
+## make dogrula-lab LAB=02-b EKIP=01
+
+LAB 02-B (ekip-01)
+
+Tag'ler
+  GECTI  v1.0.0 annotated tag: "release: v1.0.0"
+  GECTI  v1.0.0 main uzerinde: evet
+  GECTI  v1.0.1 annotated tag: "release: v1.0.1"
+  GECTI  v1.0.1 main uzerinde: evet
+  GECTI  v* tag'ini olusturabilen: Maintainers
+
+CHANGELOG (main)
+  GECTI  1.0.0 bolumu
+  GECTI  1.0.1 bolumu
+
+Hotfix iki yerde
+  GECTI  main'de: e2a876e fix(order): reject empty product id
+  GECTI  develop'ta: e2a876e fix(order): reject empty product id
+  GECTI  release geri merge edilmis (v1.0.0 develop gecmisinde): evet
+
+Davranis: bos ekipman kodu
+  GECTI  v1.0.0: bos ekipman kodu kabul ediliyor (hata surumde duruyor): 201
+  GECTI  v1.0.1: bos ekipman kodu reddediliyor: 400
+  GECTI  v1.0.1: gecerli talep: 201
+
+MR gecmisi
+  GECTI  MR !3: release/1.0.0 -> main merge edilmis
+  GECTI  MR !5: hotfix/1.0.1 -> main merge edilmis
+  GECTI  MR !4: release/1.0.0 -> develop merge edilmis
+  GECTI  MR !6: hotfix/1.0.1 -> develop merge edilmis
+
+17 gecti, 0 kaldi
+cikis kodu: 0
+
+## make dogrula-lab LAB=03-a EKIP=01
+
+LAB 03-A (ekip-01)
+  GECTI  repo: develop@36433a1
+
+Dosyalar ve kurallar
+  GECTI  src/order-service/Dockerfile var
+  GECTI  src/product-service/Dockerfile var
+  GECTI  src/web-ui/Dockerfile var
+  GECTI  .dockerignore var
+  GECTI  order-service: ARG MCR
+  GECTI  order-service: temel imajlar ${MCR} uzerinden
+  GECTI  order-service: multi-stage (SDK ile build)
+  GECTI  order-service: COPY NuGet.config
+  GECTI  order-service: USER $APP_UID
+  GECTI  product-service: ARG MCR
+  GECTI  product-service: temel imajlar ${MCR} uzerinden
+  GECTI  product-service: multi-stage (SDK ile build)
+  GECTI  product-service: COPY NuGet.config
+  GECTI  product-service: USER $APP_UID
+  GECTI  web-ui: ARG HUB
+  GECTI  web-ui: Node ile build
+  GECTI  web-ui: nginx-unprivileged
+  GECTI  web-ui: .npmrc kopyalaniyor (npm ci Nexus'tan)
+  GECTI  Dockerfile'larda :latest ve '# syntax=' yok
+  GECTI  .dockerignore: node_modules
+  GECTI  .dockerignore: bin
+  GECTI  .dockerignore: obj
+  GECTI  .dockerignore: .git
+
+Build (context: repo koku)
+  GECTI  docker build order-service (cikis kodu): 0
+  GECTI  docker build product-service (cikis kodu): 0
+  GECTI  docker build web-ui (cikis kodu): 0
+
+Ikinci build: onbellek
+  GECTI  order-service: restore CACHED
+  GECTI  web-ui: npm ci CACHED
+
+Imajlar root olmayan kullaniciyla calisiyor
+  GECTI  product-service: /health -> 200
+  GECTI  product-service: surec kullanicisi uid=1654 (root degil)
+  GECTI  product-service /health: Healthy
+  GECTI  order-service: /health -> 200
+  GECTI  order-service: surec kullanicisi uid=1654 (root degil)
+  KALDI  web-ui: / yanit vermiyor
+/docker-entrypoint.sh: Launching /docker-entrypoint.d/30-tune-worker-processes.sh
+/docker-entrypoint.sh: Configuration complete; ready for start up
+2026/11/24 01:17:38 [emerg] 1#1: host not found in upstream "product-service" in /etc/nginx/conf.d/default.conf:12
+nginx: [emerg] host not found in upstream "product-service" in /etc/nginx/conf.d/default.conf:12
+  KALDI  web-ui: surec root olarak calisiyor (uid=?)
+  BILGI  boyutlar: product-service 376MB;order-service 435MB;web-ui 127MB;
+
+34 gecti, 2 kaldi
+
+make: *** [dogrula-lab] Error 1
+cikis kodu: 2
+
+## make dogrula-lab LAB=03-b EKIP=01
+
+LAB 03-B (ekip-01)
+
+Registry: uc imaj, 1.0.1 ve commit SHA etiketi ayni digest
+  GECTI  order-service:1.0.1 var (sha256:ed8f9301de52…)
+  GECTI  order-service: commit SHA etiketi d99149c ayni imaji gosteriyor
+  GECTI  product-service:1.0.1 var (sha256:023c9f67fcc9…)
+  GECTI  product-service: commit SHA etiketi d99149c ayni imaji gosteriyor
+  GECTI  web-ui:1.0.1 var (sha256:e957841e345d…)
+  GECTI  web-ui: commit SHA etiketi d99149c ayni imaji gosteriyor
+
+Repo (develop): compose.yaml ve nginx.conf
+  GECTI  imaj adi ${IMG} ve ${TAG} ile
+  GECTI  port ${WEB_PORT:-8080}:8080
+  GECTI  orders-data volume'u /data'da
+  GECTI  baglanti ayari ortam degiskeniyle
+  GECTI  port yayinlayan servis sayisi (yalnizca web-ui): 1
+  GECTI  compose.yaml icinde latest yok
+  GECTI  nginx: /api/products -> product-service
+  GECTI  nginx: /api/orders -> order-service
+  GECTI  order-service Dockerfile: /data dizini uygulama kullanicisinin
+
+Katilimci makinesi: Docker daemon'i registry'ye guveniyor (TLS dogrulamasi acik)
+  GECTI  /etc/docker/certs.d/gitlab.kurum.test:5050/ca.crt kurum CA'si
+  GECTI  insecure-registries kullanilmamis
+
+Test VM: /opt/saha/ekip01, Compose projesi ekip01
+  GECTI  order-service imaji registry'den, etiket 1.0.1: gitlab.kurum.test:5050/egitim/ekip-01/saha-ekipman-portal/order-service:1.0.1
+  GECTI  order-service port yayinlamiyor
+  GECTI  order-service root degil (uid=1654)
+  GECTI  product-service imaji registry'den, etiket 1.0.1: gitlab.kurum.test:5050/egitim/ekip-01/saha-ekipman-portal/product-service:1.0.1
+  GECTI  product-service port yayinlamiyor
+  GECTI  product-service root degil (uid=1654)
+  GECTI  web-ui imaji registry'den, etiket 1.0.1: gitlab.kurum.test:5050/egitim/ekip-01/saha-ekipman-portal/web-ui:1.0.1
+  GECTI  web-ui port yayinliyor: 8081 -> 8080
+  GECTI  web-ui root degil (uid=101)
+  GECTI  registry girisi ekibin kendi dizininde (DOCKER_CONFIG)
+  GECTI  test VM'de kaynak kod yok
+
+Smoke test ve kalicilik (http://test-vm.kurum.test:8081)
+  GECTI  arayuz: 200
+  GECTI  /api/products
+  GECTI  talep kaydi var (2 talep)
+  GECTI  order-service yeniden yaratildi, talepler duruyor: [{"id":1,"productId":"KBL-02","quantity":3,"createdAt":"2026-11-23T22:38:22.8790378Z"},{"id":2,"productId":"STD-03","quantity":1,"createdAt":"2026-11-23T22:38:25.7731345Z"}]
+  GECTI  veri volume'u: ekip01_orders-data
+
+Merge Request
+  GECTI  MR !7: feature/9-docker -> develop merge edilmis
+
+34 gecti, 0 kaldi
+cikis kodu: 0
+
+# ekip-02 (checkpoint/gun1 durumunda)
+
+## make dogrula-lab LAB=01-a EKIP=02
+
+LAB 01-A (ekip-02)
+  GECTI  repo var: /home/ekip02/saha-ekipman-portal (feature/katalog-sarj-unitesi@e775d59)
+
+Build ve testler
+  GECTI  dotnet build (cikis kodu): 0
+  GECTI  dotnet test (cikis kodu): 0
+         Passed!  - Failed:     0, Passed:     5, Skipped:     0, Total:     5, Duration: 112 ms - product-service.tests.dll (net10.0)
+         Passed!  - Failed:     0, Passed:     4, Skipped:     0, Total:     4, Duration: 465 ms - order-service.tests.dll (net10.0)
+  GECTI  npm test (cikis kodu): 0
+         Tests:       14 passed, 14 total
+
+Surum cakismasi (NU1605)
+  GECTI  hazir branch'te hata uretiliyor: origin lab/01a-conflict -> NU1605
+  GECTI  cozulmus branch'te dotnet restore (cikis kodu): 0
+
+Calisan uygulama (gecici portlarda, gecici veritabaniyla)
+  GECTI  product-service /health: Healthy
+  GECTI  order-service /health: Healthy
+  GECTI  katalog listeleniyor (ADP-01 Terminal adaptörü)
+  GECTI  katalogdaki urun sayisi en az 3: evet
+  GECTI  /swagger: 200
+  GECTI  talep olusturma: POST /api/orders: 201
+  GECTI  talep listede: GET /api/orders
+  BILGI  tarayicidaki arayuz bu betikle denetlenmez; kaniti lab-rehberleri/img/lab-01-a-arayuz.png
+
+13 gecti, 0 kaldi
+cikis kodu: 0
+
+## make dogrula-lab LAB=01-b EKIP=02
+
+LAB 01-B (ekip-02)
+  GECTI  branch var: feature/katalog-sarj-unitesi@e775d59
+  GECTI  yarim kalmis merge yok
+
+Katalog
+  GECTI  catalog.json gecerli JSON
+  GECTI  SRJ-04 kaydi (tek olmali): 1
+  GECTI  SRJ-04 adi: Şarj ünitesi
+  GECTI  conflict isareti kalmamis
+  GECTI  test SRJ-04 kaydini bekliyor
+
+Merge ve gecmis
+  GECTI  lab/01b-rename merge edilmis
+  GECTI  lab/01b-rename'i getiren merge commit'i: 1
+  GECTI  commit mesajlari Conventional Commits biciminde (1 commit)
+
+Testler (feature/katalog-sarj-unitesi)
+  GECTI  dotnet test (cikis kodu): 0
+         Passed!  - Failed:     0, Passed:     5, Skipped:     0, Total:     5, Duration: 106 ms - product-service.tests.dll (net10.0)
+         Passed!  - Failed:     0, Passed:     4, Skipped:     0, Total:     4, Duration: 494 ms - order-service.tests.dll (net10.0)
+
+11 gecti, 0 kaldi
+cikis kodu: 0
+
+# lab-03-a, ekip-01: yukaridaki 2 KALDI gercek bir betik eksigiydi. LAB 03-B'den sonra nginx.conf /api kurallarini icerir ve
+# web-ui imaji tek basina acilmaz (beklenen davranis). Dogrulama betigi bu durumu taniyacak sekilde duzeltildi; yeniden:
+
+## make dogrula-lab LAB=03-a EKIP=01
+
+LAB 03-A (ekip-01)
+  GECTI  repo: develop@36433a1
+
+Dosyalar ve kurallar
+  GECTI  src/order-service/Dockerfile var
+  GECTI  src/product-service/Dockerfile var
+  GECTI  src/web-ui/Dockerfile var
+  GECTI  .dockerignore var
+  GECTI  order-service: ARG MCR
+  GECTI  order-service: temel imajlar ${MCR} uzerinden
+  GECTI  order-service: multi-stage (SDK ile build)
+  GECTI  order-service: COPY NuGet.config
+  GECTI  order-service: USER $APP_UID
+  GECTI  product-service: ARG MCR
+  GECTI  product-service: temel imajlar ${MCR} uzerinden
+  GECTI  product-service: multi-stage (SDK ile build)
+  GECTI  product-service: COPY NuGet.config
+  GECTI  product-service: USER $APP_UID
+  GECTI  web-ui: ARG HUB
+  GECTI  web-ui: Node ile build
+  GECTI  web-ui: nginx-unprivileged
+  GECTI  web-ui: .npmrc kopyalaniyor (npm ci Nexus'tan)
+  GECTI  Dockerfile'larda :latest ve '# syntax=' yok
+  GECTI  .dockerignore: node_modules
+  GECTI  .dockerignore: bin
+  GECTI  .dockerignore: obj
+  GECTI  .dockerignore: .git
+
+Build (context: repo koku)
+  GECTI  docker build order-service (cikis kodu): 0
+  GECTI  docker build product-service (cikis kodu): 0
+  GECTI  docker build web-ui (cikis kodu): 0
+
+Ikinci build: onbellek
+  GECTI  order-service: restore CACHED
+  GECTI  web-ui: npm ci CACHED
+
+Imajlar root olmayan kullaniciyla calisiyor
+  GECTI  product-service: /health -> 200
+  GECTI  product-service: surec kullanicisi uid=1654 (root degil)
+  GECTI  product-service /health: Healthy
+  GECTI  order-service: /health -> 200
+  GECTI  order-service: surec kullanicisi uid=1654 (root degil)
+  BILGI  nginx.conf /api kurallarini iceriyor (LAB 03-B yapilmis): web-ui servis adlari --add-host ile cozdurulerek deneniyor
+  GECTI  web-ui: / -> 200
+  GECTI  web-ui: surec kullanicisi uid=101 (root degil)
+  BILGI  boyutlar: product-service 376MB;order-service 435MB;web-ui 127MB;
+
+36 gecti, 0 kaldi
+cikis kodu: 0

@@ -1,0 +1,454 @@
+Started by user admin
+[Pipeline] Start of Pipeline
+[Pipeline] node
+Running on agent-1 in /home/jenkins/agent/workspace/ekip-99/qg-hata-demose
+[Pipeline] {
+[Pipeline] deleteDir
+[Pipeline] git
+Selected Git installation does not exist. Using Default
+The recommended git tool is: NONE
+using credential gitlab-repo
+Cloning the remote Git repository
+Avoid second fetch
+Checking out Revision 591162bddbc6a770719f13032858dbd16a421d37 (refs/remotes/origin/develop)
+Commit message: "Merge branch 'release/1.1.0' into 'develop'"
+Cloning repository https://gitlab.kurum.test/egitim/ekip-99/saha-ekipman-portal.git
+ > git init /home/jenkins/agent/workspace/ekip-99/qg-hata-demose # timeout=10
+Fetching upstream changes from https://gitlab.kurum.test/egitim/ekip-99/saha-ekipman-portal.git
+ > git --version # timeout=10
+ > git --version # 'git version 2.47.3'
+using GIT_ASKPASS to set credentials GitLab Project Access Token (repo okuma)
+ > git fetch --tags --force --progress -- https://gitlab.kurum.test/egitim/ekip-99/saha-ekipman-portal.git +refs/heads/*:refs/remotes/origin/* # timeout=10
+ > git config remote.origin.url https://gitlab.kurum.test/egitim/ekip-99/saha-ekipman-portal.git # timeout=10
+ > git config --add remote.origin.fetch +refs/heads/*:refs/remotes/origin/* # timeout=10
+ > git rev-parse refs/remotes/origin/develop^{commit} # timeout=10
+ > git config core.sparsecheckout # timeout=10
+ > git checkout -f 591162bddbc6a770719f13032858dbd16a421d37 # timeout=10
+ > git branch -a -v --no-abbrev # timeout=10
+ > git checkout -b develop 591162bddbc6a770719f13032858dbd16a421d37 # timeout=10
+ > git rev-list --no-walk 591162bddbc6a770719f13032858dbd16a421d37 # timeout=10
+[Pipeline] withEnv
+[Pipeline] {
+[Pipeline] withSonarQubeEnv
+Injecting SonarQube environment variables using the configuration: sonarqube
+[Pipeline] {
+[Pipeline] sh
++ dotnet restore SahaPortal.sln
+  Determining projects to restore...
+  Restored /home/jenkins/agent/workspace/ekip-99/qg-hata-demose/src/common-contracts/common-contracts.csproj (in 43 ms).
+  Restored /home/jenkins/agent/workspace/ekip-99/qg-hata-demose/src/product-service/product-service.csproj (in 68 ms).
+  Restored /home/jenkins/agent/workspace/ekip-99/qg-hata-demose/src/order-service/order-service.csproj (in 69 ms).
+  Restored /home/jenkins/agent/workspace/ekip-99/qg-hata-demose/tests/product-service.tests/product-service.tests.csproj (in 76 ms).
+  Restored /home/jenkins/agent/workspace/ekip-99/qg-hata-demose/tests/order-service.tests/order-service.tests.csproj (in 76 ms).
+[Pipeline] sh
++ ./ci/analyze.sh
+SonarScanner for .NET 12.1
+Using the .NET Core version of the SonarScanner for .NET
+Pre-processing started.
+Preparing working directories...
+16:12:23.073  Updating build integration targets...
+16:12:23.131  Using SonarQube 26.11.0.134175.
+16:12:23.228  Fetching analysis configuration settings...
+16:12:23.344  Provisioning analyzer assemblies for cs...
+16:12:23.344  Installing required Roslyn analyzers...
+16:12:23.344  Processing plugin: csharp version 10.35.0.4138
+16:12:23.395  Provisioning analyzer assemblies for vbnet...
+16:12:23.395  Installing required Roslyn analyzers...
+16:12:23.395  Processing plugin: vbnet version 10.35.0.4138
+16:12:23.397  Incremental PR analysis: Base branch parameter was not provided.
+16:12:23.397  Cache data is empty. A full analysis will be performed.
+16:12:23.415  Pre-processing succeeded.
+/home/jenkins/agent/workspace/ekip-99/qg-hata-demose/src/product-service/Program.cs(24,1): warning S6966: Await RunAsync instead. [/home/jenkins/agent/workspace/ekip-99/qg-hata-demose/src/product-service/product-service.csproj]
+/home/jenkins/agent/workspace/ekip-99/qg-hata-demose/src/order-service/Program.cs(19,5): warning S6966: Await EnsureCreatedAsync instead. [/home/jenkins/agent/workspace/ekip-99/qg-hata-demose/src/order-service/order-service.csproj]
+/home/jenkins/agent/workspace/ekip-99/qg-hata-demose/src/order-service/Program.cs(28,1): warning S6966: Await RunAsync instead. [/home/jenkins/agent/workspace/ekip-99/qg-hata-demose/src/order-service/order-service.csproj]
+  common-contracts -> /home/jenkins/agent/workspace/ekip-99/qg-hata-demose/src/common-contracts/bin/Release/net10.0/common-contracts.dll
+  Sonar: (common-contracts.csproj) Project processed successfully
+  product-service -> /home/jenkins/agent/workspace/ekip-99/qg-hata-demose/src/product-service/bin/Release/net10.0/product-service.dll
+  order-service -> /home/jenkins/agent/workspace/ekip-99/qg-hata-demose/src/order-service/bin/Release/net10.0/order-service.dll
+  Sonar: (product-service.csproj) Project processed successfully
+  Sonar: (order-service.csproj) Project processed successfully
+  product-service.tests -> /home/jenkins/agent/workspace/ekip-99/qg-hata-demose/tests/product-service.tests/bin/Release/net10.0/product-service.tests.dll
+  order-service.tests -> /home/jenkins/agent/workspace/ekip-99/qg-hata-demose/tests/order-service.tests/bin/Release/net10.0/order-service.tests.dll
+  Sonar: (product-service.tests.csproj) Project processed successfully
+  Sonar: (order-service.tests.csproj) Project processed successfully
+
+Build succeeded.
+
+/home/jenkins/agent/workspace/ekip-99/qg-hata-demose/src/product-service/Program.cs(24,1): warning S6966: Await RunAsync instead. [/home/jenkins/agent/workspace/ekip-99/qg-hata-demose/src/product-service/product-service.csproj]
+/home/jenkins/agent/workspace/ekip-99/qg-hata-demose/src/order-service/Program.cs(19,5): warning S6966: Await EnsureCreatedAsync instead. [/home/jenkins/agent/workspace/ekip-99/qg-hata-demose/src/order-service/order-service.csproj]
+/home/jenkins/agent/workspace/ekip-99/qg-hata-demose/src/order-service/Program.cs(28,1): warning S6966: Await RunAsync instead. [/home/jenkins/agent/workspace/ekip-99/qg-hata-demose/src/order-service/order-service.csproj]
+    3 Warning(s)
+    0 Error(s)
+
+Time Elapsed 00:00:02.60
+Test run for /home/jenkins/agent/workspace/ekip-99/qg-hata-demose/tests/product-service.tests/bin/Release/net10.0/product-service.tests.dll (.NETCoreApp,Version=v10.0)
+Test run for /home/jenkins/agent/workspace/ekip-99/qg-hata-demose/tests/order-service.tests/bin/Release/net10.0/order-service.tests.dll (.NETCoreApp,Version=v10.0)
+A total of 1 test files matched the specified pattern.
+A total of 1 test files matched the specified pattern.
+Results File: /home/jenkins/agent/workspace/ekip-99/qg-hata-demose/tests/product-service.tests/TestResults/junit.xml
+
+Passed!  - Failed:     0, Passed:     8, Skipped:     0, Total:     8, Duration: 119 ms - product-service.tests.dll (net10.0)
+The test session artifacts were not saved: The user-private temporary directory '/run/user/1000' does not exist.
+Results File: /home/jenkins/agent/workspace/ekip-99/qg-hata-demose/tests/order-service.tests/TestResults/junit.xml
+
+Passed!  - Failed:     0, Passed:    21, Skipped:     0, Total:    21, Duration: 519 ms - order-service.tests.dll (net10.0)
+The test session artifacts were not saved: The user-private temporary directory '/run/user/1000' does not exist.
+SonarScanner for .NET 12.1
+Using the .NET Core version of the SonarScanner for .NET
+Post-processing started.
+16:12:27.847  Starting with SonarScanner for .NET v8 the way the `sonar.projectBaseDir` property is automatically detected has changed and this has an impact on the files that are analyzed and other properties that are resolved relative to it like `sonar.exclusions` and `sonar.test.exclusions`. If you would like to customize the behavior, please set the `sonar.projectBaseDir` property to point to a directory that contains all the source code you want to analyze. The path may be relative (to the directory from which the analysis was started) or absolute.
+16:12:27.941  Using Java found in Analysis Config: /home/jenkins/.sonar/cache/b1734db7ade49c3f6acc6ae06233b8c2dd90e3e2f00f67000ae1c972aaa64d8c/OpenJDK21U-jre_aarch64_linux_hotspot_21.0.13_9.tar.gz_extracted/jdk-21.0.13+9-jre/bin/java
+16:12:28.137  INFO: Starting SonarScanner Engine...
+16:12:28.137  INFO: Java 21.0.13 Eclipse Adoptium (64-bit)
+16:12:28.377  INFO: Load global settings
+16:12:28.522  INFO: Load global settings (done) | time=145ms
+16:12:28.523  INFO: Server id: 303924D4-AaIOOTHI1I9mO0JrbWdy
+16:12:28.526  INFO: Found an active CI vendor: 'Jenkins'
+16:12:28.664  INFO: Loading required plugins
+16:12:28.664  INFO: Load plugins index
+16:12:28.675  INFO: Load plugins index (done) | time=9ms
+16:12:28.675  INFO: Load/download plugins
+16:12:28.679  INFO: Load/download plugins (done) | time=4ms
+16:12:28.825  INFO: Load project settings for component key: 'saha-portal-ekip99'
+16:12:28.834  INFO: Load project settings for component key: 'saha-portal-ekip99' (done) | time=8ms
+16:12:28.842  INFO: Process project properties
+16:12:28.855  INFO: Process project properties (done) | time=13ms
+16:12:28.861  INFO: Project key: saha-portal-ekip99
+16:12:28.861  INFO: Base dir: /home/jenkins/agent/workspace/ekip-99/qg-hata-demose
+16:12:28.861  INFO: Working dir: /home/jenkins/agent/workspace/ekip-99/qg-hata-demose/.sonarqube/out/.sonar
+16:12:28.909  INFO: Load quality profiles
+16:12:28.928  INFO: Load quality profiles (done) | time=19ms
+16:12:28.940  INFO: Load active rules
+16:12:29.007  INFO: Load active rules (done) | time=67ms
+16:12:29.010  INFO: Load analysis cache
+16:12:29.018  INFO: Load analysis cache | time=8ms
+16:12:29.066  INFO: Preprocessing files...
+16:12:29.104  INFO: 8 languages detected in 48 preprocessed files (done) | time=37ms
+16:12:29.104  INFO: 0 files ignored because of inclusion/exclusion patterns
+16:12:29.104  INFO: 57 files ignored because of scm ignore settings
+16:12:29.105  INFO: Loading plugins for detected languages
+16:12:29.105  INFO: Load/download plugins
+16:12:29.111  INFO: Load/download plugins (done) | time=6ms
+16:12:29.188  INFO: Executing phase 2 project builders
+16:12:29.202  INFO: Executing phase 2 project builders (done) | time=14ms
+16:12:29.205  INFO: Load project repositories
+16:12:29.262  INFO: Load project repositories (done) | time=57ms
+16:12:29.278  INFO: Indexing files...
+16:12:29.278  INFO: Project configuration:
+16:12:29.278  INFO:   Excluded sources: **/coverage.opencover.xml
+16:12:29.279  INFO: Indexing files of module 'common-contracts'
+16:12:29.279  INFO:   Base dir: /home/jenkins/agent/workspace/ekip-99/qg-hata-demose/src/common-contracts
+16:12:29.280  INFO:   Source paths: CreateOrderRequest.cs, OrderDto.cs, ProductDto.cs, obj/projec...
+16:12:29.280  INFO:   Excluded sources: **/coverage.opencover.xml
+16:12:29.287  INFO: Indexing files of module 'product-service'
+16:12:29.287  INFO:   Base dir: /home/jenkins/agent/workspace/ekip-99/qg-hata-demose/src/product-service
+16:12:29.287  INFO:   Source paths: Dockerfile, appsettings.json, Data/catalog.json, Properties/l...
+16:12:29.287  INFO:   Excluded sources: **/coverage.opencover.xml
+16:12:29.290  INFO: Indexing files of module 'order-service.tests'
+16:12:29.290  INFO:   Base dir: /home/jenkins/agent/workspace/ekip-99/qg-hata-demose/tests/order-service.tests
+16:12:29.290  INFO:   Test paths: obj/project.assets.json, obj/order-service.tests.csproj.nuget.d...
+16:12:29.290  INFO:   Excluded sources: **/coverage.opencover.xml
+16:12:29.295  INFO: Indexing files of module 'product-service.tests'
+16:12:29.295  INFO:   Base dir: /home/jenkins/agent/workspace/ekip-99/qg-hata-demose/tests/product-service.tests
+16:12:29.295  INFO:   Test paths: obj/project.assets.json, obj/product-service.tests.csproj.nuget...
+16:12:29.295  INFO:   Excluded sources: **/coverage.opencover.xml
+16:12:29.296  INFO: Indexing files of module 'order-service'
+16:12:29.296  INFO:   Base dir: /home/jenkins/agent/workspace/ekip-99/qg-hata-demose/src/order-service
+16:12:29.296  INFO:   Source paths: Dockerfile, appsettings.json, Properties/launchSettings.json,...
+16:12:29.296  INFO:   Excluded sources: **/coverage.opencover.xml
+16:12:29.301  INFO: Indexing files of module 'saha-portal-ekip99'
+16:12:29.301  INFO:   Base dir: /home/jenkins/agent/workspace/ekip-99/qg-hata-demose
+16:12:29.301  INFO:   Source paths: deploy/deploy.sh, deploy/compose.yaml, deploy/nginx.conf, ci/...
+16:12:29.301  INFO:   Test paths: src/web-ui/src/api.test.js, src/web-ui/src/App.test.jsx, src/we...
+16:12:29.301  INFO:   Excluded sources: **/coverage.opencover.xml
+16:12:29.304  INFO: 48 files indexed (done) | time=26ms
+16:12:29.305  INFO: Quality profile for cs: Sonar way core
+16:12:29.305  INFO: Quality profile for css: Sonar way core
+16:12:29.305  INFO: Quality profile for docker: Sonar way core
+16:12:29.305  INFO: Quality profile for js: Sonar way core
+16:12:29.305  INFO: Quality profile for json: Sonar way comprehensive
+16:12:29.305  INFO: Quality profile for web: Sonar way core
+16:12:29.305  INFO: Quality profile for xml: Sonar way core
+16:12:29.305  INFO: Quality profile for yaml: Sonar way comprehensive
+16:12:29.305  INFO: ------------- Run sensors on module order-service
+16:12:29.325  INFO: Load metrics repository
+16:12:29.336  INFO: Load metrics repository (done) | time=11ms
+16:12:29.558  INFO: Reflections took 51 ms to scan 1 urls, producing 30 keys and 313 values
+16:12:29.632  INFO: Sensor IaC YAML File Type Classification Sensor [iac]
+16:12:29.636  INFO: Sensor IaC YAML File Type Classification Sensor [iac] (done) | time=3ms
+16:12:29.636  INFO: Sensor IaC CloudFormation Sensor [iac]
+16:12:29.636  INFO: There are no files to be analyzed for the CloudFormation language
+16:12:29.636  INFO: Sensor IaC CloudFormation Sensor [iac] (done) | time=0ms
+16:12:29.636  INFO: Sensor IaC cfn-lint report Sensor [iac]
+16:12:29.636  INFO: Sensor IaC cfn-lint report Sensor [iac] (done) | time=0ms
+16:12:29.636  INFO: Sensor IaC hadolint report Sensor [iac]
+16:12:29.636  INFO: Sensor IaC hadolint report Sensor [iac] (done) | time=0ms
+16:12:29.636  INFO: Sensor IaC Azure Resource Manager Sensor [iac]
+16:12:29.636  INFO: There are no files to be analyzed for the Azure Resource Manager language
+16:12:29.636  INFO: Sensor IaC Azure Resource Manager Sensor [iac] (done) | time=0ms
+16:12:29.636  INFO: Sensor Java Config Sensor [iac]
+16:12:29.636  INFO: There are no files to be analyzed for the Java language
+16:12:29.636  INFO: Sensor Java Config Sensor [iac] (done) | time=0ms
+16:12:29.636  INFO: Sensor IaC Docker Sensor [iac]
+16:12:29.676  INFO: 1 source file to be analyzed
+16:12:29.709  INFO: 1/1 source file has been analyzed
+16:12:29.709  INFO: Sensor IaC Docker Sensor [iac] (done) | time=72ms
+16:12:29.709  INFO: Sensor C# Project Type Information [csharp]
+16:12:29.710  INFO: Sensor C# Project Type Information [csharp] (done) | time=0ms
+16:12:29.710  INFO: Sensor C# Analysis Log [csharp]
+16:12:29.712  INFO: Roslyn version: 5.9.0.0
+16:12:29.712  INFO: Language version: CSharp14
+16:12:29.712  INFO: Concurrent execution: enabled
+16:12:29.712  INFO: Sensor C# Analysis Log [csharp] (done) | time=2ms
+16:12:29.712  INFO: Sensor C# Method Declarations [csharp]
+16:12:29.712  INFO: Sensor C# Method Declarations [csharp] (done) | time=0ms
+16:12:29.712  INFO: Sensor C# Telemetry [csharp]
+16:12:29.713  INFO: Sensor C# Telemetry [csharp] (done) | time=0ms
+16:12:29.713  INFO: Sensor C# Telemetry Json [csharp]
+16:12:29.719  INFO: Sensor C# Telemetry Json [csharp] (done) | time=5ms
+16:12:29.719  INFO: Sensor C# Properties [csharp]
+16:12:29.720  INFO: Sensor C# Properties [csharp] (done) | time=0ms
+16:12:29.720  INFO: Sensor HTML [web]
+16:12:29.726  INFO: Sensor HTML [web] (done) | time=6ms
+16:12:29.728  INFO: ------------- Run sensors on module common-contracts
+16:12:29.759  INFO: Reflections took 11 ms to scan 1 urls, producing 30 keys and 313 values
+16:12:29.769  INFO: Sensor IaC YAML File Type Classification Sensor [iac]
+16:12:29.769  INFO: Sensor IaC YAML File Type Classification Sensor [iac] (done) | time=0ms
+16:12:29.769  INFO: Sensor IaC hadolint report Sensor [iac]
+16:12:29.769  INFO: Sensor IaC hadolint report Sensor [iac] (done) | time=0ms
+16:12:29.769  INFO: Sensor Java Config Sensor [iac]
+16:12:29.769  INFO: There are no files to be analyzed for the Java language
+16:12:29.769  INFO: Sensor Java Config Sensor [iac] (done) | time=0ms
+16:12:29.769  INFO: Sensor IaC Docker Sensor [iac]
+16:12:29.770  INFO: There are no files to be analyzed for the Docker language
+16:12:29.770  INFO: Sensor IaC Docker Sensor [iac] (done) | time=0ms
+16:12:29.770  INFO: Sensor C# Project Type Information [csharp]
+16:12:29.770  INFO: Sensor C# Project Type Information [csharp] (done) | time=0ms
+16:12:29.770  INFO: Sensor C# Analysis Log [csharp]
+16:12:29.771  INFO: Roslyn version: 5.9.0.0
+16:12:29.771  INFO: Language version: CSharp14
+16:12:29.771  INFO: Concurrent execution: enabled
+16:12:29.771  INFO: Sensor C# Analysis Log [csharp] (done) | time=0ms
+16:12:29.771  INFO: Sensor C# Method Declarations [csharp]
+16:12:29.771  INFO: Sensor C# Method Declarations [csharp] (done) | time=0ms
+16:12:29.771  INFO: Sensor C# Telemetry [csharp]
+16:12:29.771  INFO: Sensor C# Telemetry [csharp] (done) | time=0ms
+16:12:29.771  INFO: Sensor C# Telemetry Json [csharp]
+16:12:29.772  INFO: Sensor C# Telemetry Json [csharp] (done) | time=0ms
+16:12:29.772  INFO: Sensor C# Properties [csharp]
+16:12:29.772  INFO: Sensor C# Properties [csharp] (done) | time=0ms
+16:12:29.772  INFO: Sensor HTML [web]
+16:12:29.772  INFO: Sensor HTML [web] (done) | time=0ms
+16:12:29.772  INFO: ------------- Run sensors on module order-service.tests
+16:12:29.793  INFO: Reflections took 9 ms to scan 1 urls, producing 30 keys and 313 values
+16:12:29.801  INFO: Sensor IaC YAML File Type Classification Sensor [iac]
+16:12:29.801  INFO: Sensor IaC YAML File Type Classification Sensor [iac] (done) | time=0ms
+16:12:29.801  INFO: Sensor IaC hadolint report Sensor [iac]
+16:12:29.801  INFO: Sensor IaC hadolint report Sensor [iac] (done) | time=0ms
+16:12:29.801  INFO: Sensor Java Config Sensor [iac]
+16:12:29.801  INFO: There are no files to be analyzed for the Java language
+16:12:29.802  INFO: Sensor Java Config Sensor [iac] (done) | time=0ms
+16:12:29.802  INFO: Sensor IaC Docker Sensor [iac]
+16:12:29.802  INFO: There are no files to be analyzed for the Docker language
+16:12:29.802  INFO: Sensor IaC Docker Sensor [iac] (done) | time=0ms
+16:12:29.802  INFO: Sensor C# Project Type Information [csharp]
+16:12:29.802  INFO: Sensor C# Project Type Information [csharp] (done) | time=0ms
+16:12:29.802  INFO: Sensor C# Analysis Log [csharp]
+16:12:29.802  INFO: Roslyn version: 5.9.0.0
+16:12:29.802  INFO: Language version: CSharp14
+16:12:29.802  INFO: Concurrent execution: enabled
+16:12:29.802  INFO: Sensor C# Analysis Log [csharp] (done) | time=0ms
+16:12:29.802  INFO: Sensor C# Method Declarations [csharp]
+16:12:29.804  INFO: Sensor C# Method Declarations [csharp] (done) | time=1ms
+16:12:29.804  INFO: Sensor C# Telemetry [csharp]
+16:12:29.804  INFO: Sensor C# Telemetry [csharp] (done) | time=0ms
+16:12:29.804  INFO: Sensor C# Telemetry Json [csharp]
+16:12:29.804  INFO: Sensor C# Telemetry Json [csharp] (done) | time=0ms
+16:12:29.804  INFO: Sensor C# Properties [csharp]
+16:12:29.805  INFO: Sensor C# Properties [csharp] (done) | time=0ms
+16:12:29.805  INFO: ------------- Run sensors on module product-service
+16:12:29.828  INFO: Reflections took 12 ms to scan 1 urls, producing 30 keys and 313 values
+16:12:29.834  INFO: Sensor IaC YAML File Type Classification Sensor [iac]
+16:12:29.835  INFO: Sensor IaC YAML File Type Classification Sensor [iac] (done) | time=1ms
+16:12:29.835  INFO: Sensor IaC CloudFormation Sensor [iac]
+16:12:29.835  INFO: There are no files to be analyzed for the CloudFormation language
+16:12:29.835  INFO: Sensor IaC CloudFormation Sensor [iac] (done) | time=0ms
+16:12:29.835  INFO: Sensor IaC cfn-lint report Sensor [iac]
+16:12:29.835  INFO: Sensor IaC cfn-lint report Sensor [iac] (done) | time=0ms
+16:12:29.835  INFO: Sensor IaC hadolint report Sensor [iac]
+16:12:29.835  INFO: Sensor IaC hadolint report Sensor [iac] (done) | time=0ms
+16:12:29.835  INFO: Sensor IaC Azure Resource Manager Sensor [iac]
+16:12:29.835  INFO: There are no files to be analyzed for the Azure Resource Manager language
+16:12:29.835  INFO: Sensor IaC Azure Resource Manager Sensor [iac] (done) | time=0ms
+16:12:29.835  INFO: Sensor Java Config Sensor [iac]
+16:12:29.835  INFO: There are no files to be analyzed for the Java language
+16:12:29.835  INFO: Sensor Java Config Sensor [iac] (done) | time=0ms
+16:12:29.835  INFO: Sensor IaC Docker Sensor [iac]
+16:12:29.840  INFO: 1 source file to be analyzed
+16:12:29.844  INFO: 1/1 source file has been analyzed
+16:12:29.844  INFO: Sensor IaC Docker Sensor [iac] (done) | time=8ms
+16:12:29.844  INFO: Sensor C# Project Type Information [csharp]
+16:12:29.844  INFO: Sensor C# Project Type Information [csharp] (done) | time=0ms
+16:12:29.844  INFO: Sensor C# Analysis Log [csharp]
+16:12:29.844  INFO: Roslyn version: 5.9.0.0
+16:12:29.844  INFO: Language version: CSharp14
+16:12:29.844  INFO: Concurrent execution: enabled
+16:12:29.844  INFO: Sensor C# Analysis Log [csharp] (done) | time=0ms
+16:12:29.844  INFO: Sensor C# Method Declarations [csharp]
+16:12:29.845  INFO: Sensor C# Method Declarations [csharp] (done) | time=0ms
+16:12:29.845  INFO: Sensor C# Telemetry [csharp]
+16:12:29.845  INFO: Sensor C# Telemetry [csharp] (done) | time=0ms
+16:12:29.845  INFO: Sensor C# Telemetry Json [csharp]
+16:12:29.845  INFO: Sensor C# Telemetry Json [csharp] (done) | time=0ms
+16:12:29.845  INFO: Sensor C# Properties [csharp]
+16:12:29.845  INFO: Sensor C# Properties [csharp] (done) | time=0ms
+16:12:29.845  INFO: Sensor HTML [web]
+16:12:29.845  INFO: Sensor HTML [web] (done) | time=0ms
+16:12:29.846  INFO: ------------- Run sensors on module product-service.tests
+16:12:29.866  INFO: Reflections took 8 ms to scan 1 urls, producing 30 keys and 313 values
+16:12:29.871  INFO: Sensor IaC YAML File Type Classification Sensor [iac]
+16:12:29.871  INFO: Sensor IaC YAML File Type Classification Sensor [iac] (done) | time=0ms
+16:12:29.871  INFO: Sensor IaC hadolint report Sensor [iac]
+16:12:29.871  INFO: Sensor IaC hadolint report Sensor [iac] (done) | time=0ms
+16:12:29.871  INFO: Sensor Java Config Sensor [iac]
+16:12:29.871  INFO: There are no files to be analyzed for the Java language
+16:12:29.871  INFO: Sensor Java Config Sensor [iac] (done) | time=0ms
+16:12:29.871  INFO: Sensor IaC Docker Sensor [iac]
+16:12:29.872  INFO: There are no files to be analyzed for the Docker language
+16:12:29.872  INFO: Sensor IaC Docker Sensor [iac] (done) | time=0ms
+16:12:29.872  INFO: Sensor C# Project Type Information [csharp]
+16:12:29.872  INFO: Sensor C# Project Type Information [csharp] (done) | time=0ms
+16:12:29.872  INFO: Sensor C# Analysis Log [csharp]
+16:12:29.872  INFO: Roslyn version: 5.9.0.0
+16:12:29.872  INFO: Language version: CSharp14
+16:12:29.872  INFO: Concurrent execution: enabled
+16:12:29.872  INFO: Sensor C# Analysis Log [csharp] (done) | time=0ms
+16:12:29.872  INFO: Sensor C# Method Declarations [csharp]
+16:12:29.872  INFO: Sensor C# Method Declarations [csharp] (done) | time=0ms
+16:12:29.872  INFO: Sensor C# Telemetry [csharp]
+16:12:29.872  INFO: Sensor C# Telemetry [csharp] (done) | time=0ms
+16:12:29.872  INFO: Sensor C# Telemetry Json [csharp]
+16:12:29.873  INFO: Sensor C# Telemetry Json [csharp] (done) | time=0ms
+16:12:29.873  INFO: Sensor C# Properties [csharp]
+16:12:29.873  INFO: Sensor C# Properties [csharp] (done) | time=0ms
+16:12:29.873  INFO: ------------- Run sensors on module saha-portal-ekip99
+16:12:29.893  INFO: Reflections took 11 ms to scan 1 urls, producing 30 keys and 313 values
+16:12:29.898  INFO: Sensor IaC YAML File Type Classification Sensor [iac]
+16:12:29.913  INFO: Sensor IaC YAML File Type Classification Sensor [iac] (done) | time=14ms
+16:12:29.913  INFO: Sensor IaC CloudFormation Sensor [iac]
+16:12:29.913  INFO: There are no files to be analyzed for the CloudFormation language
+16:12:29.913  INFO: Sensor IaC CloudFormation Sensor [iac] (done) | time=0ms
+16:12:29.913  INFO: Sensor IaC cfn-lint report Sensor [iac]
+16:12:29.913  INFO: Sensor IaC cfn-lint report Sensor [iac] (done) | time=0ms
+16:12:29.913  INFO: Sensor IaC Kustomization Sensor [iac]
+16:12:29.913  INFO: Sensor IaC Kustomization Sensor [iac] (done) | time=0ms
+16:12:29.913  INFO: Sensor IaC hadolint report Sensor [iac]
+16:12:29.914  INFO: Sensor IaC hadolint report Sensor [iac] (done) | time=0ms
+16:12:29.914  INFO: Sensor IaC Azure Resource Manager Sensor [iac]
+16:12:29.914  INFO: There are no files to be analyzed for the Azure Resource Manager language
+16:12:29.914  INFO: Sensor IaC Azure Resource Manager Sensor [iac] (done) | time=0ms
+16:12:29.914  INFO: Sensor Java Config Sensor [iac]
+16:12:29.914  INFO: There are no files to be analyzed for the Java language
+16:12:29.914  INFO: Sensor Java Config Sensor [iac] (done) | time=0ms
+16:12:29.914  INFO: Sensor IaC Docker Sensor [iac]
+16:12:29.917  INFO: 1 source file to be analyzed
+16:12:29.932  INFO: 1/1 source file has been analyzed
+16:12:29.932  INFO: Sensor IaC Docker Sensor [iac] (done) | time=18ms
+16:12:29.932  INFO: Sensor C# Project Type Information [csharp]
+16:12:29.932  INFO: Sensor C# Project Type Information [csharp] (done) | time=0ms
+16:12:29.932  INFO: Sensor C# Analysis Log [csharp]
+16:12:29.933  INFO: Sensor C# Analysis Log [csharp] (done) | time=0ms
+16:12:29.933  INFO: Sensor C# Method Declarations [csharp]
+16:12:29.933  INFO: Sensor C# Method Declarations [csharp] (done) | time=0ms
+16:12:29.933  INFO: Sensor C# Properties [csharp]
+16:12:29.933  INFO: Sensor C# Properties [csharp] (done) | time=0ms
+16:12:29.933  INFO: Sensor HTML [web]
+16:12:29.953  INFO: Sensor HTML [web] (done) | time=20ms
+16:12:29.953  INFO: Sensor XML Sensor [xml]
+16:12:29.955  INFO: 1 source file to be analyzed
+16:12:30.014  INFO: 1/1 source file has been analyzed
+16:12:30.014  INFO: Sensor XML Sensor [xml] (done) | time=60ms
+16:12:30.014  INFO: Sensor IaC Kubernetes Sensor [iac]
+16:12:30.062  INFO: There are no files to be analyzed for the Kubernetes language
+16:12:30.062  INFO: Sensor IaC Kubernetes Sensor [iac] (done) | time=48ms
+16:12:30.062  INFO: Sensor TextAndSecretsSensor [text]
+16:12:30.077  INFO: Available processors: 16
+16:12:30.077  INFO: Using 16 threads for analysis.
+16:12:30.253  INFO: Start fetching files for the text and secrets analysis
+16:12:30.256  INFO: Using Git CLI to retrieve dirty files
+16:12:30.261  INFO: Retrieving language associated files and files included via "sonar.text.inclusions" that are tracked by git
+16:12:30.261  INFO: Starting the text and secrets analysis
+16:12:30.262  INFO: 48 source files to be analyzed for the text and secrets analysis
+16:12:30.363  INFO: 48/48 source files have been analyzed for the text and secrets analysis
+16:12:30.365  INFO: Sensor TextAndSecretsSensor [text] (done) | time=303ms
+16:12:30.366  INFO: ------------- Run sensors on project
+16:12:30.463  INFO: Sensor C# Telemetry processor [csharp]
+16:12:30.464  INFO: Sensor C# Telemetry processor [csharp] (done) | time=0ms
+16:12:30.464  INFO: Sensor C# Telemetry Json processor [csharp]
+16:12:30.466  INFO: Sensor C# Telemetry Json processor [csharp] (done) | time=2ms
+16:12:30.466  INFO: Sensor C# [csharp]
+16:12:30.537  INFO: Importing 5 Roslyn reports
+16:12:30.544  INFO: Found 5 MSBuild C# projects: 3 MAIN projects. 2 TEST projects.
+16:12:30.544  INFO: Sensor C# [csharp] (done) | time=78ms
+16:12:30.544  INFO: Sensor Analysis Warnings import [csharp]
+16:12:30.546  INFO: Sensor Analysis Warnings import [csharp] (done) | time=1ms
+16:12:30.546  INFO: Sensor C# File Caching Sensor [csharp]
+16:12:30.547  INFO: Sensor C# File Caching Sensor [csharp] (done) | time=1ms
+16:12:30.547  INFO: Sensor C# Tests Coverage Report Import [csharp]
+16:12:30.556  INFO: Parsing the OpenCover report /home/jenkins/agent/workspace/ekip-99/qg-hata-demose/./tests/product-service.tests/TestResults/6c3e84e9-0320-436d-a2be-bafc81c30c12/coverage.opencover.xml
+16:12:30.575  INFO: Adding this code coverage report to the cache for later reuse: /home/jenkins/agent/workspace/ekip-99/qg-hata-demose/./tests/product-service.tests/TestResults/6c3e84e9-0320-436d-a2be-bafc81c30c12/coverage.opencover.xml
+16:12:30.575  INFO: Parsing the OpenCover report /home/jenkins/agent/workspace/ekip-99/qg-hata-demose/./tests/order-service.tests/TestResults/3214fa2d-4e53-4a7a-8fd1-21c690528505/coverage.opencover.xml
+16:12:30.577  INFO: Adding this code coverage report to the cache for later reuse: /home/jenkins/agent/workspace/ekip-99/qg-hata-demose/./tests/order-service.tests/TestResults/3214fa2d-4e53-4a7a-8fd1-21c690528505/coverage.opencover.xml
+16:12:30.586  INFO: Coverage Report Statistics: 8 files, 8 main files, 8 main files with coverage, 0 test files, 0 project excluded files, 0 other language files.
+16:12:30.586  INFO: Sensor C# Tests Coverage Report Import [csharp] (done) | time=38ms
+16:12:30.586  INFO: Sensor JavaScript/TypeScript/CSS analysis [javascript]
+16:12:30.707  INFO: Detected os: Linux arch: aarch64 alpine: false. Platform: LINUX_ARM64
+16:12:30.708  INFO: Using Node.js executable: 'node'.
+16:12:31.699  INFO: Memory configuration: OS (24499 MB), Docker (3072 MB), Node.js (1728 MB).
+16:12:31.706  INFO: gRPC analyze-project server listening on 127.0.0.1:33713
+16:12:31.807  INFO: Plugin version: [14.3.0.46350]
+16:12:32.808  INFO: Found 0 tsconfig.json file(s): []
+16:12:33.383  INFO: 17 source files to be analyzed
+16:12:33.383  INFO: Analyzing 15 file(s) using default options [lib: lib.es2024.d.ts, lib.dom.d.ts]
+16:12:33.383  INFO: 17/17 source files have been analyzed
+16:12:33.387  INFO: Hit the cache for 0 out of 16
+16:12:33.387  INFO: Miss the cache for 16 out of 16: ANALYSIS_MODE_INELIGIBLE [16/16]
+16:12:33.387  INFO: Sensor JavaScript/TypeScript/CSS analysis [javascript] (done) | time=2800ms
+16:12:33.387  INFO: Sensor IaC Project Sensor [iac]
+16:12:33.388  INFO: Sensor IaC Project Sensor [iac] (done) | time=0ms
+16:12:33.388  INFO: Sensor Zero Coverage Sensor
+16:12:33.389  INFO: Sensor Zero Coverage Sensor (done) | time=1ms
+16:12:33.389  INFO: ------------- Gather SCA dependencies on project
+16:12:33.391  INFO: Dependency analysis skipped
+16:12:33.396  INFO: CPD Executor 9 files had no CPD blocks
+16:12:33.396  INFO: CPD Executor Calculating CPD for 14 files
+16:12:33.402  INFO: CPD Executor CPD calculation finished (done) | time=6ms
+16:12:33.405  INFO: SCM revision ID '591162bddbc6a770719f13032858dbd16a421d37'
+16:12:33.433  INFO: Analysis report generated in 28ms, dir size=240.4 kB
+16:12:33.451  INFO: Analysis report compressed in 18ms, zip size=94.1 kB
+16:12:33.469  INFO: Analysis report uploaded in 18ms
+16:12:33.470  INFO: ANALYSIS SUCCESSFUL, you can find the results at: https://sonar.kurum.test/dashboard?id=saha-portal-ekip99
+16:12:33.470  INFO: Note that you will be able to access the updated dashboard once the server has processed the submitted analysis report
+16:12:33.470  INFO: More about the report processing at https://sonar.kurum.test/api/ce/task?id=e1e88d65-3e3b-4909-b3a9-436d1fc95654
+16:12:33.521  INFO: Analysis total time: 5.374 s
+16:12:33.533  INFO: SonarScanner Engine completed successfully
+16:12:33.549  The scanner engine has finished successfully
+16:12:33.549  Post-processing succeeded.
+[Pipeline] }
+[Pipeline] // withSonarQubeEnv
+[Pipeline] }
+[Pipeline] // withEnv
+[Pipeline] }
+[Pipeline] // node
+[Pipeline] timeout
+Timeout set to expire in 30 sec
+[Pipeline] {
+[Pipeline] waitForQualityGate
+Checking status of SonarQube task 'e1e88d65-3e3b-4909-b3a9-436d1fc95654' on server 'sonarqube'
+SonarQube task 'e1e88d65-3e3b-4909-b3a9-436d1fc95654' status is 'PENDING'
+SonarQube task 'e1e88d65-3e3b-4909-b3a9-436d1fc95654' status is 'SUCCESS'
+SonarQube task 'e1e88d65-3e3b-4909-b3a9-436d1fc95654' completed. Quality gate is 'OK'
+[Pipeline] }
+[Pipeline] // timeout
+[Pipeline] End of Pipeline
+Finished: SUCCESS

@@ -1,0 +1,455 @@
+
+[1m### Arayuz: sonar proje 99 lab-04-b-sonar-proje[0m
+ Container belbim-lab-workstation-1  Running
+  goruntu: /lab/cikti/prova-20261124T154746Z/lab-04-b-sonar-proje-form.png
+  goruntu: /lab/cikti/prova-20261124T154746Z/lab-04-b-sonar-proje-yeni-kod.png
+  tamam  SonarQube projesi olusturuldu: saha-portal-ekip99 (ana branch develop, yeni kod: kurum varsayilani)
+  goruntu: /lab/cikti/prova-20261124T154746Z/lab-04-b-sonar-proje.png
+
+[1m### Arayuz: sonar token 99 jenkins-saha-portal-ekip99 lab-04-b-sonar-token[0m
+ Container belbim-lab-workstation-1  Running
+  goruntu: /lab/cikti/prova-20261124T154746Z/lab-04-b-sonar-token-form.png
+  tamam  SonarQube token'i uretildi: jenkins-saha-portal-ekip99 (Project Analysis Token, saha-portal-ekip99); deger yalnizca bir kez gosterilir
+  goruntu: /lab/cikti/prova-20261124T154746Z/lab-04-b-sonar-token.png
+
+[1m### Arayuz: gitlab deploy-token 99 ekip99-jenkins read_registry,write_registry lab-04-b-deploy-token[0m
+ Container belbim-lab-workstation-1  Running
+  goruntu: /lab/cikti/prova-20261124T154746Z/lab-04-b-deploy-token-form.png
+  tamam  deploy token olusturuldu: ekip99-jenkins (read_registry,write_registry); deger yalnizca bir kez gosterilir
+  goruntu: /lab/cikti/prova-20261124T154746Z/lab-04-b-deploy-token.png
+
+[1m### Arayuz: jenkins credential 99 sonar-token secret ekip99-sonar - SonarQube analiz token lab-04-b-credential-sonar-token[0m
+ Container belbim-lab-workstation-1  Running
+  goruntu: /lab/cikti/prova-20261124T154746Z/lab-04-b-credential-sonar-token.png
+  tamam  credential sonar-token (secret) ekip-99 klasorune eklendi
+
+[1m### Arayuz: jenkins credential 99 gitlab-registry userpass ekip99-jenkins ekip99-jenkins Registry deploy token (Jenkins) lab-04-b-credential-gitlab-registry[0m
+ Container belbim-lab-workstation-1  Running
+  goruntu: /lab/cikti/prova-20261124T154746Z/lab-04-b-credential-gitlab-registry.png
+  tamam  credential gitlab-registry (userpass) ekip-99 klasorune eklendi
+
+[1m### Arayuz: jenkins credentials 99 gitlab-api,gitlab-repo,sonar-token,gitlab-registry lab-04-b-credentials[0m
+ Container belbim-lab-workstation-1  Running
+  tamam  credential var: gitlab-api
+  tamam  credential var: gitlab-repo
+  tamam  credential var: sonar-token
+  tamam  credential var: gitlab-registry
+  goruntu: /lab/cikti/prova-20261124T154746Z/lab-04-b-credentials.png
+
+[1m### Arayuz: gitlab issue-ac 99 dev SonarQube analizi ve Quality Gate develop'a giren her değişiklik SonarQube ile analiz edilmeli; Quality Gate kalırsa imaj üretilmemeli. lab-04-b-issue[0m
+ Container belbim-lab-workstation-1  Running
+  goruntu: /lab/cikti/prova-20261124T154746Z/lab-04-b-issue-form.png
+  tamam  issue #5 acildi: SonarQube analizi ve Quality Gate
+  goruntu: /lab/cikti/prova-20261124T154746Z/lab-04-b-issue.png
+
+[1m### Adim 2-3: ci/analyze.sh (begin -> build -> test -> end), Quality Gate ve imaj stage'leri[0m
+rol: ekip99-dev
+$ git switch develop
+Already on 'develop'
+Your branch is up to date with 'origin/develop'.
+$ git pull --ff-only
+Already up to date.
+$ git switch -c feature/sonar
+Switched to a new branch 'feature/sonar'
+$ grep -n -E 'sonarscanner|dotnet (build|test)' ci/analyze.sh
+11:dotnet sonarscanner begin /k:"$SONAR_PROJECT_KEY" \
+14:dotnet build SahaPortal.sln -c Release --no-restore
+16:dotnet test SahaPortal.sln -c Release --no-build \
+21:dotnet sonarscanner end
+$ grep -n -E "SONAR_PROJECT_KEY|stage\(|when|withSonarQubeEnv|waitForQualityGate|docker (build|push)|rev-parse" Jenkinsfile
+23:    SONAR_PROJECT_KEY = 'saha-portal-ekip99'
+27:    stage('Restore') {
+34:    stage('Build') {
+35:      when { not { branch 'develop' } }
+41:    stage('Unit Test') {
+42:      when { not { branch 'develop' } }
+54:    stage('Build + Test + SonarQube') {
+55:      when { branch 'develop' }
+57:        withSonarQubeEnv(installationName: 'sonarqube', credentialsId: 'sonar-token') {
+66:    stage('Quality Gate') {
+67:      when { branch 'develop' }
+70:          waitForQualityGate abortPipeline: true, credentialsId: 'sonar-token'
+75:    stage('web-ui') {
+90:    stage('Docker Build & Push') {
+91:      when { anyOf { branch 'develop'; branch 'main' } }
+96:                SHA=$(git rev-parse --short HEAD)
+97:                docker build -f src/product-service/Dockerfile --build-arg MCR=$MCR -t $IMG/product-service:$SHA .
+98:                docker build -f src/order-service/Dockerfile   --build-arg MCR=$MCR -t $IMG/order-service:$SHA .
+99:                docker build -f src/web-ui/Dockerfile          --build-arg HUB=$HUB -t $IMG/web-ui:$SHA .
+101:                  docker push $IMG/$s:$SHA
+$ git ls-files -s ci/analyze.sh 2>/dev/null; ls -l ci/analyze.sh | cut -c1-10
+100755 5e65f13d0a258882aa511f8d614e6c79318516eb 0	ci/analyze.sh
+-rwxr-xr-x
+$ git add Jenkinsfile ci/analyze.sh
+$ git commit -q -m ci: add SonarQube analysis, Quality Gate and image publishing
+$ git ls-files -s ci/analyze.sh | cut -c1-6
+100755
+$ git push -q -u origin feature/sonar
+remote: 
+remote: To create a merge request for feature/sonar, visit:        
+remote:   https://gitlab.kurum.test/egitim/ekip-99/saha-ekipman-portal/-/merge_requests/new?merge_request%5Bsource_branch%5D=feature%2Fsonar        
+remote: 
+
+[1m### CI durumu: build feature/sonar SUCCESS skipped due to when|^\[Pipeline\] \{ \(|Finished:[0m
+    GitLab  : feature/sonar son commit'i b450d789
+    Jenkins : ekip-99/saha-portal-ekip99/feature/sonar #1 -> SUCCESS (9 sn), derlenen commit b450d789 (ayni SHA)
+    GitLab  : commit status jenkins = success (ref feature/sonar) -> https://jenkins.kurum.test/job/ekip-99/job/saha-portal-ekip99/job/feature%252Fsonar/1/display/redirect
+    Jenkins konsolu (#1):
+      | [Pipeline] { (Declarative: Checkout SCM)
+      | [Pipeline] { (Restore)
+      | [Pipeline] { (Build)
+      | [Pipeline] { (Unit Test)
+      | [Pipeline] { (Build + Test + SonarQube)
+      | Stage "Build + Test + SonarQube" skipped due to when conditional
+      | [Pipeline] { (Quality Gate)
+      | Stage "Quality Gate" skipped due to when conditional
+      | [Pipeline] { (web-ui)
+      | [Pipeline] { (Docker Build & Push)
+      | Stage "Docker Build & Push" skipped due to when conditional
+      | [Pipeline] { (Declarative: Post Actions)
+      | Finished: SUCCESS
+    [32mtamam[0m  feature/sonar: build SUCCESS, GitLab commit status jenkins=success
+
+[1m### Arayuz: gitlab mr-ac 99 dev feature/sonar develop ci: add SonarQube analysis, Quality Gate and image publishing 5 evet evet lab-04-b-mr-sonar[0m
+ Container belbim-lab-workstation-1  Running
+  tamam  MR sablonu kendiliginden geldi (.gitlab/merge_request_templates/Default.md)
+  goruntu: /lab/cikti/prova-20261124T154746Z/lab-04-b-mr-sonar-sablon.png
+  tamam  reviewer: ekip99-lead
+  goruntu: /lab/cikti/prova-20261124T154746Z/lab-04-b-mr-sonar-form.png
+  tamam  MR !9 acildi: feature/sonar -> develop (squash: evet, kaynak branch silinsin: evet)
+  goruntu: /lab/cikti/prova-20261124T154746Z/lab-04-b-mr-sonar.png
+
+[1m### CI durumu: mr feature/sonar mergeable[0m
+    MR !9 (feature/sonar): detailed_merge_status=mergeable, head_pipeline=success, sha=b450d789
+    MR'in son commit'i b450d789 icin commit status: jenkins=success
+    [32mtamam[0m  MR !9: mergeable
+
+[1m### Arayuz: gitlab mr-merge 99 lead feature/sonar lab-04-b-merge-sonar develop[0m
+ Container belbim-lab-workstation-1  Running
+  goruntu: /lab/cikti/prova-20261124T154746Z/lab-04-b-merge-sonar-oncesi.png
+  tamam  !9: ekip99-lead merge etti
+  goruntu: /lab/cikti/prova-20261124T154746Z/lab-04-b-merge-sonar.png
+
+[1m### CI durumu: build develop SUCCESS ANALYSIS SUCCESSFUL|SonarQube task|Quality gate|digest: |Finished:[0m
+    GitLab  : develop son commit'i 9a03b55b
+    Jenkins : ekip-99/saha-portal-ekip99/develop #3 -> SUCCESS (45 sn), derlenen commit 9a03b55b (ayni SHA)
+    GitLab  : commit status jenkins = success (ref develop) -> https://jenkins.kurum.test/job/ekip-99/job/saha-portal-ekip99/job/develop/3/display/redirect
+    Jenkins konsolu (#3):
+      | 15:58:22.683  INFO: ANALYSIS SUCCESSFUL, you can find the results at: https://sonar.kurum.test/dashboard?id=saha-portal-ekip99
+      | Checking status of SonarQube task '1323ef29-9c00-4682-b57b-f2f2c8d44d03' on server 'sonarqube'
+      | SonarQube task '1323ef29-9c00-4682-b57b-f2f2c8d44d03' status is 'PENDING'
+      | SonarQube task '1323ef29-9c00-4682-b57b-f2f2c8d44d03' status is 'SUCCESS'
+      | SonarQube task '1323ef29-9c00-4682-b57b-f2f2c8d44d03' completed. Quality gate is 'OK'
+      | 9a03b55: digest: sha256:03aa003e5a78f92495cb1e4b537bf47b9db7aad67eca39b537da05bff89e40f7 size: 856
+      | 9a03b55: digest: sha256:75ed4c16779f8baebd7900b8a813278f6bedc8c81cfa49a9c0e3826681827a8c size: 856
+      | 9a03b55: digest: sha256:12c04d12a1dfa0dd79005d8ef0ede570bc4529a5f4cd707d1ac33d04922229e6 size: 856
+      | Finished: SUCCESS
+    [32mtamam[0m  develop: build SUCCESS, GitLab commit status jenkins=success
+
+[1m### CI durumu: sonar OK[0m
+    SonarQube: saha-portal-ekip99 son analiz commit 9a03b55b (develop'un son commit'i)
+    Quality Gate: OK
+          kosul yok (ilk analiz: yeni kod donemi henuz baslamadi)
+    olcumler: {"coverage":"62.4","ncloc":"472"}
+    [32mtamam[0m  Quality Gate OK (beklenen)
+
+[1m### CI durumu: imaj var[0m
+    order-service:9a03b55 var (sha256:75ed4c16779f…)
+    product-service:9a03b55 var (sha256:03aa003e5a78…)
+    web-ui:9a03b55 var (sha256:12c04d12a1df…)
+    [32mtamam[0m  commit 9a03b55 icin imaj: var (beklenen)
+
+[1m### Arayuz: sonar sayfa 99 /dashboard Passed lab-04-b-sonar-taban[0m
+ Container belbim-lab-workstation-1  Running
+  tamam  gorunuyor: Passed
+  goruntu: /lab/cikti/prova-20261124T154746Z/lab-04-b-sonar-taban.png
+rol: ekip99-dev
+$ git switch develop
+Switched to branch 'develop'
+Your branch is up to date with 'origin/develop'.
+$ git pull --ff-only
+From gitlab.kurum.test:egitim/ekip-99/saha-ekipman-portal
+   a36354d..9a03b55  develop    -> origin/develop
+Updating a36354d..9a03b55
+Fast-forward
+ Jenkinsfile   | 53 +++++++++++++++++++++++++++++++++++++++++++++++++++--
+ ci/analyze.sh | 21 +++++++++++++++++++++
+ 2 files changed, 72 insertions(+), 2 deletions(-)
+ create mode 100755 ci/analyze.sh
+$ git fetch --prune
+From gitlab.kurum.test:egitim/ekip-99/saha-ekipman-portal
+ - [deleted]         (none)     -> origin/feature/sonar
+$ git branch -D feature/sonar
+Deleted branch feature/sonar (was b450d78).
+
+[1m### Adim 4: hazir branch'teki testsiz kodu al (kendi commit'inle)[0m
+rol: ekip99-dev
+$ git switch develop
+Already on 'develop'
+Your branch is up to date with 'origin/develop'.
+$ git pull --ff-only
+Already up to date.
+$ git switch -c feature/siparis-ozeti
+Switched to a new branch 'feature/siparis-ozeti'
+$ git fetch -q sablon
+$ git checkout sablon/lab/04b-untested -- src/order-service
+$ git status --short
+A  src/order-service/Endpoints/OrderSummaryEndpoints.cs
+M  src/order-service/Program.cs
+A  src/order-service/Services/OrderSummaryCalculator.cs
+$ git diff --cached --stat | tail -n 1
+ 3 files changed, 85 insertions(+)
+# Var olan testler geciyor; yeni kodun testi yok:
+$ dotnet test tests/order-service.tests --nologo -v q 2>&1 | tail -n 2
+Passed!  - Failed:     0, Passed:     6, Skipped:     0, Total:     6, Duration: 485 ms - order-service.tests.dll (net10.0)
+VSTEST_ARTIFACTS_DIRECTORY environment variable was not found, falling back to a user-private temporary directory. This is most likely caused by an outdated Microsoft.NET.Test.Sdk package reference in the test project.
+$ git commit -q -m feat(order): add order summary endpoint
+$ git push -q -u origin feature/siparis-ozeti
+remote: 
+remote: To create a merge request for feature/siparis-ozeti, visit:        
+remote:   https://gitlab.kurum.test/egitim/ekip-99/saha-ekipman-portal/-/merge_requests/new?merge_request%5Bsource_branch%5D=feature%2Fsiparis-ozeti        
+remote: 
+$ git log --oneline -n 1
+df8d1df feat(order): add order summary endpoint
+
+[1m### CI durumu: build feature/siparis-ozeti SUCCESS skipped due to when|Passed!|Finished:[0m
+    GitLab  : feature/siparis-ozeti son commit'i df8d1dff
+    Jenkins : ekip-99/saha-portal-ekip99/feature/siparis-ozeti #1 -> SUCCESS (9 sn), derlenen commit df8d1dff (ayni SHA)
+    GitLab  : commit status jenkins = success (ref feature/siparis-ozeti) -> https://jenkins.kurum.test/job/ekip-99/job/saha-portal-ekip99/job/feature%252Fsiparis-ozeti/1/display/redirect
+    Jenkins konsolu (#1):
+      | Passed!  - Failed:     0, Passed:     8, Skipped:     0, Total:     8, Duration: 121 ms - product-service.tests.dll (net10.0)
+      | Passed!  - Failed:     0, Passed:     6, Skipped:     0, Total:     6, Duration: 507 ms - order-service.tests.dll (net10.0)
+      | Stage "Build + Test + SonarQube" skipped due to when conditional
+      | Stage "Quality Gate" skipped due to when conditional
+      | Stage "Docker Build & Push" skipped due to when conditional
+      | Finished: SUCCESS
+    [32mtamam[0m  feature/siparis-ozeti: build SUCCESS, GitLab commit status jenkins=success
+
+[1m### Arayuz: gitlab mr-ac 99 dev feature/siparis-ozeti develop feat(order): add order summary endpoint - evet evet lab-04-b-mr-testsiz[0m
+ Container belbim-lab-workstation-1  Running
+  tamam  MR sablonu kendiliginden geldi (.gitlab/merge_request_templates/Default.md)
+  goruntu: /lab/cikti/prova-20261124T154746Z/lab-04-b-mr-testsiz-sablon.png
+  tamam  reviewer: ekip99-lead
+  goruntu: /lab/cikti/prova-20261124T154746Z/lab-04-b-mr-testsiz-form.png
+  tamam  MR !10 acildi: feature/siparis-ozeti -> develop (squash: evet, kaynak branch silinsin: evet)
+  goruntu: /lab/cikti/prova-20261124T154746Z/lab-04-b-mr-testsiz.png
+
+[1m### CI durumu: mr feature/siparis-ozeti mergeable[0m
+    MR !10 (feature/siparis-ozeti): detailed_merge_status=mergeable, head_pipeline=success, sha=df8d1dff
+    MR'in son commit'i df8d1dff icin commit status: jenkins=success
+    [32mtamam[0m  MR !10: mergeable
+
+[1m### Arayuz: gitlab mr-merge 99 lead feature/siparis-ozeti lab-04-b-merge-testsiz develop[0m
+ Container belbim-lab-workstation-1  Running
+  goruntu: /lab/cikti/prova-20261124T154746Z/lab-04-b-merge-testsiz-oncesi.png
+  tamam  !10: ekip99-lead merge etti
+  goruntu: /lab/cikti/prova-20261124T154746Z/lab-04-b-merge-testsiz.png
+
+[1m### CI durumu: build develop FAILURE SonarQube task|Quality gate|quality gate|skipped due to earlier|Finished:[0m
+    GitLab  : develop son commit'i 7cfe0566
+    Jenkins : ekip-99/saha-portal-ekip99/develop #4 -> FAILURE (17 sn), derlenen commit 7cfe0566 (ayni SHA)
+    GitLab  : commit status jenkins = failed (ref develop) -> https://jenkins.kurum.test/job/ekip-99/job/saha-portal-ekip99/job/develop/4/display/redirect
+    Jenkins konsolu (#4):
+      | Checking status of SonarQube task '302c169c-d564-4b7f-85d8-3df6e0aa15b9' on server 'sonarqube'
+      | SonarQube task '302c169c-d564-4b7f-85d8-3df6e0aa15b9' status is 'PENDING'
+      | SonarQube task '302c169c-d564-4b7f-85d8-3df6e0aa15b9' status is 'SUCCESS'
+      | SonarQube task '302c169c-d564-4b7f-85d8-3df6e0aa15b9' completed. Quality gate is 'ERROR'
+      | Stage "web-ui" skipped due to earlier failure(s)
+      | Stage "Docker Build & Push" skipped due to earlier failure(s)
+      | ERROR: Pipeline aborted due to quality gate failure: ERROR
+      | Finished: FAILURE
+    [32mtamam[0m  develop: build FAILURE, GitLab commit status jenkins=failed
+
+[1m### CI durumu: sonar ERROR[0m
+    SonarQube: saha-portal-ekip99 son analiz commit 7cfe0566 (develop'un son commit'i)
+    Quality Gate: ERROR
+      kosul new_coverage: ERROR  deger=4.4  esik=LT 80
+      kosul new_duplicated_lines_density: OK  deger=0.0  esik=GT 3
+      kosul new_violations: OK  deger=0  esik=GT 0
+    olcumler: {"coverage":"45.2","new_lines":"87","new_violations":"0","ncloc":"540","new_coverage":"4.4","new_lines_to_cover":"31"}
+    [32mtamam[0m  Quality Gate ERROR (beklenen)
+
+[1m### CI durumu: imaj yok[0m
+    order-service:7cfe056 yok
+    product-service:7cfe056 yok
+    web-ui:7cfe056 yok
+    [32mtamam[0m  commit 7cfe056 icin imaj: yok (beklenen)
+
+[1m### Arayuz: jenkins sayfa 99 /job/develop/lastBuild/console Pipeline aborted due to quality gate failure: ERROR lab-04-b-jenkins-kapi-kaldi[0m
+ Container belbim-lab-workstation-1  Running
+  tamam  gorunuyor: Pipeline aborted due to quality gate failure: ERROR
+  goruntu: /lab/cikti/prova-20261124T154746Z/lab-04-b-jenkins-kapi-kaldi.png
+
+[1m### Arayuz: sonar sayfa 99 /dashboard Failed lab-04-b-sonar-kapi-kaldi[0m
+ Container belbim-lab-workstation-1  Running
+  tamam  gorunuyor: Failed
+  goruntu: /lab/cikti/prova-20261124T154746Z/lab-04-b-sonar-kapi-kaldi.png
+rol: ekip99-dev
+$ git switch develop
+Switched to branch 'develop'
+Your branch is up to date with 'origin/develop'.
+$ git pull --ff-only
+From gitlab.kurum.test:egitim/ekip-99/saha-ekipman-portal
+   9a03b55..7cfe056  develop    -> origin/develop
+Updating 9a03b55..7cfe056
+Fast-forward
+ .../Endpoints/OrderSummaryEndpoints.cs             | 27 ++++++++++
+ src/order-service/Program.cs                       |  1 +
+ .../Services/OrderSummaryCalculator.cs             | 57 ++++++++++++++++++++++
+ 3 files changed, 85 insertions(+)
+ create mode 100644 src/order-service/Endpoints/OrderSummaryEndpoints.cs
+ create mode 100644 src/order-service/Services/OrderSummaryCalculator.cs
+$ git fetch --prune
+From gitlab.kurum.test:egitim/ekip-99/saha-ekipman-portal
+ - [deleted]         (none)     -> origin/feature/siparis-ozeti
+$ git branch -D feature/siparis-ozeti
+Deleted branch feature/siparis-ozeti (was df8d1df).
+$ git log --oneline -n 1
+7cfe056 Merge branch 'feature/siparis-ozeti' into 'develop'
+
+[1m### Adim 6: eksik testleri yaz[0m
+rol: ekip99-dev
+$ git switch develop
+Already on 'develop'
+Your branch is up to date with 'origin/develop'.
+$ git pull --ff-only
+Already up to date.
+$ git switch -c feature/siparis-ozeti-testleri
+Switched to a new branch 'feature/siparis-ozeti-testleri'
+$ grep -c -E '\[(Fact|Theory)\]' tests/order-service.tests/OrderSummaryTests.cs
+5
+$ dotnet test tests/order-service.tests --nologo -v q 2>&1 | tail -n 2
+Passed!  - Failed:     0, Passed:    17, Skipped:     0, Total:    17, Duration: 517 ms - order-service.tests.dll (net10.0)
+VSTEST_ARTIFACTS_DIRECTORY environment variable was not found, falling back to a user-private temporary directory. This is most likely caused by an outdated Microsoft.NET.Test.Sdk package reference in the test project.
+$ git add tests/order-service.tests/OrderSummaryTests.cs
+$ git commit -q -m test(order): cover the order summary
+$ git push -q -u origin feature/siparis-ozeti-testleri
+remote: 
+remote: To create a merge request for feature/siparis-ozeti-testleri, visit:        
+remote:   https://gitlab.kurum.test/egitim/ekip-99/saha-ekipman-portal/-/merge_requests/new?merge_request%5Bsource_branch%5D=feature%2Fsiparis-ozeti-testleri        
+remote: 
+
+[1m### CI durumu: build feature/siparis-ozeti-testleri SUCCESS Passed!|Finished:[0m
+    GitLab  : feature/siparis-ozeti-testleri son commit'i b658ef2a
+    Jenkins : ekip-99/saha-portal-ekip99/feature/siparis-ozeti-testleri #1 -> SUCCESS (10 sn), derlenen commit b658ef2a (ayni SHA)
+    GitLab  : commit status jenkins = success (ref feature/siparis-ozeti-testleri) -> https://jenkins.kurum.test/job/ekip-99/job/saha-portal-ekip99/job/feature%252Fsiparis-ozeti-testleri/1/display/redirect
+    Jenkins konsolu (#1):
+      | Passed!  - Failed:     0, Passed:     8, Skipped:     0, Total:     8, Duration: 146 ms - product-service.tests.dll (net10.0)
+      | Passed!  - Failed:     0, Passed:    17, Skipped:     0, Total:    17, Duration: 563 ms - order-service.tests.dll (net10.0)
+      | Finished: SUCCESS
+    [32mtamam[0m  feature/siparis-ozeti-testleri: build SUCCESS, GitLab commit status jenkins=success
+
+[1m### Arayuz: gitlab mr-ac 99 dev feature/siparis-ozeti-testleri develop test(order): cover the order summary - evet evet lab-04-b-mr-testler[0m
+ Container belbim-lab-workstation-1  Running
+  tamam  MR sablonu kendiliginden geldi (.gitlab/merge_request_templates/Default.md)
+  goruntu: /lab/cikti/prova-20261124T154746Z/lab-04-b-mr-testler-sablon.png
+  tamam  reviewer: ekip99-lead
+  goruntu: /lab/cikti/prova-20261124T154746Z/lab-04-b-mr-testler-form.png
+  tamam  MR !11 acildi: feature/siparis-ozeti-testleri -> develop (squash: evet, kaynak branch silinsin: evet)
+  goruntu: /lab/cikti/prova-20261124T154746Z/lab-04-b-mr-testler.png
+
+[1m### CI durumu: mr feature/siparis-ozeti-testleri mergeable[0m
+    MR !11 (feature/siparis-ozeti-testleri): detailed_merge_status=mergeable, head_pipeline=success, sha=b658ef2a
+    MR'in son commit'i b658ef2a icin commit status: jenkins=success
+    [32mtamam[0m  MR !11: mergeable
+
+[1m### Arayuz: gitlab mr-merge 99 lead feature/siparis-ozeti-testleri lab-04-b-merge-testler develop[0m
+ Container belbim-lab-workstation-1  Running
+  goruntu: /lab/cikti/prova-20261124T154746Z/lab-04-b-merge-testler-oncesi.png
+  tamam  !11: ekip99-lead merge etti
+  goruntu: /lab/cikti/prova-20261124T154746Z/lab-04-b-merge-testler.png
+
+[1m### CI durumu: build develop SUCCESS SonarQube task|Quality gate|digest: |Finished:[0m
+    GitLab  : develop son commit'i c476dedd
+    Jenkins : ekip-99/saha-portal-ekip99/develop #5 -> SUCCESS (25 sn), derlenen commit c476dedd (ayni SHA)
+    GitLab  : commit status jenkins = success (ref develop) -> https://jenkins.kurum.test/job/ekip-99/job/saha-portal-ekip99/job/develop/5/display/redirect
+    Jenkins konsolu (#5):
+      | Checking status of SonarQube task '97910384-a8a7-4171-bdf6-7fe3dca49797' on server 'sonarqube'
+      | SonarQube task '97910384-a8a7-4171-bdf6-7fe3dca49797' status is 'PENDING'
+      | SonarQube task '97910384-a8a7-4171-bdf6-7fe3dca49797' status is 'SUCCESS'
+      | SonarQube task '97910384-a8a7-4171-bdf6-7fe3dca49797' completed. Quality gate is 'OK'
+      | c476ded: digest: sha256:af6d6fd2f8ad7e82f96db5122f9899943a5ccad578a9f0a705f69e7a54d58394 size: 856
+      | c476ded: digest: sha256:64fbd5c08202b2297259765526482f19f0f36c490a3be2413be9eefb8a962b5d size: 856
+      | c476ded: digest: sha256:ab883cd227716df480c43f327e73238912bb51663e724f3aaa4ff6cf9583a417 size: 856
+      | Finished: SUCCESS
+    [32mtamam[0m  develop: build SUCCESS, GitLab commit status jenkins=success
+
+[1m### CI durumu: sonar OK[0m
+    SonarQube: saha-portal-ekip99 son analiz commit c476dedd (develop'un son commit'i)
+    Quality Gate: OK
+      kosul new_coverage: OK  deger=97.8  esik=LT 80
+      kosul new_duplicated_lines_density: OK  deger=0.0  esik=GT 3
+      kosul new_violations: OK  deger=0  esik=GT 0
+    olcumler: {"coverage":"72.3","new_lines":"170","new_violations":"0","ncloc":"540","new_coverage":"97.8","new_lines_to_cover":"31"}
+    [32mtamam[0m  Quality Gate OK (beklenen)
+
+[1m### CI durumu: imaj var[0m
+    order-service:c476ded var (sha256:64fbd5c08202…)
+    product-service:c476ded var (sha256:af6d6fd2f8ad…)
+    web-ui:c476ded var (sha256:ab883cd22771…)
+    [32mtamam[0m  commit c476ded icin imaj: var (beklenen)
+
+[1m### Arayuz: sonar sayfa 99 /dashboard Passed lab-04-b-sonar-yesil[0m
+ Container belbim-lab-workstation-1  Running
+  tamam  gorunuyor: Passed
+  goruntu: /lab/cikti/prova-20261124T154746Z/lab-04-b-sonar-yesil.png
+
+[1m### Arayuz: jenkins sayfa 99 /job/develop/  lab-04-b-jenkins-develop[0m
+ Container belbim-lab-workstation-1  Running
+  goruntu: /lab/cikti/prova-20261124T154746Z/lab-04-b-jenkins-develop.png
+
+[1m### Arayuz: gitlab registry 99 lab-04-b-registry[0m
+ Container belbim-lab-workstation-1  Running
+  tamam  Container Registry: order-service, product-service, web-ui
+  goruntu: /lab/cikti/prova-20261124T154746Z/lab-04-b-registry.png
+  goruntu: /lab/cikti/prova-20261124T154746Z/lab-04-b-registry-etiketler.png
+
+[1m### Arayuz: gitlab sayfa 99 dev /-/issues/5 Closed lab-04-b-issue-kapandi[0m
+ Container belbim-lab-workstation-1  Running
+  tamam  gorunuyor: Closed
+  goruntu: /lab/cikti/prova-20261124T154746Z/lab-04-b-issue-kapandi.png
+
+[1m### Adim 7: merge sonrasi[0m
+rol: ekip99-dev
+$ git switch develop
+Switched to branch 'develop'
+Your branch is up to date with 'origin/develop'.
+$ git pull --ff-only
+From gitlab.kurum.test:egitim/ekip-99/saha-ekipman-portal
+   7cfe056..c476ded  develop    -> origin/develop
+Updating 7cfe056..c476ded
+Fast-forward
+ tests/order-service.tests/OrderSummaryTests.cs | 82 ++++++++++++++++++++++++++
+ 1 file changed, 82 insertions(+)
+ create mode 100644 tests/order-service.tests/OrderSummaryTests.cs
+$ git fetch --prune
+From gitlab.kurum.test:egitim/ekip-99/saha-ekipman-portal
+ - [deleted]         (none)     -> origin/feature/siparis-ozeti-testleri
+$ git branch -D feature/siparis-ozeti-testleri
+Deleted branch feature/siparis-ozeti-testleri (was b658ef2).
+$ git log --oneline --graph -n 8 origin/develop
+*   c476ded Merge branch 'feature/siparis-ozeti-testleri' into 'develop'
+|\  
+| * b658ef2 test(order): cover the order summary
+|/  
+*   7cfe056 Merge branch 'feature/siparis-ozeti' into 'develop'
+|\  
+| * df8d1df feat(order): add order summary endpoint
+|/  
+*   9a03b55 Merge branch 'feature/sonar' into 'develop'
+|\  
+| * b450d78 ci: add SonarQube analysis, Quality Gate and image publishing
+|/  
+*   a36354d Merge branch 'feature/pipeline' into 'develop'
+|\  
+| * 683ed1c ci: add Jenkins pipeline
+|/  
+$ git grep -n -I -E 'sqp_|squ_|glpat-|gldt-' -- . || echo 'repoda token yok'
+repoda token yok
+
+[1m### Checkpoint karsilastirmasi[0m
+# agac ayni: origin/develop == checkpoint/lab-04b (haric: .gitlab/CODEOWNERS Jenkinsfile ci/analyze.sh)
+# Jenkinsfile: checkpoint/lab-04b ile ayni (NN yerine 99)
+# ci/analyze.sh: checkpoint/lab-04b ile ayni (NN yerine 99)
+
+[32mLAB 04-b cozumu ekip-99 icin uygulandi.[0m

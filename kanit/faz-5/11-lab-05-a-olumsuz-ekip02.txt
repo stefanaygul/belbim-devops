@@ -1,0 +1,29 @@
+[1mLAB 05-A (ekip-02)[0m
+[1mRepo (develop): paket kimligi, PackageReference, Dockerfile'lar[0m
+  [31mKALDI[0m  PackageId (ekip sonekiyle): beklenen '<PackageId>Saha.Common.Contracts.Ekip02</PackageId>', gelen ''
+  [31mKALDI[0m  Version: beklenen '<Version>1.0.0</Version>', gelen ''
+  [31mKALDI[0m  order-service: PackageReference Saha.Common.Contracts.Ekip02 1.0.0: '<PackageReference Include="Saha.Common.Contracts.Ekip02" Version="1.0.0" />' bulunamadi. Gelen:   </ItemGroup>
+</Project>
+  [31mKALDI[0m  order-service: common-contracts'a ProjectReference duruyor
+  [31mKALDI[0m  order-service Dockerfile: common-contracts kaynagi kopyalaniyor (paket kullanilmiyor)
+  [31mKALDI[0m  product-service: PackageReference Saha.Common.Contracts.Ekip02 1.0.0: '<PackageReference Include="Saha.Common.Contracts.Ekip02" Version="1.0.0" />' bulunamadi. Gelen:   </ItemGroup>
+</Project>
+  [31mKALDI[0m  product-service: common-contracts'a ProjectReference duruyor
+  [31mKALDI[0m  product-service Dockerfile: common-contracts kaynagi kopyalaniyor (paket kullanilmiyor)
+  [32mGECTI[0m  NuGet.config: <clear />
+  [32mGECTI[0m  NuGet.config: tek kaynak (Nexus nuget-group): 1 https://nexus.kurum.test/repository/nuget-group/index.json
+[1mNexus: paket nuget-hosted'da[0m
+  [31mKALDI[0m  Saha.Common.Contracts.Ekip02 surumleri (nuget-hosted): beklenen '1.0.0', gelen ''
+  [32mGECTI[0m  ekip soneki olmayan Saha.Common.Contracts paketi yok (ekipler cakismiyor)
+[1mRestore: paket Nexus'tan geliyor (bos bir NuGet onbellegiyle)[0m
+  [32mGECTI[0m  restore basarili
+  [31mKALDI[0m  paket Nexus nuget-group'tan indirildi: 'OK https://nexus.kurum.test/repository/nuget-group/v3/content/saha.common.contracts.ekip02/1.0.0/saha.common.contracts.ekip02.1.0.0.nupkg' bulunamadi. Gelen:     0 Error(s)
+Time Elapsed 00:00:01.08
+  [32mGECTI[0m  restore nuget.org'a gitmedi
+[1mJenkins ve registry: develop yesil, imaj paketle derlendi[0m
+  [32mGECTI[0m  develop #1 (commit 65da295): SUCCESS
+  [32mGECTI[0m  order-service:65da295 registry'de
+  [32mGECTI[0m  product-service:65da295 registry'de
+[1mMerge Request[0m
+  [31mKALDI[0m  feature/ortak-paket -> develop icin merge edilmis MR yok
+8 gecti, 11 kaldi

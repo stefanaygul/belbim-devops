@@ -1,0 +1,54 @@
+
+[1mLAB 04-A (ekip-01)[0m
+
+[1mRepo (develop): Jenkinsfile, .gitlab-ci.yml yok[0m
+  [32mGECTI[0m  .gitlab-ci.yml yok (HTTP 404)
+  [32mGECTI[0m  agent label'i dotnet-docker
+  [32mGECTI[0m  GitLab connection 'gitlab', ekibin token'i 'gitlab-api'
+  [32mGECTI[0m  build baslarken durum pending (gitlabBuilds)
+  [32mGECTI[0m  stage: Restore
+  [32mGECTI[0m  stage: Build
+  [32mGECTI[0m  stage: Unit Test
+  [32mGECTI[0m  stage: web-ui
+  [32mGECTI[0m  test sonuclari Jenkins'e (junit)
+  [32mGECTI[0m  updateGitlabCommitStatus cagrilari tek bir ad kullaniyor (jenkins): 3/3
+  [32mGECTI[0m  Jenkinsfile: token degeri yok
+
+[1mGitLab: Project Access Token, webhook, merge ayari[0m
+  [32mGECTI[0m  Project Access Token 'jenkins' scope: ["api"]
+  [32mGECTI[0m  Project Access Token rolu (40 = Maintainer): 40
+  [32mGECTI[0m  webhook: https://jenkins.kurum.test/project/ekip-01/saha-portal-ekip01
+  [32mGECTI[0m  webhook: Push events: true
+  [32mGECTI[0m  webhook: Merge request events (Multibranch job desteklemez: 409): false
+  [32mGECTI[0m  webhook: SSL verification: true
+  [32mGECTI[0m  Pipelines must succeed: true
+
+[1mHalka 1: push olayi Jenkins'e ulasiyor[0m
+  [32mGECTI[0m  son push olayina Jenkins'in yaniti (refs/heads/feature/pipeline): 200
+  [32mGECTI[0m  son 20 olayda basarisiz teslim: 0
+
+[1mJenkins: credential'lar ve Multibranch job[0m
+  [32mGECTI[0m  klasor credential'i gitlab-api: GitLab API token
+  [32mGECTI[0m  klasor credential'i gitlab-repo: Username with password
+  [32mGECTI[0m  job turu Multibranch Pipeline
+  [32mGECTI[0m  develop icin branch job'i var
+
+[1mHalka 2: Jenkins dogru commit'i derliyor (develop ca7e9bf1)[0m
+  [32mGECTI[0m  develop #2, GitLab'deki son commit'i derledi (ca7e9bf1)
+  [32mGECTI[0m  develop #2 sonucu: SUCCESS
+  [32mGECTI[0m  test sonuclari Jenkins'te: 29 gecti, 0 kaldi
+
+[1mHalka 3: sonuc GitLab'e commit status olarak donuyor[0m
+  [32mGECTI[0m  develop commit'indeki durum adlari (tek ad): jenkins
+  [32mGECTI[0m  jenkins durumu: success
+  [32mGECTI[0m  durumun adresi Jenkins build'i
+
+[1mHalka 4-6: MR gecmisi (kirmizi pipeline, sonra duzeltme ve merge)[0m
+  [32mGECTI[0m  MR !8: feature/pipeline -> develop merge edilmis
+  [32mGECTI[0m  halka 4: MR'da basarisiz pipeline gorulmus (commit 58035af7, kaynak external)
+  [32mGECTI[0m  o commit'in durumu: jenkins=failed
+  [32mGECTI[0m  halka 6: merge edilen commit'in pipeline durumu: success
+  [32mGECTI[0m  halka 6: yesil pipeline kirmizidan sonra (duzeltme commit'i 980dbb66): true
+  [32mGECTI[0m  merge eden: ekip01-lead
+
+36 gecti, 0 kaldi

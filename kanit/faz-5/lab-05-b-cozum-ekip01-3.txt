@@ -1,0 +1,106 @@
+
+[1m### Arayuz: uygulama red http://test-vm.kurum.test:8081 lab-05-b-arayuz-red ADP-01 0 Miktar en az 1 olmalı.[0m
+  tamam  katalog listeleniyor: 4 ekipman (http://test-vm.kurum.test:8081)
+  tamam  talep reddedildi: ADP-01 x 0 -> "Miktar en az 1 olmalı."
+  goruntu: lab-rehberleri/img/lab-05-b-arayuz-red.png
+
+[1m### Adim 6: release/1.1.0; CHANGELOG[0m
+rol: ekip01-dev
+$ git switch develop
+Already on 'develop'
+Your branch is up to date with 'origin/develop'.
+$ git pull --ff-only
+Already up to date.
+$ git switch -c release/1.1.0
+Switched to a new branch 'release/1.1.0'
+$ git diff HEAD | grep -E '^\+' | grep -v '^+++'
++## [1.1.0] - 2026-11-06
++
++### Added
++
++- order: talep özeti uç noktası (`GET /api/orders/summary`)
++- ci: Jenkins pipeline, SonarQube Quality Gate, test ortamına otomatik deploy
++
++### Changed
++
++- common-contracts: servisler sözleşmeleri Nexus'taki NuGet paketinden alır
++
++### Fixed
++
++- order: miktarı 1'den küçük talep açılamaz (#7)
++
+$ git commit -q -am chore(release): 1.1.0
+$ git push -q -u origin release/1.1.0
+remote: 
+remote: To create a merge request for release/1.1.0, visit:        
+remote:   https://gitlab.kurum.test/egitim/ekip-01/saha-ekipman-portal/-/merge_requests/new?merge_request%5Bsource_branch%5D=release%2F1.1.0        
+remote: 
+
+[1m### Arayuz: gitlab mr-ac 01 dev release/1.1.0 main chore(release): 1.1.0 - hayir hayir lab-05-b-mr-release[0m
+  tamam  MR sablonu kendiliginden geldi (.gitlab/merge_request_templates/Default.md)
+  goruntu: lab-rehberleri/img/lab-05-b-mr-release-sablon.png
+  tamam  reviewer: ekip01-lead
+  goruntu: lab-rehberleri/img/lab-05-b-mr-release-form.png
+  tamam  MR !15 acildi: release/1.1.0 -> main (squash: hayir, kaynak branch silinsin: hayir)
+  goruntu: lab-rehberleri/img/lab-05-b-mr-release.png
+
+[1m### CI durumu: mr release/1.1.0 mergeable[0m
+    MR !15 (release/1.1.0): detailed_merge_status=mergeable, head_pipeline=success, sha=cfc2e7c9
+    MR'in son commit'i cfc2e7c9 icin commit status: jenkins=success
+    [32mtamam[0m  MR !15: mergeable
+
+[1m### Arayuz: gitlab mr-merge 01 lead release/1.1.0 lab-05-b-release-merge main[0m
+  goruntu: lab-rehberleri/img/lab-05-b-release-merge-oncesi.png
+  tamam  !15: ekip01-lead merge etti
+  goruntu: lab-rehberleri/img/lab-05-b-release-merge.png
+
+[1m### CI durumu: build main SUCCESS Stage "Docker Build|digest|Finished:[0m
+    GitLab  : main son commit'i 7b61f738
+    Jenkins : ekip-01/saha-portal-ekip01/main #2 -> SUCCESS (11 sn), derlenen commit 7b61f738 (ayni SHA)
+    GitLab  : commit status jenkins = success (ref main) -> https://jenkins.kurum.test/job/ekip-01/job/saha-portal-ekip01/job/main/2/display/redirect
+    Jenkins konsolu (#2):
+      | 7b61f73: digest: sha256:da1532d3ce4b06c34619d378ce11fdafea5ce202a031256c674def06d7648413 size: 856
+      | 7b61f73: digest: sha256:aabcedeeb5f1c445bbd9dfdc89f2e087a57ec3bcca690d4960c67a5ab7c314e5 size: 856
+      | 7b61f73: digest: sha256:366f1c5d6de9447e3973fbf9fda5170aff30f085b48fbccae8943b37bdfee289 size: 856
+      | Finished: SUCCESS
+    [32mtamam[0m  main: build SUCCESS, GitLab commit status jenkins=success
+
+[1m### Arayuz: gitlab mr-ac 01 dev release/1.1.0 develop chore(release): merge 1.1.0 back into develop - hayir evet lab-05-b-mr-release-geri[0m
+  tamam  MR sablonu kendiliginden geldi (.gitlab/merge_request_templates/Default.md)
+  goruntu: lab-rehberleri/img/lab-05-b-mr-release-geri-sablon.png
+  tamam  reviewer: ekip01-lead
+  goruntu: lab-rehberleri/img/lab-05-b-mr-release-geri-form.png
+  tamam  MR !16 acildi: release/1.1.0 -> develop (squash: hayir, kaynak branch silinsin: evet)
+  goruntu: lab-rehberleri/img/lab-05-b-mr-release-geri.png
+
+[1m### CI durumu: mr release/1.1.0 mergeable[0m
+    MR !16 (release/1.1.0): detailed_merge_status=mergeable, head_pipeline=success, sha=cfc2e7c9
+    MR'in son commit'i cfc2e7c9 icin commit status: jenkins=success
+    [32mtamam[0m  MR !16: mergeable
+
+[1m### Arayuz: gitlab mr-merge 01 lead release/1.1.0 lab-05-b-release-geri-merge develop[0m
+  goruntu: lab-rehberleri/img/lab-05-b-release-geri-merge-oncesi.png
+  tamam  !16: ekip01-lead merge etti
+  goruntu: lab-rehberleri/img/lab-05-b-release-geri-merge.png
+
+[1m### CI durumu: build develop SUCCESS KAYIT|Finished:[0m
+    GitLab  : develop son commit'i 280e0faa
+    Jenkins : ekip-01/saha-portal-ekip01/develop #9 -> SUCCESS (23 sn), derlenen commit 280e0faa (ayni SHA)
+    GitLab  : commit status jenkins = success (ref develop) -> https://jenkins.kurum.test/job/ekip-01/job/saha-portal-ekip01/job/develop/9/display/redirect
+    Jenkins konsolu (#9):
+      | KAYIT 2026-11-24T14:25:13Z tag=280e0fa commit=280e0faad94d2c12cac143249e07551e294ca903 kaynak=https://jenkins.kurum.test/job/ekip-01/job/saha-portal-ekip01/job/develop/9/ product-service@sha256:3f3a086ba433c9c43470ff6207c9c3b0ea8a0619249e125a6bd152db8b4af2de order-service@sha256:5454e9ea48ee7b609d0af8b1278e38e9e5b404e2f08adcdeee8b619ce6da24b4 web-ui@sha256:0e18ea7ef49fbe057943c7c0f9626b3f68d308f91377388480d2a4357035384c
+      | Finished: SUCCESS
+    [32mtamam[0m  develop: build SUCCESS, GitLab commit status jenkins=success
+
+[1m### Arayuz: jenkins tag-kesfi 01 lab-05-b-tag-kesfi[0m
+  goruntu: lab-rehberleri/img/lab-05-b-tag-kesfi.png
+  tamam  tag kesfi ve build stratejileri kayitli (Discover tags; Regular branches; Tags: en cok 1 gunluk); eklenen: Discover tags, Regular branches, Tags
+
+[1m### Arayuz: gitlab webhook-tag 01 https://jenkins.kurum.test/project/ekip-01/saha-portal-ekip01 lab-05-b-webhook-tag[0m
+HATA   webhook-tag: locator.click: Timeout 30000ms exceeded.
+       Call log:
+         - waiting for locator('li, .gl-border-b, [data-testid="hook-list-item"], div').filter({ hasText: 'https://jenkins.kurum.test/project/ekip-01/saha-portal-ekip01' }).last().getByRole('link', { name: 'Edit' }).or(locator('li, .gl-border-b, [data-testid="hook-list-item"], div').filter({ hasText: 'https://jenkins.kurum.test/project/ekip-01/saha-portal-ekip01' }).last().getByRole('button', { name: 'Edit' })).first()
+       
+       sayfa: https://gitlab.kurum.test/egitim/ekip-01/saha-ekipman-portal/-/hooks
+       goruntu: lab-ortami/.cache/ui/hata-webhook-tag-1795530354382.png
+

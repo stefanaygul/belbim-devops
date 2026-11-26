@@ -1,0 +1,117 @@
+
+[1m### Adim 7: commit, push (MR arayuzde)[0m
+rol: ekip01-dev
+$ git add src/common-contracts/common-contracts.csproj src/order-service src/product-service
+$ git status --short
+M  src/common-contracts/common-contracts.csproj
+M  src/order-service/Dockerfile
+M  src/order-service/order-service.csproj
+M  src/product-service/Dockerfile
+M  src/product-service/product-service.csproj
+$ git commit -q -m build(contracts): consume common contracts as a NuGet package
+$ git push -q -u origin feature/ortak-paket
+remote: 
+remote: To create a merge request for feature/ortak-paket, visit:        
+remote:   https://gitlab.kurum.test/egitim/ekip-01/saha-ekipman-portal/-/merge_requests/new?merge_request%5Bsource_branch%5D=feature%2Fortak-paket        
+remote: 
+$ git log --oneline -n 1
+36f0427 build(contracts): consume common contracts as a NuGet package
+
+[1m### CI durumu: build feature/ortak-paket SUCCESS Passed!|Finished:[0m
+    GitLab  : feature/ortak-paket son commit'i 36f04278
+    Jenkins : ekip-01/saha-portal-ekip01/feature/ortak-paket #1 -> SUCCESS (9 sn), derlenen commit 36f04278 (ayni SHA)
+    GitLab  : commit status jenkins = success (ref feature/ortak-paket) -> https://jenkins.kurum.test/job/ekip-01/job/saha-portal-ekip01/job/feature%252Fortak-paket/1/display/redirect
+    Jenkins konsolu (#1):
+      | Passed!  - Failed:     0, Passed:     8, Skipped:     0, Total:     8, Duration: 135 ms - product-service.tests.dll (net10.0)
+      | Passed!  - Failed:     0, Passed:    17, Skipped:     0, Total:    17, Duration: 536 ms - order-service.tests.dll (net10.0)
+      | Finished: SUCCESS
+    [32mtamam[0m  feature/ortak-paket: build SUCCESS, GitLab commit status jenkins=success
+
+[1m### Arayuz: gitlab mr-ac 01 dev feature/ortak-paket develop build(contracts): consume common contracts as a NuGet package 6 evet evet lab-05-a-mr[0m
+  tamam  MR sablonu kendiliginden geldi (.gitlab/merge_request_templates/Default.md)
+  goruntu: lab-rehberleri/img/lab-05-a-mr-sablon.png
+  tamam  reviewer: ekip01-lead
+  goruntu: lab-rehberleri/img/lab-05-a-mr-form.png
+  tamam  MR !12 acildi: feature/ortak-paket -> develop (squash: evet, kaynak branch silinsin: evet)
+  goruntu: lab-rehberleri/img/lab-05-a-mr.png
+
+[1m### CI durumu: mr feature/ortak-paket mergeable[0m
+    MR !12 (feature/ortak-paket): detailed_merge_status=mergeable, head_pipeline=success, sha=36f04278
+    MR'in son commit'i 36f04278 icin commit status: jenkins=success
+    [32mtamam[0m  MR !12: mergeable
+
+[1m### Arayuz: gitlab mr-merge 01 lead feature/ortak-paket lab-05-a-merge develop[0m
+  goruntu: lab-rehberleri/img/lab-05-a-merge-oncesi.png
+  tamam  !12: ekip01-lead merge etti
+  goruntu: lab-rehberleri/img/lab-05-a-merge.png
+
+[1m### CI durumu: build develop SUCCESS Quality gate|digest: |Finished:[0m
+    GitLab  : develop son commit'i 93a1cb22
+    Jenkins : ekip-01/saha-portal-ekip01/develop #6 -> SUCCESS (32 sn), derlenen commit 93a1cb22 (ayni SHA)
+    GitLab  : commit status jenkins = success (ref develop) -> https://jenkins.kurum.test/job/ekip-01/job/saha-portal-ekip01/job/develop/6/display/redirect
+    Jenkins konsolu (#6):
+      | SonarQube task '5b97aa79-29a2-4163-8db6-e80a771bc31b' completed. Quality gate is 'OK'
+      | 93a1cb2: digest: sha256:1fe30bbd3d5fcdf74ebfee51a1cc3ea5007b365f98fb9897ce88044e7191ff69 size: 856
+      | 93a1cb2: digest: sha256:bc0a8b6eba13cd4193d06072b5b22b45353aaca97df03032402d3f93e4e0dc7d size: 856
+      | 93a1cb2: digest: sha256:8f671427534b9e76f961a6581dc1b38b58960402660e87be775607ec4d9b576b size: 856
+      | Finished: SUCCESS
+    [32mtamam[0m  develop: build SUCCESS, GitLab commit status jenkins=success
+
+[1m### CI durumu: sonar OK[0m
+    SonarQube: saha-portal-ekip01 son analiz commit 93a1cb22 (develop'un son commit'i)
+    Quality Gate: OK
+      kosul new_coverage: OK  deger=97.8  esik=LT 80
+      kosul new_duplicated_lines_density: OK  deger=0.0  esik=GT 3
+      kosul new_violations: OK  deger=0  esik=GT 0
+    olcumler: {"coverage":"72.3","new_lines":"170","new_violations":"0","ncloc":"538","new_coverage":"97.8","new_lines_to_cover":"31"}
+    [32mtamam[0m  Quality Gate OK (beklenen)
+
+[1m### CI durumu: imaj var[0m
+    order-service:93a1cb2 var (sha256:bc0a8b6eba13…)
+    product-service:93a1cb2 var (sha256:1fe30bbd3d5f…)
+    web-ui:93a1cb2 var (sha256:8f671427534b…)
+    [32mtamam[0m  commit 93a1cb2 icin imaj: var (beklenen)
+
+[1m### Arayuz: gitlab sayfa 01 dev /-/issues/6 Closed lab-05-a-issue-kapandi[0m
+  tamam  gorunuyor: Closed
+  goruntu: lab-rehberleri/img/lab-05-a-issue-kapandi.png
+
+[1m### Merge sonrasi[0m
+rol: ekip01-dev
+$ git switch develop
+Switched to branch 'develop'
+Your branch is up to date with 'origin/develop'.
+$ git pull --ff-only
+From gitlab.kurum.test:egitim/ekip-01/saha-ekipman-portal
+   75995c7..93a1cb2  develop    -> origin/develop
+Updating 75995c7..93a1cb2
+Fast-forward
+ src/common-contracts/common-contracts.csproj | 7 +++++++
+ src/order-service/Dockerfile                 | 1 -
+ src/order-service/order-service.csproj       | 2 +-
+ src/product-service/Dockerfile               | 1 -
+ src/product-service/product-service.csproj   | 2 +-
+ 5 files changed, 9 insertions(+), 4 deletions(-)
+$ git fetch --prune
+From gitlab.kurum.test:egitim/ekip-01/saha-ekipman-portal
+ - [deleted]         (none)     -> origin/feature/ortak-paket
+$ git branch -D feature/ortak-paket
+Deleted branch feature/ortak-paket (was 36f0427).
+$ git log --oneline --graph -n 4 origin/develop
+*   93a1cb2 Merge branch 'feature/ortak-paket' into 'develop'
+|\  
+| * 36f0427 build(contracts): consume common contracts as a NuGet package
+|/  
+*   75995c7 Merge branch 'feature/siparis-ozeti-testleri' into 'develop'
+|\  
+| * 479a5b7 test(order): cover the order summary
+|/  
+
+[1m### Checkpoint karsilastirmasi[0m
+# agac ayni: origin/develop == checkpoint/lab-05a (haric: .gitlab/CODEOWNERS Jenkinsfile ci/analyze.sh src/common-contracts/common-contracts.csproj src/order-service/order-service.csproj src/product-service/product-service.csproj)
+# Jenkinsfile: checkpoint/lab-05a ile ayni (NN yerine 01)
+# ci/analyze.sh: checkpoint/lab-05a ile ayni (NN yerine 01)
+# src/common-contracts/common-contracts.csproj: checkpoint/lab-05a ile ayni (NN yerine 01)
+# src/order-service/order-service.csproj: checkpoint/lab-05a ile ayni (NN yerine 01)
+# src/product-service/product-service.csproj: checkpoint/lab-05a ile ayni (NN yerine 01)
+LAB 05-A TAMAM

@@ -1,0 +1,1626 @@
+# Gun 2-3 lablari, ekip-02, tek seferde ve arka arkaya (2026-11-24 11:27)
+# Baslangic: checkpoint/gun1 durumu (ekip-02 LAB 01-A ve 01-B'yi kendi kosmustu); workstation Docker daemon'indan certs.d kaldirildi.
+# Her lab: bash dogrula/cozum.sh <lab> 02, ardindan bash dogrula/lab.sh lab-<lab> 02. Ilk basarisizlikta durur.
+
+################ cozum.sh 02-a 02
+
+### Arayuz: gitlab ssh-anahtari 02 lead
+  goruntu: lab-rehberleri/img/lab-02-a-ssh-anahtari-lead.png
+  tamam  ekip02-lead: SSH anahtari profile eklendi
+
+### Arayuz: gitlab ssh-anahtari 02 dev
+  goruntu: lab-rehberleri/img/lab-02-a-ssh-anahtari-dev.png
+  tamam  ekip02-dev: SSH anahtari profile eklendi
+
+### On kosul: SSH anahtari GitLab profilinde
+rol: ekip02-lead
+$ ssh -T git@gitlab.kurum.test
+Welcome to GitLab, @ekip02-lead!
+rol: ekip02-dev
+$ ssh -T git@gitlab.kurum.test
+Welcome to GitLab, @ekip02-dev!
+
+### Adim 1 (hazirlik): dunku isi main'e al, MR sablonu ve CODEOWNERS ekle
+rol: ekip02-lead
+$ git switch main
+Switched to branch 'main'
+Your branch is up to date with 'origin/main'.
+$ git merge --no-ff feature/katalog-sarj-unitesi -m Merge branch 'feature/katalog-sarj-unitesi'
+Merge made by the 'ort' strategy.
+ src/product-service/Data/catalog.json            | 3 ++-
+ tests/product-service.tests/CatalogStoreTests.cs | 2 +-
+ 2 files changed, 3 insertions(+), 2 deletions(-)
+$ cat .gitlab/merge_request_templates/Default.md
+## Ne değişti, neden?
+
+## Nasıl test edildi?
+
+- [ ] Unit testler eklendi ya da güncellendi
+
+Closes #
+$ cat .gitlab/CODEOWNERS
+# .gitlab/CODEOWNERS
+# Dosya yoluna göre sahibi belirler. Code Owners, GitLab Premium/Ultimate özelliğidir;
+# Free katmanında dosya repoda durur ama GitLab onu değerlendirmez.
+
+[Backend]
+/src/product-service/   @egitim/ekip-02
+/src/order-service/     @egitim/ekip-02
+
+[Frontend]
+/src/web-ui/            @egitim/ekip-02
+
+[Pipeline]
+Jenkinsfile             @ekip02-lead
+$ git add .gitlab
+$ git commit -m chore: add merge request template and CODEOWNERS
+[main 6e340a1] chore: add merge request template and CODEOWNERS
+ 2 files changed, 20 insertions(+)
+ create mode 100644 .gitlab/CODEOWNERS
+ create mode 100644 .gitlab/merge_request_templates/Default.md
+
+### Arayuz: gitlab proje-olustur 02
+  goruntu: lab-rehberleri/img/lab-02-a-proje-olustur.png
+  tamam  proje olusturuldu: egitim/ekip-02/saha-ekipman-portal (bos, private)
+  goruntu: lab-rehberleri/img/lab-02-a-bos-proje.png
+
+### Adim 1: lokal repoyu ekip projesine push et
+rol: ekip02-lead
+$ git remote rename origin sablon
+$ git remote add origin git@gitlab.kurum.test:egitim/ekip-02/saha-ekipman-portal.git
+$ git push -u origin main
+To gitlab.kurum.test:egitim/ekip-02/saha-ekipman-portal.git
+ * [new branch]      main -> main
+branch 'main' set up to track 'origin/main'.
+$ git remote -v
+origin	git@gitlab.kurum.test:egitim/ekip-02/saha-ekipman-portal.git (fetch)
+origin	git@gitlab.kurum.test:egitim/ekip-02/saha-ekipman-portal.git (push)
+sablon	https://gitlab.kurum.test/egitim/sablonlar/portal-starter.git (fetch)
+sablon	https://gitlab.kurum.test/egitim/sablonlar/portal-starter.git (push)
+
+### Adim 2: develop'u olustur
+rol: ekip02-lead
+$ git switch -c develop
+Switched to a new branch 'develop'
+$ git push -u origin develop
+remote: 
+remote: To create a merge request for develop, visit:        
+remote:   https://gitlab.kurum.test/egitim/ekip-02/saha-ekipman-portal/-/merge_requests/new?merge_request%5Bsource_branch%5D=develop        
+remote: 
+To gitlab.kurum.test:egitim/ekip-02/saha-ekipman-portal.git
+ * [new branch]      develop -> develop
+branch 'develop' set up to track 'origin/develop'.
+
+### Arayuz: gitlab varsayilan-branch 02 develop
+  goruntu: lab-rehberleri/img/lab-02-a-varsayilan-branch.png
+  tamam  varsayilan branch: develop
+
+### Arayuz: gitlab branch-koru 02 main develop
+  goruntu: lab-rehberleri/img/lab-02-a-koruma-form-develop.png
+  tamam  main korumali: merge Maintainers, push No one
+  tamam  develop korumali: merge Maintainers, push No one
+  goruntu: lab-rehberleri/img/lab-02-a-korumali-branchler.png
+
+### Arayuz: gitlab mr-ayarlari 02
+  goruntu: lab-rehberleri/img/lab-02-a-mr-ayarlari.png
+  tamam  MR ayarlari: Merge commit; cozulmemis thread varken merge kapali
+
+### Adim 2 (kontrol): korumali branch'e dogrudan push reddedilir
+rol: ekip02-dev
+$ git switch --quiet develop
+$ git commit --quiet --allow-empty -m test: direct push to develop
+$ git push origin develop
+remote: GitLab: You are not allowed to push code to protected branches on this project.
+To gitlab.kurum.test:egitim/ekip-02/saha-ekipman-portal.git
+ ! [remote rejected] develop -> develop (pre-receive hook declined)
+error: failed to push some refs to 'gitlab.kurum.test:egitim/ekip-02/saha-ekipman-portal.git'
+# beklenen hata olustu (cikis kodu 1): You are not allowed to push code to protected branches on this project
+$ git reset --quiet --hard origin/develop
+rol: ekip02-dev
+$ git switch --quiet main
+$ git commit --quiet --allow-empty -m test: direct push to main
+$ git push origin main
+remote: GitLab: You are not allowed to push code to protected branches on this project.
+To gitlab.kurum.test:egitim/ekip-02/saha-ekipman-portal.git
+ ! [remote rejected] main -> main (pre-receive hook declined)
+error: failed to push some refs to 'gitlab.kurum.test:egitim/ekip-02/saha-ekipman-portal.git'
+# beklenen hata olustu (cikis kodu 1): You are not allowed to push code to protected branches on this project
+$ git reset --quiet --hard origin/main
+rol: ekip02-lead
+$ git switch --quiet develop
+$ git commit --quiet --allow-empty -m test: direct push to develop
+$ git push origin develop
+remote: GitLab: You are not allowed to push code to protected branches on this project.
+To gitlab.kurum.test:egitim/ekip-02/saha-ekipman-portal.git
+ ! [remote rejected] develop -> develop (pre-receive hook declined)
+error: failed to push some refs to 'gitlab.kurum.test:egitim/ekip-02/saha-ekipman-portal.git'
+# beklenen hata olustu (cikis kodu 1): You are not allowed to push code to protected branches on this project
+$ git reset --quiet --hard origin/develop
+rol: ekip02-lead
+$ git switch --quiet main
+$ git commit --quiet --allow-empty -m test: direct push to main
+$ git push origin main
+remote: GitLab: You are not allowed to push code to protected branches on this project.
+To gitlab.kurum.test:egitim/ekip-02/saha-ekipman-portal.git
+ ! [remote rejected] main -> main (pre-receive hook declined)
+error: failed to push some refs to 'gitlab.kurum.test:egitim/ekip-02/saha-ekipman-portal.git'
+# beklenen hata olustu (cikis kodu 1): You are not allowed to push code to protected branches on this project
+$ git reset --quiet --hard origin/main
+$ git switch --quiet develop
+
+### Arayuz: gitlab issue-ac 02 dev Katalogda stok durumu Saha personeli bir ekipmanın stokta olup olmadığını katalogda görebilmeli. Kabul kriteri: GET /api/products yanıtında her ekipman için inStock alanı bulunur. lab-02-a-issue
+  goruntu: lab-rehberleri/img/lab-02-a-issue-form.png
+  tamam  issue #1 acildi: Katalogda stok durumu
+  goruntu: lab-rehberleri/img/lab-02-a-issue.png
+
+### Adim 3-4: feature/3-stok-durumu, stok durumu alani
+rol: ekip02-dev
+$ git switch develop
+Already on 'develop'
+Your branch is up to date with 'origin/develop'.
+$ git pull --ff-only
+Already up to date.
+$ git switch -c feature/3-stok-durumu
+Switched to a new branch 'feature/3-stok-durumu'
+$ git diff HEAD --stat | cat
+ src/common-contracts/ProductDto.cs               |  2 +-
+ src/product-service/Data/catalog.json            |  8 ++++----
+ tests/product-service.tests/CatalogStoreTests.cs | 22 ++++++++++++++++++++++
+ 3 files changed, 27 insertions(+), 5 deletions(-)
+$ dotnet test SahaPortal.sln
+  Determining projects to restore...
+  All projects are up-to-date for restore.
+  common-contracts -> /home/ekip02/saha-ekipman-portal/src/common-contracts/bin/Debug/net10.0/common-contracts.dll
+  product-service -> /home/ekip02/saha-ekipman-portal/src/product-service/bin/Debug/net10.0/product-service.dll
+  order-service -> /home/ekip02/saha-ekipman-portal/src/order-service/bin/Debug/net10.0/order-service.dll
+  product-service.tests -> /home/ekip02/saha-ekipman-portal/tests/product-service.tests/bin/Debug/net10.0/product-service.tests.dll
+  order-service.tests -> /home/ekip02/saha-ekipman-portal/tests/order-service.tests/bin/Debug/net10.0/order-service.tests.dll
+Test run for /home/ekip02/saha-ekipman-portal/tests/product-service.tests/bin/Debug/net10.0/product-service.tests.dll (.NETCoreApp,Version=v10.0)
+Test run for /home/ekip02/saha-ekipman-portal/tests/order-service.tests/bin/Debug/net10.0/order-service.tests.dll (.NETCoreApp,Version=v10.0)
+A total of 1 test files matched the specified pattern.
+A total of 1 test files matched the specified pattern.
+
+Passed!  - Failed:     0, Passed:     7, Skipped:     0, Total:     7, Duration: 123 ms - product-service.tests.dll (net10.0)
+VSTEST_ARTIFACTS_DIRECTORY environment variable was not found, falling back to a user-private temporary directory. This is most likely caused by an outdated Microsoft.NET.Test.Sdk package reference in the test project.
+
+Passed!  - Failed:     0, Passed:     4, Skipped:     0, Total:     4, Duration: 511 ms - order-service.tests.dll (net10.0)
+VSTEST_ARTIFACTS_DIRECTORY environment variable was not found, falling back to a user-private temporary directory. This is most likely caused by an outdated Microsoft.NET.Test.Sdk package reference in the test project.
+$ git add src tests
+$ git commit -m feat(catalog): add stock status
+[feature/3-stok-durumu 58aac7a] feat(catalog): add stock status
+ 3 files changed, 27 insertions(+), 5 deletions(-)
+$ git push -u origin feature/3-stok-durumu
+remote: 
+remote: To create a merge request for feature/3-stok-durumu, visit:        
+remote:   https://gitlab.kurum.test/egitim/ekip-02/saha-ekipman-portal/-/merge_requests/new?merge_request%5Bsource_branch%5D=feature%2F3-stok-durumu        
+remote: 
+To gitlab.kurum.test:egitim/ekip-02/saha-ekipman-portal.git
+ * [new branch]      feature/3-stok-durumu -> feature/3-stok-durumu
+branch 'feature/3-stok-durumu' set up to track 'origin/feature/3-stok-durumu'.
+
+### Arayuz: gitlab mr-ac 02 dev feature/3-stok-durumu develop feat(catalog): add stock status 1 evet evet lab-02-a-mr
+  tamam  MR sablonu kendiliginden geldi (.gitlab/merge_request_templates/Default.md)
+  goruntu: lab-rehberleri/img/lab-02-a-mr-sablon.png
+  tamam  reviewer: ekip02-lead
+  goruntu: lab-rehberleri/img/lab-02-a-mr-form.png
+  tamam  MR !1 acildi: feature/3-stok-durumu -> develop (squash: evet, kaynak branch silinsin: evet)
+  goruntu: lab-rehberleri/img/lab-02-a-mr.png
+
+### Arayuz: gitlab mr-yorum 02 lead feature/3-stok-durumu ProductDto.cs API testi bu alanı doğrulamıyor. ProductsApiTests içinde inStock değerini ve stokta olmayan bir ekipmanı da denetleyelim mi? lab-02-a-inceleme
+  goruntu: lab-rehberleri/img/lab-02-a-inceleme-yaziliyor.png
+  tamam  !1: ekip02-lead ProductDto.cs dosyasinda bir satira yorum yazdi (thread acik)
+  goruntu: lab-rehberleri/img/lab-02-a-inceleme.png
+
+### Arayuz: gitlab mr-engel 02 lead feature/3-stok-durumu Open threads must be resolved lab-02-a-merge-engeli
+  tamam  !1: ekip02-lead merge edemiyor: "Open threads must be resolved"
+  goruntu: lab-rehberleri/img/lab-02-a-merge-engeli.png
+
+### Adim 6: reviewer yorumuna gore duzeltme
+rol: ekip02-dev
+$ git switch feature/3-stok-durumu
+Already on 'feature/3-stok-durumu'
+Your branch is up to date with 'origin/feature/3-stok-durumu'.
+$ dotnet test SahaPortal.sln
+  Determining projects to restore...
+  All projects are up-to-date for restore.
+  common-contracts -> /home/ekip02/saha-ekipman-portal/src/common-contracts/bin/Debug/net10.0/common-contracts.dll
+  product-service -> /home/ekip02/saha-ekipman-portal/src/product-service/bin/Debug/net10.0/product-service.dll
+  order-service -> /home/ekip02/saha-ekipman-portal/src/order-service/bin/Debug/net10.0/order-service.dll
+  product-service.tests -> /home/ekip02/saha-ekipman-portal/tests/product-service.tests/bin/Debug/net10.0/product-service.tests.dll
+Test run for /home/ekip02/saha-ekipman-portal/tests/product-service.tests/bin/Debug/net10.0/product-service.tests.dll (.NETCoreApp,Version=v10.0)
+A total of 1 test files matched the specified pattern.
+  order-service.tests -> /home/ekip02/saha-ekipman-portal/tests/order-service.tests/bin/Debug/net10.0/order-service.tests.dll
+Test run for /home/ekip02/saha-ekipman-portal/tests/order-service.tests/bin/Debug/net10.0/order-service.tests.dll (.NETCoreApp,Version=v10.0)
+A total of 1 test files matched the specified pattern.
+
+Passed!  - Failed:     0, Passed:     8, Skipped:     0, Total:     8, Duration: 119 ms - product-service.tests.dll (net10.0)
+VSTEST_ARTIFACTS_DIRECTORY environment variable was not found, falling back to a user-private temporary directory. This is most likely caused by an outdated Microsoft.NET.Test.Sdk package reference in the test project.
+
+Passed!  - Failed:     0, Passed:     4, Skipped:     0, Total:     4, Duration: 477 ms - order-service.tests.dll (net10.0)
+VSTEST_ARTIFACTS_DIRECTORY environment variable was not found, falling back to a user-private temporary directory. This is most likely caused by an outdated Microsoft.NET.Test.Sdk package reference in the test project.
+$ git add tests
+$ git commit -m test(catalog): cover stock status in the products API
+[feature/3-stok-durumu bf937c9] test(catalog): cover stock status in the products API
+ 1 file changed, 12 insertions(+), 1 deletion(-)
+$ git push
+remote: 
+remote: View merge request for feature/3-stok-durumu:        
+remote:   https://gitlab.kurum.test/egitim/ekip-02/saha-ekipman-portal/-/merge_requests/1        
+remote: 
+To gitlab.kurum.test:egitim/ekip-02/saha-ekipman-portal.git
+   58aac7a..bf937c9  feature/3-stok-durumu -> feature/3-stok-durumu
+
+### Arayuz: gitlab mr-thread-coz 02 dev feature/3-stok-durumu lab-02-a-thread-cozuldu
+  tamam  !1: ekip02-dev 1 thread'i cozdu
+  goruntu: lab-rehberleri/img/lab-02-a-thread-cozuldu.png
+
+### Arayuz: gitlab mr-engel 02 dev feature/3-stok-durumu Ready to merge by members who can write to the target branch lab-02-a-developer-merge-edemez
+  tamam  !1: ekip02-dev merge edemiyor: "Ready to merge by members who can write to the target branch"
+  goruntu: lab-rehberleri/img/lab-02-a-developer-merge-edemez.png
+
+### API: ekip02-dev merge etmeyi deniyor (reddedilmeli)
+    MR !1 (ekip02-dev): user.can_merge=false, detailed_merge_status=mergeable
+    PUT .../merge_requests/1/merge (ekip02-dev) -> HTTP 401 401 Unauthorized
+    tamam  ekip02-dev merge edemiyor (beklenen)
+
+### Arayuz: gitlab mr-merge 02 lead feature/3-stok-durumu lab-02-a-merge
+  goruntu: lab-rehberleri/img/lab-02-a-merge-oncesi.png
+  tamam  !1: ekip02-lead merge etti
+  goruntu: lab-rehberleri/img/lab-02-a-merge.png
+
+### Arayuz: gitlab sayfa 02 dev /-/issues/1 Katalogda stok durumu|Closed lab-02-a-issue-kapandi
+  tamam  gorunuyor: Katalogda stok durumu
+  tamam  gorunuyor: Closed
+  goruntu: lab-rehberleri/img/lab-02-a-issue-kapandi.png
+
+### Adim 7: merge sonrasi
+rol: ekip02-dev
+$ git switch develop
+Switched to branch 'develop'
+Your branch is up to date with 'origin/develop'.
+$ git pull --ff-only
+From gitlab.kurum.test:egitim/ekip-02/saha-ekipman-portal
+   6e340a1..a8d67e9  develop    -> origin/develop
+Updating 6e340a1..a8d67e9
+Fast-forward
+ src/common-contracts/ProductDto.cs               |  2 +-
+ src/product-service/Data/catalog.json            |  8 ++++----
+ tests/product-service.tests/CatalogStoreTests.cs | 22 ++++++++++++++++++++++
+ tests/product-service.tests/ProductsApiTests.cs  | 13 ++++++++++++-
+ 4 files changed, 39 insertions(+), 6 deletions(-)
+$ git fetch --prune
+From gitlab.kurum.test:egitim/ekip-02/saha-ekipman-portal
+ - [deleted]         (none)     -> origin/feature/3-stok-durumu
+$ git branch -r | grep -v sablon/
+  origin/develop
+  origin/main
+# squash ile merge edilen branch'te 'git branch -d' uyari verir; yerel branch -D ile silinir
+$ git branch -D feature/3-stok-durumu
+Deleted branch feature/3-stok-durumu (was bf937c9).
+$ git log --oneline --graph -n 8 origin/develop
+*   a8d67e9 Merge branch 'feature/3-stok-durumu' into 'develop'
+|\  
+| * 0a09bd1 feat(catalog): add stock status
+|/  
+* 6e340a1 chore: add merge request template and CODEOWNERS
+*   99ec91c Merge branch 'feature/katalog-sarj-unitesi'
+|\  
+| *   e775d59 Merge remote-tracking branch 'origin/lab/01b-rename' into feature/katalog-sarj-unitesi
+| |\  
+| | * 756affb feat(catalog): add fast charger
+| |/  
+|/|   
+| * 6fa6933 feat(catalog): add charging unit
+|/  
+* 174fe06 chore: starter project
+
+### Egitmen: bootstrap/rol-degistir.sh 02
+    ekip02-lead: Developer   ekip02-dev: Maintainer   (egitim/ekip-02)
+
+### Rol degisimi: ikinci kucuk MR (web-ui stok durumu)
+rol: ekip02-lead
+$ git switch develop
+Already on 'develop'
+Your branch is up to date with 'origin/develop'.
+$ git pull --ff-only
+Already up to date.
+$ git switch -c feature/3-stok-durumu-arayuz
+Switched to a new branch 'feature/3-stok-durumu-arayuz'
+$ cd src/web-ui && npm test 2>&1 | tail -n 8
+PASS src/components/CatalogList.test.jsx
+PASS src/api.test.js
+
+Test Suites: 5 passed, 5 total
+Tests:       15 passed, 15 total
+Snapshots:   0 total
+Time:        0.636 s, estimated 1 s
+Ran all test suites.
+$ git add src/web-ui
+$ git commit -m feat(web-ui): show stock status
+[feature/3-stok-durumu-arayuz 36837b6] feat(web-ui): show stock status
+ 2 files changed, 13 insertions(+), 3 deletions(-)
+$ git push -u origin feature/3-stok-durumu-arayuz
+remote: 
+remote: To create a merge request for feature/3-stok-durumu-arayuz, visit:        
+remote:   https://gitlab.kurum.test/egitim/ekip-02/saha-ekipman-portal/-/merge_requests/new?merge_request%5Bsource_branch%5D=feature%2F3-stok-durumu-arayuz        
+remote: 
+To gitlab.kurum.test:egitim/ekip-02/saha-ekipman-portal.git
+ * [new branch]      feature/3-stok-durumu-arayuz -> feature/3-stok-durumu-arayuz
+branch 'feature/3-stok-durumu-arayuz' set up to track 'origin/feature/3-stok-durumu-arayuz'.
+
+### Arayuz: gitlab mr-ac 02 lead feature/3-stok-durumu-arayuz develop feat(web-ui): show stock status - evet evet lab-02-a-mr2
+  tamam  MR sablonu kendiliginden geldi (.gitlab/merge_request_templates/Default.md)
+  goruntu: lab-rehberleri/img/lab-02-a-mr2-sablon.png
+  tamam  reviewer: ekip02-dev
+  goruntu: lab-rehberleri/img/lab-02-a-mr2-form.png
+  tamam  MR !2 acildi: feature/3-stok-durumu-arayuz -> develop (squash: evet, kaynak branch silinsin: evet)
+  goruntu: lab-rehberleri/img/lab-02-a-mr2.png
+
+### Arayuz: gitlab mr-engel 02 lead feature/3-stok-durumu-arayuz Ready to merge by members who can write to the target branch lab-02-a-rol-degisimi-lead-merge-edemez
+  tamam  !2: ekip02-lead merge edemiyor: "Ready to merge by members who can write to the target branch"
+  goruntu: lab-rehberleri/img/lab-02-a-rol-degisimi-lead-merge-edemez.png
+
+### Arayuz: gitlab mr-onayla 02 dev feature/3-stok-durumu-arayuz lab-02-a-mr2-onay
+  tamam  !2: ekip02-dev onayladi
+  goruntu: lab-rehberleri/img/lab-02-a-mr2-onay.png
+
+### Arayuz: gitlab mr-merge 02 dev feature/3-stok-durumu-arayuz lab-02-a-mr2-merge
+  goruntu: lab-rehberleri/img/lab-02-a-mr2-merge-oncesi.png
+  tamam  !2: ekip02-dev merge etti
+  goruntu: lab-rehberleri/img/lab-02-a-mr2-merge.png
+
+### Egitmen: bootstrap/rol-degistir.sh 02 asil
+    ekip02-lead: Maintainer   ekip02-dev: Developer   (egitim/ekip-02)
+rol: ekip02-lead
+$ git switch develop
+Switched to branch 'develop'
+Your branch is up to date with 'origin/develop'.
+$ git pull --ff-only
+From gitlab.kurum.test:egitim/ekip-02/saha-ekipman-portal
+   a8d67e9..02dfbba  develop    -> origin/develop
+Updating a8d67e9..02dfbba
+Fast-forward
+ src/web-ui/src/components/CatalogList.jsx      |  2 ++
+ src/web-ui/src/components/CatalogList.test.jsx | 14 +++++++++++---
+ 2 files changed, 13 insertions(+), 3 deletions(-)
+$ git fetch --prune
+From gitlab.kurum.test:egitim/ekip-02/saha-ekipman-portal
+ - [deleted]         (none)     -> origin/feature/3-stok-durumu-arayuz
+$ git branch -D feature/3-stok-durumu-arayuz
+Deleted branch feature/3-stok-durumu-arayuz (was 36837b6).
+
+### Checkpoint karsilastirmasi
+# agac ayni: origin/develop == checkpoint/lab-02a (haric: .gitlab/CODEOWNERS)
+# agac ayni: origin/main == checkpoint/lab-02a-main (haric: .gitlab/CODEOWNERS)
+
+LAB 02-a cozumu ekip-02 icin uygulandi.
+cikis kodu: 0  sure: 114 sn
+
+################ dogrula/lab.sh lab-02-a 02
+
+LAB 02-A (ekip-02)
+  GECTI  proje var: egitim/ekip-02/saha-ekipman-portal
+  GECTI  gorunurluk: private
+  GECTI  varsayilan branch: develop
+
+Korumali branch'ler
+  GECTI  main: Allowed to push and merge: No one
+  GECTI  main: Allowed to merge: Maintainers
+  GECTI  main: force push: false
+  GECTI  develop: Allowed to push and merge: No one
+  GECTI  develop: Allowed to merge: Maintainers
+  GECTI  develop: force push: false
+  GECTI  merge yontemi: merge
+  GECTI  cozulmemis thread varken merge kapali: true
+
+Repo icerigi (develop)
+  GECTI  .gitlab/merge_request_templates/Default.md var
+  GECTI  .gitlab/CODEOWNERS var
+  GECTI  katalogdaki her kayitta inStock (true/false): true
+  GECTI  SRJ-04 develop'ta: Şarj ünitesi
+
+Merge Request sureci
+  GECTI  MR !1 merge edilmis: feat(catalog): add stock status
+  GECTI  yazar (ekip02-dev) ve merge eden (ekip02-lead) farkli kisiler
+  GECTI  yazar disinda birinin actigi, cozulmus thread (en az 1): evet
+  GECTI  cozulmemis thread: 0
+  GECTI  kaynak branch silinmis
+  GECTI  MR'in kapattigi issue #1: closed
+  GECTI  MR aciklamasi sablondan gelmis
+
+Testler (develop)
+  GECTI  dotnet test (cikis kodu): 0
+         Passed!  - Failed:     0, Passed:     8, Skipped:     0, Total:     8, Duration: 116 ms - product-service.tests.dll (net10.0)
+         Passed!  - Failed:     0, Passed:     4, Skipped:     0, Total:     4, Duration: 498 ms - order-service.tests.dll (net10.0)
+
+23 gecti, 0 kaldi
+cikis kodu: 0
+
+################ cozum.sh 02-b 02
+
+### Adim 1-2: release/1.0.0, CHANGELOG
+rol: ekip02-dev
+$ git switch develop
+Already on 'develop'
+Your branch is up to date with 'origin/develop'.
+$ git pull --ff-only
+Already up to date.
+$ git switch -c release/1.0.0
+Switched to a new branch 'release/1.0.0'
+$ git diff | cat
+$ git add CHANGELOG.md
+$ git commit -m chore(release): 1.0.0
+[release/1.0.0 3733cdf] chore(release): 1.0.0
+ 1 file changed, 7 insertions(+)
+$ git push -u origin release/1.0.0
+remote: 
+remote: To create a merge request for release/1.0.0, visit:        
+remote:   https://gitlab.kurum.test/egitim/ekip-02/saha-ekipman-portal/-/merge_requests/new?merge_request%5Bsource_branch%5D=release%2F1.0.0        
+remote: 
+To gitlab.kurum.test:egitim/ekip-02/saha-ekipman-portal.git
+ * [new branch]      release/1.0.0 -> release/1.0.0
+branch 'release/1.0.0' set up to track 'origin/release/1.0.0'.
+
+### Arayuz: gitlab mr-ac 02 dev release/1.0.0 main chore(release): 1.0.0 - hayir hayir lab-02-b-mr-release
+  tamam  MR sablonu kendiliginden geldi (.gitlab/merge_request_templates/Default.md)
+  goruntu: lab-rehberleri/img/lab-02-b-mr-release-sablon.png
+  tamam  reviewer: ekip02-lead
+  goruntu: lab-rehberleri/img/lab-02-b-mr-release-form.png
+  tamam  MR !3 acildi: release/1.0.0 -> main (squash: hayir, kaynak branch silinsin: hayir)
+  goruntu: lab-rehberleri/img/lab-02-b-mr-release.png
+
+### Arayuz: gitlab mr-merge 02 lead release/1.0.0 lab-02-b-release-merge main
+  goruntu: lab-rehberleri/img/lab-02-b-release-merge-oncesi.png
+  tamam  !3: ekip02-lead merge etti
+  goruntu: lab-rehberleri/img/lab-02-b-release-merge.png
+
+### Arayuz: gitlab tag-koru 02 v*
+  goruntu: lab-rehberleri/img/lab-02-b-korumali-tag-form.png
+  tamam  korumali tag: v* (olusturabilen: Maintainers)
+  goruntu: lab-rehberleri/img/lab-02-b-korumali-tag.png
+
+### Adim 3 (kontrol): Developer korumali tag olusturamaz
+rol: ekip02-dev
+$ git switch main
+Switched to branch 'main'
+Your branch is up to date with 'origin/main'.
+$ git pull --ff-only
+From gitlab.kurum.test:egitim/ekip-02/saha-ekipman-portal
+   6e340a1..261e092  main       -> origin/main
+Updating 6e340a1..261e092
+Fast-forward
+ CHANGELOG.md                                     |  7 +++++++
+ src/common-contracts/ProductDto.cs               |  2 +-
+ src/product-service/Data/catalog.json            |  8 ++++----
+ src/web-ui/src/components/CatalogList.jsx        |  2 ++
+ src/web-ui/src/components/CatalogList.test.jsx   | 14 +++++++++++---
+ tests/product-service.tests/CatalogStoreTests.cs | 22 ++++++++++++++++++++++
+ tests/product-service.tests/ProductsApiTests.cs  | 13 ++++++++++++-
+ 7 files changed, 59 insertions(+), 9 deletions(-)
+$ git tag -a v1.0.0 -m release: v1.0.0
+$ git push origin v1.0.0
+remote: GitLab: You are not allowed to create this tag as it is protected.
+To gitlab.kurum.test:egitim/ekip-02/saha-ekipman-portal.git
+ ! [remote rejected] v1.0.0 -> v1.0.0 (pre-receive hook declined)
+error: failed to push some refs to 'gitlab.kurum.test:egitim/ekip-02/saha-ekipman-portal.git'
+# beklenen hata olustu (cikis kodu 1): You are not allowed to create this tag as it is protected
+$ git tag -d v1.0.0
+Deleted tag 'v1.0.0' (was f3fc717)
+
+### Annotated tag: v1.0.0 (main uzerinde)
+rol: ekip02-lead
+$ git switch main
+Already on 'main'
+Your branch is up to date with 'origin/main'.
+$ git pull --ff-only
+Already up to date.
+$ git tag -a v1.0.0 -m release: v1.0.0
+$ git push origin v1.0.0
+To gitlab.kurum.test:egitim/ekip-02/saha-ekipman-portal.git
+ * [new tag]         v1.0.0 -> v1.0.0
+$ git describe --tags
+v1.0.0
+$ git cat-file -t v1.0.0
+tag
+
+### Arayuz: gitlab mr-ac 02 dev release/1.0.0 develop chore(release): merge 1.0.0 back into develop - hayir evet lab-02-b-mr-release-geri
+  tamam  MR sablonu kendiliginden geldi (.gitlab/merge_request_templates/Default.md)
+  goruntu: lab-rehberleri/img/lab-02-b-mr-release-geri-sablon.png
+  tamam  reviewer: ekip02-lead
+  goruntu: lab-rehberleri/img/lab-02-b-mr-release-geri-form.png
+  tamam  MR !4 acildi: release/1.0.0 -> develop (squash: hayir, kaynak branch silinsin: evet)
+  goruntu: lab-rehberleri/img/lab-02-b-mr-release-geri.png
+
+### Arayuz: gitlab mr-merge 02 lead release/1.0.0 lab-02-b-release-geri-merge develop
+  goruntu: lab-rehberleri/img/lab-02-b-release-geri-merge-oncesi.png
+  tamam  !4: ekip02-lead merge etti
+  goruntu: lab-rehberleri/img/lab-02-b-release-geri-merge.png
+
+### Arayuz: gitlab issue-ac 02 dev Boş ekipman koduyla talep açılabiliyor v1.0.0'da ekipman seçilmeden gönderilen talep kaydediliyor. Beklenen: POST /api/orders boş productId için 400 dönmeli. lab-02-b-issue
+  goruntu: lab-rehberleri/img/lab-02-b-issue-form.png
+  tamam  issue #2 acildi: Boş ekipman koduyla talep açılabiliyor
+  goruntu: lab-rehberleri/img/lab-02-b-issue.png
+
+### Adim 5: hotfix/1.0.1 (main'deki v1.0.0'dan)
+rol: ekip02-dev
+$ git fetch --tags origin
+From gitlab.kurum.test:egitim/ekip-02/saha-ekipman-portal
+   02dfbba..a3aa398  develop    -> origin/develop
+$ git switch -c hotfix/1.0.1 v1.0.0
+Switched to a new branch 'hotfix/1.0.1'
+# Once hatayi gosteren test: bos ekipman koduyla talep 400 donmeli
+$ dotnet test tests/order-service.tests
+  order-service -> /home/ekip02/saha-ekipman-portal/src/order-service/bin/Debug/net10.0/order-service.dll
+  order-service.tests -> /home/ekip02/saha-ekipman-portal/tests/order-service.tests/bin/Debug/net10.0/order-service.tests.dll
+Test run for /home/ekip02/saha-ekipman-portal/tests/order-service.tests/bin/Debug/net10.0/order-service.tests.dll (.NETCoreApp,Version=v10.0)
+A total of 1 test files matched the specified pattern.
+[xUnit.net 00:00:00.54]     SahaPortal.OrderService.Tests.OrdersApiTests.Post_order_without_a_product_id_returns_400(productId: "") [FAIL]
+[xUnit.net 00:00:00.54]     SahaPortal.OrderService.Tests.OrdersApiTests.Post_order_without_a_product_id_returns_400(productId: "   ") [FAIL]
+  Failed SahaPortal.OrderService.Tests.OrdersApiTests.Post_order_without_a_product_id_returns_400(productId: "") [3 ms]
+  Error Message:
+   Assert.Equal() Failure: Values differ
+Expected: BadRequest
+Actual:   Created
+  Stack Trace:
+     at SahaPortal.OrderService.Tests.OrdersApiTests.Post_order_without_a_product_id_returns_400(String productId) in /home/ekip02/saha-ekipman-portal/tests/order-service.tests/OrdersApiTests.cs:line 35
+--- End of stack trace from previous location ---
+  Failed SahaPortal.OrderService.Tests.OrdersApiTests.Post_order_without_a_product_id_returns_400(productId: "   ") [1 ms]
+  Error Message:
+   Assert.Equal() Failure: Values differ
+Expected: BadRequest
+Actual:   Created
+  Stack Trace:
+     at SahaPortal.OrderService.Tests.OrdersApiTests.Post_order_without_a_product_id_returns_400(String productId) in /home/ekip02/saha-ekipman-portal/tests/order-service.tests/OrdersApiTests.cs:line 35
+--- End of stack trace from previous location ---
+
+Failed!  - Failed:     2, Passed:     4, Skipped:     0, Total:     6, Duration: 477 ms - order-service.tests.dll (net10.0)
+VSTEST_ARTIFACTS_DIRECTORY environment variable was not found, falling back to a user-private temporary directory. This is most likely caused by an outdated Microsoft.NET.Test.Sdk package reference in the test project.
+# beklenen hata olustu (cikis kodu 1): Failed!
+# Duzeltme
+$ git diff HEAD -- src | cat
+diff --git a/src/order-service/Endpoints/OrderEndpoints.cs b/src/order-service/Endpoints/OrderEndpoints.cs
+index 408c34c..7d804a7 100644
+--- a/src/order-service/Endpoints/OrderEndpoints.cs
++++ b/src/order-service/Endpoints/OrderEndpoints.cs
+@@ -15,6 +15,11 @@ public static class OrderEndpoints
+ 
+     private static async Task<IResult> CreateAsync(CreateOrderRequest request, OrdersDbContext db)
+     {
++        if (string.IsNullOrWhiteSpace(request.ProductId))
++        {
++            return Results.BadRequest(new { error = "Ekipman kodu boş olamaz." });
++        }
++
+         var order = new Order
+         {
+             ProductId = request.ProductId,
+$ dotnet test SahaPortal.sln
+  Determining projects to restore...
+  All projects are up-to-date for restore.
+  common-contracts -> /home/ekip02/saha-ekipman-portal/src/common-contracts/bin/Debug/net10.0/common-contracts.dll
+  product-service -> /home/ekip02/saha-ekipman-portal/src/product-service/bin/Debug/net10.0/product-service.dll
+  order-service -> /home/ekip02/saha-ekipman-portal/src/order-service/bin/Debug/net10.0/order-service.dll
+  order-service.tests -> /home/ekip02/saha-ekipman-portal/tests/order-service.tests/bin/Debug/net10.0/order-service.tests.dll
+Test run for /home/ekip02/saha-ekipman-portal/tests/order-service.tests/bin/Debug/net10.0/order-service.tests.dll (.NETCoreApp,Version=v10.0)
+  product-service.tests -> /home/ekip02/saha-ekipman-portal/tests/product-service.tests/bin/Debug/net10.0/product-service.tests.dll
+Test run for /home/ekip02/saha-ekipman-portal/tests/product-service.tests/bin/Debug/net10.0/product-service.tests.dll (.NETCoreApp,Version=v10.0)
+A total of 1 test files matched the specified pattern.
+A total of 1 test files matched the specified pattern.
+
+Passed!  - Failed:     0, Passed:     8, Skipped:     0, Total:     8, Duration: 116 ms - product-service.tests.dll (net10.0)
+VSTEST_ARTIFACTS_DIRECTORY environment variable was not found, falling back to a user-private temporary directory. This is most likely caused by an outdated Microsoft.NET.Test.Sdk package reference in the test project.
+
+Passed!  - Failed:     0, Passed:     6, Skipped:     0, Total:     6, Duration: 477 ms - order-service.tests.dll (net10.0)
+VSTEST_ARTIFACTS_DIRECTORY environment variable was not found, falling back to a user-private temporary directory. This is most likely caused by an outdated Microsoft.NET.Test.Sdk package reference in the test project.
+$ git add src tests
+$ git commit -m fix(order): reject empty product id
+[hotfix/1.0.1 f38c70b] fix(order): reject empty product id
+ 2 files changed, 17 insertions(+)
+$ git add CHANGELOG.md
+$ git commit -m chore(release): 1.0.1
+[hotfix/1.0.1 835414f] chore(release): 1.0.1
+ 1 file changed, 6 insertions(+)
+$ git push -u origin hotfix/1.0.1
+remote: 
+remote: To create a merge request for hotfix/1.0.1, visit:        
+remote:   https://gitlab.kurum.test/egitim/ekip-02/saha-ekipman-portal/-/merge_requests/new?merge_request%5Bsource_branch%5D=hotfix%2F1.0.1        
+remote: 
+To gitlab.kurum.test:egitim/ekip-02/saha-ekipman-portal.git
+ * [new branch]      hotfix/1.0.1 -> hotfix/1.0.1
+branch 'hotfix/1.0.1' set up to track 'origin/hotfix/1.0.1'.
+
+### Arayuz: gitlab mr-ac 02 dev hotfix/1.0.1 main fix(order): reject empty product id 2 hayir hayir lab-02-b-mr-hotfix
+  tamam  MR sablonu kendiliginden geldi (.gitlab/merge_request_templates/Default.md)
+  goruntu: lab-rehberleri/img/lab-02-b-mr-hotfix-sablon.png
+  tamam  reviewer: ekip02-lead
+  goruntu: lab-rehberleri/img/lab-02-b-mr-hotfix-form.png
+  tamam  MR !5 acildi: hotfix/1.0.1 -> main (squash: hayir, kaynak branch silinsin: hayir)
+  goruntu: lab-rehberleri/img/lab-02-b-mr-hotfix.png
+
+### Arayuz: gitlab mr-merge 02 lead hotfix/1.0.1 lab-02-b-hotfix-merge main
+  goruntu: lab-rehberleri/img/lab-02-b-hotfix-merge-oncesi.png
+  tamam  !5: ekip02-lead merge etti
+  goruntu: lab-rehberleri/img/lab-02-b-hotfix-merge.png
+
+### Annotated tag: v1.0.1 (main uzerinde)
+rol: ekip02-lead
+$ git switch main
+Switched to branch 'main'
+Your branch is up to date with 'origin/main'.
+$ git pull --ff-only
+From gitlab.kurum.test:egitim/ekip-02/saha-ekipman-portal
+   261e092..92bd219  main       -> origin/main
+Updating 261e092..92bd219
+Fast-forward
+ CHANGELOG.md                                  |  6 ++++++
+ src/order-service/Endpoints/OrderEndpoints.cs |  5 +++++
+ tests/order-service.tests/OrdersApiTests.cs   | 12 ++++++++++++
+ 3 files changed, 23 insertions(+)
+$ git tag -a v1.0.1 -m release: v1.0.1
+$ git push origin v1.0.1
+To gitlab.kurum.test:egitim/ekip-02/saha-ekipman-portal.git
+ * [new tag]         v1.0.1 -> v1.0.1
+$ git describe --tags
+v1.0.1
+$ git cat-file -t v1.0.1
+tag
+
+### Arayuz: gitlab mr-ac 02 dev hotfix/1.0.1 develop fix(order): merge hotfix 1.0.1 into develop 2 hayir evet lab-02-b-mr-hotfix-geri
+  tamam  MR sablonu kendiliginden geldi (.gitlab/merge_request_templates/Default.md)
+  goruntu: lab-rehberleri/img/lab-02-b-mr-hotfix-geri-sablon.png
+  tamam  reviewer: ekip02-lead
+  goruntu: lab-rehberleri/img/lab-02-b-mr-hotfix-geri-form.png
+  tamam  MR !6 acildi: hotfix/1.0.1 -> develop (squash: hayir, kaynak branch silinsin: evet)
+  goruntu: lab-rehberleri/img/lab-02-b-mr-hotfix-geri.png
+
+### Arayuz: gitlab mr-merge 02 lead hotfix/1.0.1 lab-02-b-hotfix-geri-merge develop
+  goruntu: lab-rehberleri/img/lab-02-b-hotfix-geri-merge-oncesi.png
+  tamam  !6: ekip02-lead merge etti
+  goruntu: lab-rehberleri/img/lab-02-b-hotfix-geri-merge.png
+
+### Arayuz: gitlab sayfa 02 dev /-/tags v1.0.0|v1.0.1 lab-02-b-tags
+  tamam  gorunuyor: v1.0.0
+  tamam  gorunuyor: v1.0.1
+  goruntu: lab-rehberleri/img/lab-02-b-tags.png
+
+### Arayuz: gitlab sayfa 02 dev /-/merge_requests?scope=all&state=merged fix(order): reject empty product id|chore(release): 1.0.0 lab-02-b-mr-gecmisi
+  tamam  gorunuyor: fix(order): reject empty product id
+  tamam  gorunuyor: chore(release): 1.0.0
+  goruntu: lab-rehberleri/img/lab-02-b-mr-gecmisi.png
+
+### Arayuz: gitlab sayfa 02 dev /-/issues/2 Closed lab-02-b-issue-kapandi
+  tamam  gorunuyor: Closed
+  goruntu: lab-rehberleri/img/lab-02-b-issue-kapandi.png
+
+### Adim 7: grafigi dogrula
+rol: ekip02-dev
+$ git fetch --prune --tags origin
+From gitlab.kurum.test:egitim/ekip-02/saha-ekipman-portal
+ - [deleted]         (none)     -> origin/hotfix/1.0.1
+ - [deleted]         (none)     -> origin/release/1.0.0
+   a3aa398..7ce378d  develop    -> origin/develop
+$ git switch develop
+Switched to branch 'develop'
+Your branch is behind 'origin/develop' by 6 commits, and can be fast-forwarded.
+  (use "git pull" to update your local branch)
+$ git pull --ff-only
+Updating 02dfbba..7ce378d
+Fast-forward
+ CHANGELOG.md                                  | 13 +++++++++++++
+ src/order-service/Endpoints/OrderEndpoints.cs |  5 +++++
+ tests/order-service.tests/OrdersApiTests.cs   | 12 ++++++++++++
+ 3 files changed, 30 insertions(+)
+$ git log --oneline --graph origin/main origin/develop | head -n 30
+*   7ce378d Merge branch 'hotfix/1.0.1' into 'develop'
+|\  
+* \   a3aa398 Merge branch 'release/1.0.0' into 'develop'
+|\ \  
+| | | *   92bd219 Merge branch 'hotfix/1.0.1' into 'main'
+| | | |\  
+| | | |/  
+| | |/|   
+| | * | 835414f chore(release): 1.0.1
+| | * | f38c70b fix(order): reject empty product id
+| | |/  
+| | *   261e092 Merge branch 'release/1.0.0' into 'main'
+| | |\  
+| | |/  
+| |/|   
+| * | 3733cdf chore(release): 1.0.0
+|/ /  
+* |   02dfbba Merge branch 'feature/3-stok-durumu-arayuz' into 'develop'
+|\ \  
+| * | 36837b6 feat(web-ui): show stock status
+|/ /  
+* |   a8d67e9 Merge branch 'feature/3-stok-durumu' into 'develop'
+|\ \  
+| |/  
+|/|   
+| * 0a09bd1 feat(catalog): add stock status
+|/  
+* 6e340a1 chore: add merge request template and CODEOWNERS
+*   99ec91c Merge branch 'feature/katalog-sarj-unitesi'
+|\  
+$ git branch -r --contains f38c70bad41e828833dde662cfcb46473f9d9ff9 | grep origin/
+  origin/develop
+  origin/main
+$ git tag -l v*
+v1.0.0
+v1.0.1
+$ git branch -D release/1.0.0 hotfix/1.0.1 2>/dev/null; git branch
+Deleted branch release/1.0.0 (was 3733cdf).
+Deleted branch hotfix/1.0.1 (was 835414f).
+* develop
+  feature/katalog-sarj-unitesi
+  lab/01a-conflict
+  main
+
+### Checkpoint karsilastirmasi
+# agac ayni: origin/develop == checkpoint/lab-02b (haric: .gitlab/CODEOWNERS)
+# agac ayni: origin/main == checkpoint/lab-02b-main (haric: .gitlab/CODEOWNERS)
+# agac ayni: v1.0.0 == checkpoint/lab-02b-main~1 (haric: .gitlab/CODEOWNERS)
+
+LAB 02-b cozumu ekip-02 icin uygulandi.
+cikis kodu: 0  sure: 91 sn
+
+################ dogrula/lab.sh lab-02-b 02
+
+LAB 02-B (ekip-02)
+
+Tag'ler
+  GECTI  v1.0.0 annotated tag: "release: v1.0.0"
+  GECTI  v1.0.0 main uzerinde: evet
+  GECTI  v1.0.1 annotated tag: "release: v1.0.1"
+  GECTI  v1.0.1 main uzerinde: evet
+  GECTI  v* tag'ini olusturabilen: Maintainers
+
+CHANGELOG (main)
+  GECTI  1.0.0 bolumu
+  GECTI  1.0.1 bolumu
+
+Hotfix iki yerde
+  GECTI  main'de: f38c70b fix(order): reject empty product id
+  GECTI  develop'ta: f38c70b fix(order): reject empty product id
+  GECTI  release geri merge edilmis (v1.0.0 develop gecmisinde): evet
+
+Davranis: bos ekipman kodu
+  GECTI  v1.0.0: bos ekipman kodu kabul ediliyor (hata surumde duruyor): 201
+  GECTI  v1.0.1: bos ekipman kodu reddediliyor: 400
+  GECTI  v1.0.1: gecerli talep: 201
+
+MR gecmisi
+  GECTI  MR !3: release/1.0.0 -> main merge edilmis
+  GECTI  MR !5: hotfix/1.0.1 -> main merge edilmis
+  GECTI  MR !4: release/1.0.0 -> develop merge edilmis
+  GECTI  MR !6: hotfix/1.0.1 -> develop merge edilmis
+
+17 gecti, 0 kaldi
+cikis kodu: 0
+
+################ cozum.sh 03-a 02
+
+### Arayuz: gitlab issue-ac 02 dev Servisler için Docker imajları Üç servis container imajı olarak paketlenmeli ve test VM'de Compose ile çalışmalı. Kabul kriteri: imajlar root olmayan kullanıcıyla çalışır; uygulama registry'den çekilen imajlarla ikinci VM'de açılır. lab-03-a-issue
+  goruntu: lab-rehberleri/img/lab-03-a-issue-form.png
+  tamam  issue #3 acildi: Servisler için Docker imajları
+  goruntu: lab-rehberleri/img/lab-03-a-issue.png
+
+### Adim 1: feature/9-docker
+rol: ekip02-dev
+$ git switch develop
+Your branch is up to date with 'origin/develop'.
+Already on 'develop'
+$ git pull --ff-only
+Already up to date.
+$ git switch -c feature/9-docker
+Switched to a new branch 'feature/9-docker'
+
+### Adim 2: order-service icin multi-stage Dockerfile
+rol: ekip02-dev
+$ cat src/order-service/Dockerfile
+# Build context: repo koku.  docker build -f src/order-service/Dockerfile .
+ARG MCR=mcr.microsoft.com
+FROM ${MCR}/dotnet/sdk:10.0 AS build
+WORKDIR /src
+COPY NuGet.config ./
+COPY src/common-contracts/ src/common-contracts/
+COPY src/order-service/*.csproj src/order-service/
+RUN dotnet restore src/order-service
+COPY src/order-service/ src/order-service/
+RUN dotnet publish src/order-service -c Release -o /app
+
+FROM ${MCR}/dotnet/aspnet:10.0
+WORKDIR /app
+COPY --from=build /app .
+USER $APP_UID
+ENTRYPOINT ["dotnet", "order-service.dll"]
+$ docker build -q -f src/order-service/Dockerfile --build-arg MCR=gitlab.kurum.test:5050/egitim/base -t order-service:dev .
+sha256:257c3bd304355331bf34567025461de4bc3faa40eb9902c25e8739f2445c3c3c
+$ git add src/order-service/Dockerfile
+$ git commit -m build(order): add multi-stage Dockerfile
+[feature/9-docker 7fcb8ac] build(order): add multi-stage Dockerfile
+ 1 file changed, 16 insertions(+)
+ create mode 100644 src/order-service/Dockerfile
+
+### Adim 3: ayni kalip product-service icin
+rol: ekip02-dev
+$ diff src/order-service/Dockerfile src/product-service/Dockerfile || true
+1c1
+< # Build context: repo koku.  docker build -f src/order-service/Dockerfile .
+---
+> # Build context: repo koku.  docker build -f src/product-service/Dockerfile .
+7,10c7,10
+< COPY src/order-service/*.csproj src/order-service/
+< RUN dotnet restore src/order-service
+< COPY src/order-service/ src/order-service/
+< RUN dotnet publish src/order-service -c Release -o /app
+---
+> COPY src/product-service/*.csproj src/product-service/
+> RUN dotnet restore src/product-service
+> COPY src/product-service/ src/product-service/
+> RUN dotnet publish src/product-service -c Release -o /app
+16c16
+< ENTRYPOINT ["dotnet", "order-service.dll"]
+---
+> ENTRYPOINT ["dotnet", "product-service.dll"]
+$ git add src/product-service/Dockerfile
+$ git commit -m build(product): add multi-stage Dockerfile
+[feature/9-docker 4aab913] build(product): add multi-stage Dockerfile
+ 1 file changed, 16 insertions(+)
+ create mode 100644 src/product-service/Dockerfile
+
+### Adim 4: web-ui icin Node + Nginx Dockerfile
+rol: ekip02-dev
+$ cat src/web-ui/Dockerfile
+# Build context: repo koku.  docker build -f src/web-ui/Dockerfile .
+ARG HUB=docker.io
+FROM ${HUB}/library/node:24-alpine AS build
+WORKDIR /app
+# .npmrc da kopyalanir: npm ci paketleri Nexus npm-group deposundan alir.
+COPY src/web-ui/package*.json src/web-ui/.npmrc ./
+RUN npm ci
+COPY src/web-ui/ ./
+RUN npm run build
+
+FROM ${HUB}/nginxinc/nginx-unprivileged:stable-alpine
+COPY deploy/nginx.conf /etc/nginx/conf.d/default.conf
+COPY --from=build /app/dist /usr/share/nginx/html
+EXPOSE 8080
+HEALTHCHECK --interval=30s --timeout=3s CMD wget -q -O /dev/null http://127.0.0.1:8080/ || exit 1
+$ cat deploy/nginx.conf
+# deploy/nginx.conf - web-ui imajındaki Nginx ayarı
+#
+# Şimdilik yalnızca statik dosyaları sunar. /api isteklerini servislere
+# yönlendiren kurallar LAB 03-B'de eklenecek.
+server {
+  listen 8080;
+  root /usr/share/nginx/html;
+
+  location / { try_files $uri /index.html; }
+}
+$ git add src/web-ui/Dockerfile deploy/nginx.conf
+$ git commit -m build(web-ui): add Node and Nginx Dockerfile
+[feature/9-docker 747d130] build(web-ui): add Node and Nginx Dockerfile
+ 2 files changed, 24 insertions(+), 4 deletions(-)
+ create mode 100644 src/web-ui/Dockerfile
+
+### Adim 5: .dockerignore, context boyutu
+rol: ekip02-dev
+$ du -sh .git src/web-ui/node_modules 2>/dev/null
+1.2M	.git
+132M	src/web-ui/node_modules
+# Build context'e ne giriyor? Gecici bir imajda olculur.
+$ printf 'FROM %s\nCOPY . /ctx\nRUN du -sh /ctx\n' "$HUB/library/node:24-alpine" | docker build --no-cache --progress=plain -f - . 2>&1 | grep -E '[0-9.]+[KMG]?[[:space:]]+/ctx$'
+#6 [2/3] COPY . /ctx
+#7 0.159 378.3M	/ctx
+$ cat .dockerignore
+# Build context'e girmeyecekler. .gitignore'dan farkli olarak desenler yalnizca
+# context kokune gore eslesir; alt klasorler icin **/ gerekir.
+.git/
+**/bin/
+**/obj/
+**/node_modules/
+**/dist/
+**/coverage/
+**/TestResults/
+**/*.db
+**/*.db-shm
+**/*.db-wal
+.env
+$ printf 'FROM %s\nCOPY . /ctx\nRUN du -sh /ctx\n' "$HUB/library/node:24-alpine" | docker build --no-cache --progress=plain -f - . 2>&1 | grep -E '[0-9.]+[KMG]?[[:space:]]+/ctx$'
+#6 [2/3] COPY . /ctx
+#7 0.084 604.0K	/ctx
+$ git add .dockerignore
+$ git commit -m build: add .dockerignore
+[feature/9-docker 693dcdc] build: add .dockerignore
+ 1 file changed, 13 insertions(+)
+ create mode 100644 .dockerignore
+
+### Adim 6: uc imaji build et, boyutlara bak
+rol: ekip02-dev
+$ docker build -q -f src/order-service/Dockerfile --build-arg MCR=gitlab.kurum.test:5050/egitim/base -t order-service:dev .
+sha256:aff4e77c4b733d47a4fb0dbfd26f534313036c9ef8a6b8f6d19ba140bf0f63d0
+$ docker build -q -f src/product-service/Dockerfile --build-arg MCR=gitlab.kurum.test:5050/egitim/base -t product-service:dev .
+sha256:664524565c4050dc67ca7e4623b1b4acc87bf45ade50fd1f72e945093b883b53
+$ docker build -q -f src/web-ui/Dockerfile --build-arg HUB=gitlab.kurum.test:5050/egitim/base -t web-ui:dev .
+sha256:cd5a09d5b02455e6918ba80b5bf27d7e6448a730d8e7633149f5b1699d8b62eb
+$ docker images --format 'table {{.Repository}}\t{{.Tag}}\t{{.Size}}' | grep -E 'REPOSITORY|^(order-service|product-service|web-ui) |dotnet/sdk|dotnet/aspnet|library/node|nginx-unprivileged'
+REPOSITORY                                                                  TAG             SIZE
+product-service                                                             dev             376MB
+order-service                                                               dev             435MB
+web-ui                                                                      dev             127MB
+gitlab.kurum.test:5050/egitim/base/library/node                             24-alpine       346MB
+gitlab.kurum.test:5050/egitim/base/dotnet/sdk                               10.0            1.98GB
+gitlab.kurum.test:5050/egitim/base/dotnet/aspnet                            10.0            373MB
+gitlab.kurum.test:5050/egitim/base/nginxinc/nginx-unprivileged              stable-alpine   127MB
+# Ikinci build: kaynak kod degisti, restore ve npm ci onbellekten gelmeli
+$ docker build --progress=plain -f src/order-service/Dockerfile --build-arg MCR=$MCR -t order-service:dev . 2>&1 | grep -E 'CACHED|RUN dotnet (restore|publish)' | sed 's/^#[0-9]* //' | sort -u
+CACHED
+[build 6/8] RUN dotnet restore src/order-service
+[build 8/8] RUN dotnet publish src/order-service -c Release -o /app
+$ git checkout src/order-service/Program.cs
+Updated 1 path from the index
+$ docker build --progress=plain -f src/web-ui/Dockerfile --build-arg HUB=$HUB -t web-ui:dev . 2>&1 | grep -E 'CACHED|RUN npm (ci|run build)' | sed 's/^#[0-9]* //' | sort -u
+CACHED
+[build 4/6] RUN npm ci
+[build 6/6] RUN npm run build
+$ git checkout src/web-ui/src/styles.css
+Updated 1 path from the index
+# Kaynak eski haline dondu; imajlari yeniden uret
+$ docker build -q -f src/order-service/Dockerfile --build-arg MCR=gitlab.kurum.test:5050/egitim/base -t order-service:dev .
+sha256:a0d6db0e37644b1bada24f47cde33cb1128e800c323eff18475fbc1e18c30ab5
+$ docker build -q -f src/web-ui/Dockerfile --build-arg HUB=gitlab.kurum.test:5050/egitim/base -t web-ui:dev .
+sha256:31c71bad192701f0e8ccb7ffda8a8b8377fbe2994feac7f5e9886d1abeb8bf89
+
+### Adim 7: tek tek calistir, /health ve loglar
+$ docker run -d --name product -p 8080:8080 product-service:dev
+9399bb55c458099ae7d35d1c79b4f97f748f40634cfc13bdd4f0b226388f5334
+$ curl -s http://localhost:8080/health; echo
+Healthy
+$ curl -s http://localhost:8080/api/products | head -c 70; echo
+[{"code":"ADP-01","name":"Terminal adaptörü","inStock":true},{"code"
+$ docker exec product whoami
+app
+$ docker logs product 2>&1 | tail -n 4
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Production
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /app
+$ docker rm -f product
+product
+# order-service SQLite dosyasina yazar; simdilik /tmp (kalici veri LAB 03-B'nin konusu)
+$ docker run -d --name order -p 8080:8080 -e ConnectionStrings__Orders=Data Source=/tmp/orders.db order-service:dev
+926a275ac0dd6808d03e56a32fc20f8315355a80f6aab838abe92e2bf3655622
+$ curl -s http://localhost:8080/health; echo
+Healthy
+$ curl -s -o /dev/null -w '%{http_code}\n' -X POST http://localhost:8080/api/orders -H 'Content-Type: application/json' -d '{ "productId": "ADP-01", "quantity": 2 }'
+201
+$ docker exec order whoami
+app
+$ docker rm -f order
+order
+$ docker run -d --name web -p 8080:8080 web-ui:dev
+652fdcb1884936b59d43e14c9dddc23d737f46608eec7b20e34d796989c71056
+$ curl -s -o /dev/null -w '%{http_code}\n' http://localhost:8080/
+200
+$ docker exec web id -u
+101
+$ docker inspect --format '{{.Config.User}}' product-service:dev order-service:dev web-ui:dev
+1654
+1654
+101
+$ docker rm -f web
+web
+rol: ekip02-dev
+$ git status --short
+$ git push -u origin feature/9-docker
+remote: 
+remote: To create a merge request for feature/9-docker, visit:        
+remote:   https://gitlab.kurum.test/egitim/ekip-02/saha-ekipman-portal/-/merge_requests/new?merge_request%5Bsource_branch%5D=feature%2F9-docker        
+remote: 
+To gitlab.kurum.test:egitim/ekip-02/saha-ekipman-portal.git
+ * [new branch]      feature/9-docker -> feature/9-docker
+branch 'feature/9-docker' set up to track 'origin/feature/9-docker'.
+
+### Checkpoint karsilastirmasi
+# agac ayni: HEAD == checkpoint/lab-03a (haric: .gitlab/CODEOWNERS)
+
+LAB 03-a cozumu ekip-02 icin uygulandi.
+cikis kodu: 0  sure: 32 sn
+
+################ dogrula/lab.sh lab-03-a 02
+
+LAB 03-A (ekip-02)
+  GECTI  repo: feature/9-docker@693dcdc
+
+Dosyalar ve kurallar
+  GECTI  src/order-service/Dockerfile var
+  GECTI  src/product-service/Dockerfile var
+  GECTI  src/web-ui/Dockerfile var
+  GECTI  .dockerignore var
+  GECTI  order-service: ARG MCR
+  GECTI  order-service: temel imajlar ${MCR} uzerinden
+  GECTI  order-service: multi-stage (SDK ile build)
+  GECTI  order-service: COPY NuGet.config
+  GECTI  order-service: USER $APP_UID
+  GECTI  product-service: ARG MCR
+  GECTI  product-service: temel imajlar ${MCR} uzerinden
+  GECTI  product-service: multi-stage (SDK ile build)
+  GECTI  product-service: COPY NuGet.config
+  GECTI  product-service: USER $APP_UID
+  GECTI  web-ui: ARG HUB
+  GECTI  web-ui: Node ile build
+  GECTI  web-ui: nginx-unprivileged
+  GECTI  web-ui: .npmrc kopyalaniyor (npm ci Nexus'tan)
+  GECTI  Dockerfile'larda :latest ve '# syntax=' yok
+  GECTI  .dockerignore: node_modules
+  GECTI  .dockerignore: bin
+  GECTI  .dockerignore: obj
+  GECTI  .dockerignore: .git
+
+Build (context: repo koku)
+  GECTI  docker build order-service (cikis kodu): 0
+  GECTI  docker build product-service (cikis kodu): 0
+  GECTI  docker build web-ui (cikis kodu): 0
+
+Ikinci build: onbellek
+  GECTI  order-service: restore CACHED
+  GECTI  web-ui: npm ci CACHED
+
+Imajlar root olmayan kullaniciyla calisiyor
+  GECTI  product-service: /health -> 200
+  GECTI  product-service: surec kullanicisi uid=1654 (root degil)
+  GECTI  product-service /health: Healthy
+  GECTI  order-service: /health -> 200
+  GECTI  order-service: surec kullanicisi uid=1654 (root degil)
+  GECTI  web-ui: / -> 200
+  GECTI  web-ui: surec kullanicisi uid=101 (root degil)
+  BILGI  boyutlar: product-service 376MB;order-service 435MB;web-ui 127MB;
+
+36 gecti, 0 kaldi
+cikis kodu: 0
+
+################ cozum.sh 03-b 02
+
+### Adim 1: uc imaji 1.0.1 ve commit SHA ile etiketle
+rol: ekip02-dev
+$ git switch feature/9-docker
+Already on 'feature/9-docker'
+Your branch is up to date with 'origin/feature/9-docker'.
+$ echo $IMG
+gitlab.kurum.test:5050/egitim/ekip-02/saha-ekipman-portal
+$ SHA=$(git rev-parse --short HEAD)   # 693dcdc
+$ docker build -q -f src/order-service/Dockerfile --build-arg MCR=gitlab.kurum.test:5050/egitim/base -t gitlab.kurum.test:5050/egitim/ekip-02/saha-ekipman-portal/order-service:1.0.1 -t gitlab.kurum.test:5050/egitim/ekip-02/saha-ekipman-portal/order-service:693dcdc .
+sha256:d8aa4f2af3389b9f0fda1378c11842dc2b06ee277cce81a7836d7f4f04fbabfe
+$ docker build -q -f src/product-service/Dockerfile --build-arg MCR=gitlab.kurum.test:5050/egitim/base -t gitlab.kurum.test:5050/egitim/ekip-02/saha-ekipman-portal/product-service:1.0.1 -t gitlab.kurum.test:5050/egitim/ekip-02/saha-ekipman-portal/product-service:693dcdc .
+sha256:b9c397d29cc6af5ae47bae1b67e377f8e93898eedf65e880c33aac74d96fb7c2
+$ docker build -q -f src/web-ui/Dockerfile --build-arg HUB=gitlab.kurum.test:5050/egitim/base -t gitlab.kurum.test:5050/egitim/ekip-02/saha-ekipman-portal/web-ui:1.0.1 -t gitlab.kurum.test:5050/egitim/ekip-02/saha-ekipman-portal/web-ui:693dcdc .
+sha256:9019b1c18225154de458f52185ac2f55f98609a1f37cdefe94e208a336ca09b3
+$ docker images --format 'table {{.Repository}}\t{{.Tag}}\t{{.ID}}' | grep -E 'REPOSITORY|/ekip-02/'
+REPOSITORY                                                                  TAG             IMAGE ID
+gitlab.kurum.test:5050/egitim/ekip-02/saha-ekipman-portal/product-service   1.0.1           b9c397d29cc6
+gitlab.kurum.test:5050/egitim/ekip-02/saha-ekipman-portal/product-service   693dcdc         b9c397d29cc6
+gitlab.kurum.test:5050/egitim/ekip-02/saha-ekipman-portal/order-service     1.0.1           d8aa4f2af338
+gitlab.kurum.test:5050/egitim/ekip-02/saha-ekipman-portal/order-service     693dcdc         d8aa4f2af338
+gitlab.kurum.test:5050/egitim/ekip-02/saha-ekipman-portal/web-ui            1.0.1           9019b1c18225
+gitlab.kurum.test:5050/egitim/ekip-02/saha-ekipman-portal/web-ui            693dcdc         9019b1c18225
+
+### Arayuz: gitlab deploy-token 02 ekip02-deploy read_registry,write_registry lab-03-b-deploy-token
+  goruntu: lab-rehberleri/img/lab-03-b-deploy-token-form.png
+  tamam  deploy token olusturuldu: ekip02-deploy (read_registry,write_registry); deger yalnizca bir kez gosterilir
+  goruntu: lab-rehberleri/img/lab-03-b-deploy-token.png
+
+### Adim 2: deploy token ile login -> x509
+$ echo "$TOKEN" | docker login $REGISTRY -u ekip02-deploy --password-stdin
+Error response from daemon: Get "https://gitlab.kurum.test:5050/v2/": tls: failed to verify certificate: x509: certificate signed by unknown authority
+# beklenen hata olustu: Docker daemon'i kurum CA'sina guvenmiyor
+
+### Adim 2: kurum CA'sini Docker daemon'ina tanit (TLS dogrulamasi kapatilmaz)
+$ sudo mkdir -p /etc/docker/certs.d/gitlab.kurum.test:5050
+$ sudo cp /etc/lab/kurum-ca.crt /etc/docker/certs.d/gitlab.kurum.test:5050/ca.crt
+$ ls -l /etc/docker/certs.d/
+total 4
+drwxr-xr-x 2 root root 4096 Nov 24 08:31 gitlab.kurum.test:5050
+
+### Adim 2 (kontrol): login olmadan push reddedilir
+$ docker push gitlab.kurum.test:5050/egitim/ekip-02/saha-ekipman-portal/order-service:1.0.1
+The push refers to repository [gitlab.kurum.test:5050/egitim/ekip-02/saha-ekipman-portal/order-service]
+5a13badac376: Waiting
+e1225cd8c030: Waiting
+44136fa355b3: Waiting
+1289ab3881e8: Waiting
+error from registry: access forbidden
+# beklenen hata olustu (cikis kodu 1): access forbidden
+
+### Adim 2: login ve push
+$ echo "$TOKEN" | docker login $REGISTRY -u ekip02-deploy --password-stdin
+Login Succeeded
+$ docker push --all-tags gitlab.kurum.test:5050/egitim/ekip-02/saha-ekipman-portal/order-service 2>&1 | grep -E 'digest:|denied|error'
+1.0.1: digest: sha256:d8aa4f2af3389b9f0fda1378c11842dc2b06ee277cce81a7836d7f4f04fbabfe size: 856
+693dcdc: digest: sha256:d8aa4f2af3389b9f0fda1378c11842dc2b06ee277cce81a7836d7f4f04fbabfe size: 856
+$ docker push --all-tags gitlab.kurum.test:5050/egitim/ekip-02/saha-ekipman-portal/product-service 2>&1 | grep -E 'digest:|denied|error'
+1.0.1: digest: sha256:b9c397d29cc6af5ae47bae1b67e377f8e93898eedf65e880c33aac74d96fb7c2 size: 856
+693dcdc: digest: sha256:b9c397d29cc6af5ae47bae1b67e377f8e93898eedf65e880c33aac74d96fb7c2 size: 856
+$ docker push --all-tags gitlab.kurum.test:5050/egitim/ekip-02/saha-ekipman-portal/web-ui 2>&1 | grep -E 'digest:|denied|error'
+1.0.1: digest: sha256:9019b1c18225154de458f52185ac2f55f98609a1f37cdefe94e208a336ca09b3 size: 856
+693dcdc: digest: sha256:9019b1c18225154de458f52185ac2f55f98609a1f37cdefe94e208a336ca09b3 size: 856
+
+### Arayuz: gitlab registry 02 lab-03-b-registry 1.0.1
+  tamam  Container Registry: order-service, product-service, web-ui
+  goruntu: lab-rehberleri/img/lab-03-b-registry.png
+  tamam  order-service etiketi: 1.0.1
+  goruntu: lab-rehberleri/img/lab-03-b-registry-etiketler.png
+
+### Adim 4: compose.yaml ve nginx.conf
+rol: ekip02-dev
+$ cat deploy/compose.yaml
+# deploy/compose.yaml - Saha Ekipman Talep Portalı
+#
+# IMG, TAG ve WEB_PORT ortamdan ya da bu dosyanın yanındaki .env dosyasından gelir:
+#   IMG=<registry>/<grup>/<ekip>/saha-ekipman-portal   TAG=1.0.1   WEB_PORT=8081
+# Yalnızca web-ui port yayınlar; API'lere Nginx üzerinden /api ile ulaşılır.
+services:
+  product-service:
+    image: ${IMG}/product-service:${TAG}
+
+  order-service:
+    image: ${IMG}/order-service:${TAG}
+    environment:
+      ConnectionStrings__Orders: Data Source=/data/orders.db
+    volumes:
+      - orders-data:/data
+
+  web-ui:
+    image: ${IMG}/web-ui:${TAG}
+    ports: ["${WEB_PORT:-8080}:8080"]
+    depends_on: [product-service, order-service]
+
+volumes:
+  orders-data:
+$ cat deploy/nginx.conf
+# deploy/nginx.conf - web-ui imajındaki Nginx ayarı
+#
+# Tarayıcı yalnızca web-ui ile konuşur. /api istekleri Compose servis adlarıyla
+# ilgili API'ye yönlendirilir; istek yolu olduğu gibi iletilir.
+server {
+  listen 8080;
+  root /usr/share/nginx/html;
+
+  location / { try_files $uri /index.html; }
+
+  location /api/products {
+    proxy_pass http://product-service:8080;
+  }
+
+  location /api/orders {
+    proxy_pass http://order-service:8080;
+  }
+}
+$ git add deploy
+$ git commit -m feat(deploy): add compose file and nginx reverse proxy
+[feature/9-docker 873e915] feat(deploy): add compose file and nginx reverse proxy
+ 2 files changed, 31 insertions(+), 5 deletions(-)
+# nginx.conf imajin icinde: web-ui yeniden build edilir
+$ docker build -q -f src/web-ui/Dockerfile --build-arg HUB=gitlab.kurum.test:5050/egitim/base -t gitlab.kurum.test:5050/egitim/ekip-02/saha-ekipman-portal/web-ui:1.0.1 -t gitlab.kurum.test:5050/egitim/ekip-02/saha-ekipman-portal/web-ui:873e915 .
+sha256:f7f57eaaf0229b285079000a38c54c5eb2737b039489f2a28abcca79da3beae3
+
+### Adim 5: lokalde compose up -> SQLite Error 14
+# WEB_PORT ortamda tanimli (8082): arayuz http://localhost:8082 adresinde
+$ TAG=1.0.1 docker compose -p ekip02 -f deploy/compose.yaml config | head -n 30
+name: ekip02
+services:
+  order-service:
+    environment:
+      ConnectionStrings__Orders: Data Source=/data/orders.db
+    image: gitlab.kurum.test:5050/egitim/ekip-02/saha-ekipman-portal/order-service:1.0.1
+    networks:
+      default: null
+    volumes:
+      - type: volume
+        source: orders-data
+        target: /data
+        volume: {}
+  product-service:
+    image: gitlab.kurum.test:5050/egitim/ekip-02/saha-ekipman-portal/product-service:1.0.1
+    networks:
+      default: null
+  web-ui:
+    image: gitlab.kurum.test:5050/egitim/ekip-02/saha-ekipman-portal/web-ui:1.0.1
+    networks:
+      default: null
+    depends_on:
+      order-service:
+        condition: service_started
+        required: true
+      product-service:
+        condition: service_started
+        required: true
+    ports:
+      - mode: ingress
+$ docker compose -p ekip02 -f deploy/compose.yaml up -d
+ Network ekip02_default Creating 
+ Volume ekip02_orders-data Creating 
+ Volume ekip02_orders-data Created 
+ Network ekip02_default Created 
+ Container ekip02-product-service-1 Creating 
+ Container ekip02-order-service-1 Creating 
+ Container ekip02-product-service-1 Created 
+ Container ekip02-order-service-1 Created 
+ Container ekip02-web-ui-1 Creating 
+ Container ekip02-web-ui-1 Created 
+ Container ekip02-order-service-1 Starting 
+ Container ekip02-product-service-1 Starting 
+ Container ekip02-order-service-1 Started 
+ Container ekip02-product-service-1 Started 
+ Container ekip02-web-ui-1 Starting 
+ Container ekip02-web-ui-1 Started 
+$ docker compose -p ekip02 -f deploy/compose.yaml ps -a
+NAME                       IMAGE                                                                             COMMAND                  SERVICE           CREATED         STATUS                            PORTS
+ekip02-order-service-1     gitlab.kurum.test:5050/egitim/ekip-02/saha-ekipman-portal/order-service:1.0.1     "dotnet order-servic…"   order-service     8 seconds ago   Up 8 seconds                      
+ekip02-product-service-1   gitlab.kurum.test:5050/egitim/ekip-02/saha-ekipman-portal/product-service:1.0.1   "dotnet product-serv…"   product-service   8 seconds ago   Up 8 seconds                      
+ekip02-web-ui-1            gitlab.kurum.test:5050/egitim/ekip-02/saha-ekipman-portal/web-ui:1.0.1            "/docker-entrypoint.…"   web-ui            8 seconds ago   Up 8 seconds (health: starting)   0.0.0.0:8082->8080/tcp, [::]:8082->8080/tcp
+$ docker compose -p ekip02 -f deploy/compose.yaml logs order-service
+order-service-1  | Unhandled exception. Microsoft.Data.Sqlite.SqliteException (0x80004005): SQLite Error 14: 'unable to open database file'.
+# beklenen hata olustu: SQLite Error 14 (root olmayan kullanici /data'ya yazamiyor)
+$ docker compose -p ekip02 -f deploy/compose.yaml logs web-ui 2>&1 | tail -n 3
+web-ui-1  | 2026/11/24 08:32:01 [notice] 1#1: start worker process 34
+web-ui-1  | 2026/11/24 08:32:01 [notice] 1#1: start worker process 35
+web-ui-1  | 2026/11/24 08:32:01 [notice] 1#1: start worker process 36
+
+### Arayuz: uygulama katalog http://localhost:8082 lab-03-b-yerel-hata Veriler yüklenemedi
+  tamam  katalog listeleniyor: 4 ekipman (http://localhost:8082)
+  tamam  gorunuyor: Veriler yüklenemedi
+  goruntu: lab-rehberleri/img/lab-03-b-yerel-hata.png
+
+### Adim 5: /data dizinini Dockerfile'da olustur, sahipligini ver
+rol: ekip02-dev
+$ git diff HEAD | cat
+diff --git a/src/order-service/Dockerfile b/src/order-service/Dockerfile
+index 74344cc..abb6f93 100644
+--- a/src/order-service/Dockerfile
++++ b/src/order-service/Dockerfile
+@@ -12,5 +12,7 @@ RUN dotnet publish src/order-service -c Release -o /app
+ FROM ${MCR}/dotnet/aspnet:10.0
+ WORKDIR /app
+ COPY --from=build /app .
++# SQLite dosyasi /data altindaki volume'da durur; dizinin sahibi uygulama kullanicisidir.
++RUN mkdir /data && chown $APP_UID /data
+ USER $APP_UID
+ ENTRYPOINT ["dotnet", "order-service.dll"]
+$ git add src/order-service/Dockerfile
+$ git commit -m fix(order): create the data directory for the non-root user
+[feature/9-docker 36e782f] fix(order): create the data directory for the non-root user
+ 1 file changed, 2 insertions(+)
+# Kod degisti: uc imaj son commit'ten yeniden etiketlenir (1.0.1 ve 36e782f)
+$ docker build -q -f src/order-service/Dockerfile --build-arg MCR=gitlab.kurum.test:5050/egitim/base -t gitlab.kurum.test:5050/egitim/ekip-02/saha-ekipman-portal/order-service:1.0.1 -t gitlab.kurum.test:5050/egitim/ekip-02/saha-ekipman-portal/order-service:36e782f .
+sha256:88b4eb8d213af7aa1f1b982971d26387c04f370daa0156905cd44af683872c37
+$ docker build -q -f src/product-service/Dockerfile --build-arg MCR=gitlab.kurum.test:5050/egitim/base -t gitlab.kurum.test:5050/egitim/ekip-02/saha-ekipman-portal/product-service:1.0.1 -t gitlab.kurum.test:5050/egitim/ekip-02/saha-ekipman-portal/product-service:36e782f .
+sha256:3f41e3474b2f9e29f03c52cbf2db48e9a0eade1822fc362ae4ec9f314f78bfb2
+$ docker build -q -f src/web-ui/Dockerfile --build-arg HUB=gitlab.kurum.test:5050/egitim/base -t gitlab.kurum.test:5050/egitim/ekip-02/saha-ekipman-portal/web-ui:1.0.1 -t gitlab.kurum.test:5050/egitim/ekip-02/saha-ekipman-portal/web-ui:36e782f .
+sha256:e3ea8ba6af403a0393087b5fb181dfea3f1e27171fcf4eed262648bb4a93b6d4
+# Eski volume root'a ait kaldi: -v ile silinip yeniden olusturulur
+$ docker compose -p ekip02 -f deploy/compose.yaml down -v
+ Container ekip02-web-ui-1 Stopping 
+ Container ekip02-web-ui-1 Stopped 
+ Container ekip02-web-ui-1 Removing 
+ Container ekip02-web-ui-1 Removed 
+ Container ekip02-order-service-1 Stopping 
+ Container ekip02-product-service-1 Stopping 
+ Container ekip02-order-service-1 Stopped 
+ Container ekip02-order-service-1 Removing 
+ Container ekip02-order-service-1 Removed 
+ Container ekip02-product-service-1 Stopped 
+ Container ekip02-product-service-1 Removing 
+ Container ekip02-product-service-1 Removed 
+ Volume ekip02_orders-data Removing 
+ Network ekip02_default Removing 
+ Volume ekip02_orders-data Removed 
+ Network ekip02_default Removed 
+$ docker compose -p ekip02 -f deploy/compose.yaml up -d
+ Network ekip02_default Creating 
+ Volume ekip02_orders-data Creating 
+ Volume ekip02_orders-data Created 
+ Network ekip02_default Created 
+ Container ekip02-product-service-1 Creating 
+ Container ekip02-order-service-1 Creating 
+ Container ekip02-order-service-1 Created 
+ Container ekip02-product-service-1 Created 
+ Container ekip02-web-ui-1 Creating 
+ Container ekip02-web-ui-1 Created 
+ Container ekip02-order-service-1 Starting 
+ Container ekip02-product-service-1 Starting 
+ Container ekip02-order-service-1 Started 
+ Container ekip02-product-service-1 Started 
+ Container ekip02-web-ui-1 Starting 
+ Container ekip02-web-ui-1 Started 
+$ docker compose -p ekip02 -f deploy/compose.yaml ps
+NAME                       IMAGE                                                                             COMMAND                  SERVICE           CREATED        STATUS                           PORTS
+ekip02-order-service-1     gitlab.kurum.test:5050/egitim/ekip-02/saha-ekipman-portal/order-service:1.0.1     "dotnet order-servic…"   order-service     1 second ago   Up 1 second                      
+ekip02-product-service-1   gitlab.kurum.test:5050/egitim/ekip-02/saha-ekipman-portal/product-service:1.0.1   "dotnet product-serv…"   product-service   1 second ago   Up 1 second                      
+ekip02-web-ui-1            gitlab.kurum.test:5050/egitim/ekip-02/saha-ekipman-portal/web-ui:1.0.1            "/docker-entrypoint.…"   web-ui            1 second ago   Up 1 second (health: starting)   0.0.0.0:8082->8080/tcp, [::]:8082->8080/tcp
+$ curl -fsS http://localhost:$WEB_PORT/api/products | head -c 70; echo
+[{"code":"ADP-01","name":"Terminal adaptörü","inStock":true},{"code"
+
+### Arayuz: uygulama talep http://localhost:8082 lab-03-b-yerel ADP-01 2
+  tamam  katalog listeleniyor: 4 ekipman (http://localhost:8082)
+  tamam  talep olusturuldu: ADP-01 x 2
+  goruntu: lab-rehberleri/img/lab-03-b-yerel.png
+
+### Adim 5: container yeniden yaratilinca talep kaybolmuyor
+$ curl -fsS http://localhost:$WEB_PORT/api/orders; echo
+[{"id":1,"productId":"ADP-01","quantity":2,"createdAt":"2026-11-24T08:32:13.4302278Z"}]
+$ docker compose -p ekip02 -f deploy/compose.yaml down
+ Container ekip02-web-ui-1 Stopping 
+ Container ekip02-web-ui-1 Stopped 
+ Container ekip02-web-ui-1 Removing 
+ Container ekip02-web-ui-1 Removed 
+ Container ekip02-product-service-1 Stopping 
+ Container ekip02-order-service-1 Stopping 
+ Container ekip02-order-service-1 Stopped 
+ Container ekip02-order-service-1 Removing 
+ Container ekip02-order-service-1 Removed 
+ Container ekip02-product-service-1 Stopped 
+ Container ekip02-product-service-1 Removing 
+ Container ekip02-product-service-1 Removed 
+ Network ekip02_default Removing 
+ Network ekip02_default Removed 
+$ docker compose -p ekip02 -f deploy/compose.yaml up -d
+ Network ekip02_default Creating 
+ Network ekip02_default Created 
+ Container ekip02-product-service-1 Creating 
+ Container ekip02-order-service-1 Creating 
+ Container ekip02-product-service-1 Created 
+ Container ekip02-order-service-1 Created 
+ Container ekip02-web-ui-1 Creating 
+ Container ekip02-web-ui-1 Created 
+ Container ekip02-order-service-1 Starting 
+ Container ekip02-product-service-1 Starting 
+ Container ekip02-order-service-1 Started 
+ Container ekip02-product-service-1 Started 
+ Container ekip02-web-ui-1 Starting 
+ Container ekip02-web-ui-1 Started 
+$ curl -fsS http://localhost:$WEB_PORT/api/orders; echo
+[{"id":1,"productId":"ADP-01","quantity":2,"createdAt":"2026-11-24T08:32:13.4302278Z"}]
+$ docker volume ls --filter name=ekip02_orders-data
+DRIVER    VOLUME NAME
+local     ekip02_orders-data
+$ docker compose -p ekip02 -f deploy/compose.yaml down
+ Container ekip02-web-ui-1 Stopping 
+ Container ekip02-web-ui-1 Stopped 
+ Container ekip02-web-ui-1 Removing 
+ Container ekip02-web-ui-1 Removed 
+ Container ekip02-product-service-1 Stopping 
+ Container ekip02-order-service-1 Stopping 
+ Container ekip02-order-service-1 Stopped 
+ Container ekip02-order-service-1 Removing 
+ Container ekip02-order-service-1 Removed 
+ Container ekip02-product-service-1 Stopped 
+ Container ekip02-product-service-1 Removing 
+ Container ekip02-product-service-1 Removed 
+ Network ekip02_default Removing 
+ Network ekip02_default Removed 
+rol: ekip02-dev
+$ git push
+remote: 
+remote: To create a merge request for feature/9-docker, visit:        
+remote:   https://gitlab.kurum.test/egitim/ekip-02/saha-ekipman-portal/-/merge_requests/new?merge_request%5Bsource_branch%5D=feature%2F9-docker        
+remote: 
+To gitlab.kurum.test:egitim/ekip-02/saha-ekipman-portal.git
+   693dcdc..36e782f  feature/9-docker -> feature/9-docker
+
+### Adim 2: login ve push
+$ echo "$TOKEN" | docker login $REGISTRY -u ekip02-deploy --password-stdin
+Login Succeeded
+$ docker push --all-tags gitlab.kurum.test:5050/egitim/ekip-02/saha-ekipman-portal/order-service 2>&1 | grep -E 'digest:|denied|error'
+1.0.1: digest: sha256:88b4eb8d213af7aa1f1b982971d26387c04f370daa0156905cd44af683872c37 size: 856
+36e782f: digest: sha256:88b4eb8d213af7aa1f1b982971d26387c04f370daa0156905cd44af683872c37 size: 856
+693dcdc: digest: sha256:d8aa4f2af3389b9f0fda1378c11842dc2b06ee277cce81a7836d7f4f04fbabfe size: 856
+$ docker push --all-tags gitlab.kurum.test:5050/egitim/ekip-02/saha-ekipman-portal/product-service 2>&1 | grep -E 'digest:|denied|error'
+1.0.1: digest: sha256:3f41e3474b2f9e29f03c52cbf2db48e9a0eade1822fc362ae4ec9f314f78bfb2 size: 856
+36e782f: digest: sha256:3f41e3474b2f9e29f03c52cbf2db48e9a0eade1822fc362ae4ec9f314f78bfb2 size: 856
+693dcdc: digest: sha256:b9c397d29cc6af5ae47bae1b67e377f8e93898eedf65e880c33aac74d96fb7c2 size: 856
+$ docker push --all-tags gitlab.kurum.test:5050/egitim/ekip-02/saha-ekipman-portal/web-ui 2>&1 | grep -E 'digest:|denied|error'
+1.0.1: digest: sha256:e3ea8ba6af403a0393087b5fb181dfea3f1e27171fcf4eed262648bb4a93b6d4 size: 856
+36e782f: digest: sha256:e3ea8ba6af403a0393087b5fb181dfea3f1e27171fcf4eed262648bb4a93b6d4 size: 856
+693dcdc: digest: sha256:9019b1c18225154de458f52185ac2f55f98609a1f37cdefe94e208a336ca09b3 size: 856
+873e915: digest: sha256:f7f57eaaf0229b285079000a38c54c5eb2737b039489f2a28abcca79da3beae3 size: 856
+
+### Adim 6: ikinci VM'e compose.yaml
+$ scp deploy/compose.yaml deploy@test-vm.kurum.test:/opt/saha/ekip02/compose.yaml
+$ ssh deploy@test-vm.kurum.test "cat > /opt/saha/ekip02/.env"   # IMG, TAG=1.0.1, WEB_PORT=8082
+$ ssh deploy@test-vm.kurum.test "ls -a && cat .env"
+.
+..
+.env
+compose.yaml
+IMG=gitlab.kurum.test:5050/egitim/ekip-02/saha-ekipman-portal
+TAG=1.0.1
+WEB_PORT=8082
+
+### Adim 6 (kontrol): ikinci VM'de login olmadan pull reddedilir
+$ ssh deploy@test-vm.kurum.test "docker compose -p ekip02 pull"
+ Image gitlab.kurum.test:5050/egitim/ekip-02/saha-ekipman-portal/product-service:1.0.1 Error error from registry: access forbidden
+ Image gitlab.kurum.test:5050/egitim/ekip-02/saha-ekipman-portal/order-service:1.0.1 Interrupted 
+ Image gitlab.kurum.test:5050/egitim/ekip-02/saha-ekipman-portal/web-ui:1.0.1 Interrupted 
+Error response from daemon: error from registry: access forbidden
+Error response from daemon: error from registry: access forbidden
+# beklenen hata olustu: access forbidden
+
+### Arayuz: gitlab deploy-token 02 ekip02-pull read_registry lab-03-b-pull-token
+  goruntu: lab-rehberleri/img/lab-03-b-pull-token-form.png
+  tamam  deploy token olusturuldu: ekip02-pull (read_registry); deger yalnizca bir kez gosterilir
+  goruntu: lab-rehberleri/img/lab-03-b-pull-token.png
+
+### Adim 6: ikinci VM'de login (read_registry), pull, up
+$ echo "$TOKEN" | ssh deploy@test-vm.kurum.test "docker login $REGISTRY -u ekip02-pull --password-stdin"
+Login Succeeded
+$ ssh deploy@test-vm.kurum.test "docker compose -p ekip02 pull 2>&1 | tail -n 4"
+ fb5238622b07 Extracting 1B
+ e30f6a1fa8d2 Pull complete 0B
+ fb5238622b07 Pull complete 0B
+ Image gitlab.kurum.test:5050/egitim/ekip-02/saha-ekipman-portal/order-service:1.0.1 Pulled 
+$ ssh deploy@test-vm.kurum.test "docker compose -p ekip02 up -d 2>&1 | tail -n 6"
+ Container ekip02-order-service-1 Starting 
+ Container ekip02-product-service-1 Starting 
+ Container ekip02-order-service-1 Started 
+ Container ekip02-product-service-1 Started 
+ Container ekip02-web-ui-1 Starting 
+ Container ekip02-web-ui-1 Started 
+$ ssh deploy@test-vm.kurum.test "docker compose -p ekip02 ps"
+NAME                       IMAGE                                                                             COMMAND                  SERVICE           CREATED        STATUS                           PORTS
+ekip02-order-service-1     gitlab.kurum.test:5050/egitim/ekip-02/saha-ekipman-portal/order-service:1.0.1     "dotnet order-servic…"   order-service     1 second ago   Up 1 second                      
+ekip02-product-service-1   gitlab.kurum.test:5050/egitim/ekip-02/saha-ekipman-portal/product-service:1.0.1   "dotnet product-serv…"   product-service   1 second ago   Up 1 second                      
+ekip02-web-ui-1            gitlab.kurum.test:5050/egitim/ekip-02/saha-ekipman-portal/web-ui:1.0.1            "/docker-entrypoint.…"   web-ui            1 second ago   Up 1 second (health: starting)   0.0.0.0:8082->8080/tcp, [::]:8082->8080/tcp
+
+### Kontrol: yalnizca read_registry yetkili token ile push reddedilir
+$ docker login $REGISTRY -u ekip02-pull   # read_registry
+$ docker push gitlab.kurum.test:5050/egitim/ekip-02/saha-ekipman-portal/order-service:yetki-denemesi
+The push refers to repository [gitlab.kurum.test:5050/egitim/ekip-02/saha-ekipman-portal/order-service]
+44136fa355b3: Already exists
+579178b7f2a6: Layer already exists
+9cc446346e3d: Layer already exists
+82fef3ed2ecf: Layer already exists
+e30f6a1fa8d2: Layer already exists
+e1225cd8c030: Layer already exists
+ee7282354a2f: Layer already exists
+20433fa85d03: Layer already exists
+fb5238622b07: Layer already exists
+1289ab3881e8: Layer already exists
+96efa456bd16: Already exists
+failed commit on ref "index-sha256:88b4eb8d213af7aa1f1b982971d26387c04f370daa0156905cd44af683872c37": server message: insufficient_scope: authorization failed
+# beklenen hata olustu (cikis kodu 1): insufficient_scope: authorization failed
+# Dogru token ile yeniden login
+$ docker push gitlab.kurum.test:5050/egitim/ekip-02/saha-ekipman-portal/order-service:1.0.1 2>&1 | grep -E 'digest:|denied|forbidden'
+1.0.1: digest: sha256:88b4eb8d213af7aa1f1b982971d26387c04f370daa0156905cd44af683872c37 size: 856
+
+### Adim 7: smoke test
+$ curl -fsS $TEST_URL/api/products | head -c 60; echo
+[{"code":"ADP-01","name":"Terminal adaptörü","inStock":tru
+$ curl -fsS -o /dev/null -w '%{http_code}\n' -X POST $TEST_URL/api/orders -H 'Content-Type: application/json' -d '{ "productId": "KBL-02", "quantity": 3 }'
+201
+$ curl -fsS $TEST_URL/api/orders; echo
+[{"id":1,"productId":"KBL-02","quantity":3,"createdAt":"2026-11-24T08:32:24.3913584Z"}]
+# Kalicilik: container'lar silinip yeniden yaratilir, talep durur
+$ ssh deploy@test-vm.kurum.test "docker compose -p ekip02 down 2>&1 | tail -n 2 && docker compose -p ekip02 up -d 2>&1 | tail -n 2"
+ Network ekip02_default Removing 
+ Network ekip02_default Removed 
+ Container ekip02-web-ui-1 Starting 
+ Container ekip02-web-ui-1 Started 
+$ curl -fsS $TEST_URL/api/orders; echo
+[{"id":1,"productId":"KBL-02","quantity":3,"createdAt":"2026-11-24T08:32:24.3913584Z"}]
+
+### Arayuz: uygulama talep http://test-vm.kurum.test:8082 lab-03-b-test-vm STD-03 1
+  tamam  katalog listeleniyor: 4 ekipman (http://test-vm.kurum.test:8082)
+  tamam  talep olusturuldu: STD-03 x 1
+  goruntu: lab-rehberleri/img/lab-03-b-test-vm.png
+
+### Arayuz: gitlab mr-ac 02 dev feature/9-docker develop build(docker): add Dockerfiles and compose deployment 3 evet evet lab-03-b-mr
+  tamam  MR sablonu kendiliginden geldi (.gitlab/merge_request_templates/Default.md)
+  goruntu: lab-rehberleri/img/lab-03-b-mr-sablon.png
+  tamam  reviewer: ekip02-lead
+  goruntu: lab-rehberleri/img/lab-03-b-mr-form.png
+  tamam  MR !7 acildi: feature/9-docker -> develop (squash: evet, kaynak branch silinsin: evet)
+  goruntu: lab-rehberleri/img/lab-03-b-mr.png
+
+### Arayuz: gitlab mr-merge 02 lead feature/9-docker lab-03-b-merge develop
+  goruntu: lab-rehberleri/img/lab-03-b-merge-oncesi.png
+  tamam  !7: ekip02-lead merge etti
+  goruntu: lab-rehberleri/img/lab-03-b-merge.png
+
+### Adim 7: merge sonrasi
+rol: ekip02-dev
+$ git switch develop
+Switched to branch 'develop'
+Your branch is up to date with 'origin/develop'.
+$ git pull --ff-only
+From gitlab.kurum.test:egitim/ekip-02/saha-ekipman-portal
+   7ce378d..3a487c8  develop    -> origin/develop
+Updating 7ce378d..3a487c8
+Fast-forward
+ .dockerignore                  | 13 +++++++++++++
+ deploy/compose.yaml            | 24 +++++++++++++++++++++---
+ deploy/nginx.conf              | 21 +++++++++++++++++----
+ src/order-service/Dockerfile   | 18 ++++++++++++++++++
+ src/product-service/Dockerfile | 16 ++++++++++++++++
+ src/web-ui/Dockerfile          | 15 +++++++++++++++
+ 6 files changed, 100 insertions(+), 7 deletions(-)
+ create mode 100644 .dockerignore
+ create mode 100644 src/order-service/Dockerfile
+ create mode 100644 src/product-service/Dockerfile
+ create mode 100644 src/web-ui/Dockerfile
+$ git fetch --prune
+From gitlab.kurum.test:egitim/ekip-02/saha-ekipman-portal
+ - [deleted]         (none)     -> origin/feature/9-docker
+$ git branch -D feature/9-docker
+Deleted branch feature/9-docker (was 36e782f).
+$ git log --oneline --graph -n 6 origin/develop
+*   3a487c8 Merge branch 'feature/9-docker' into 'develop'
+|\  
+| * 9647d74 build(docker): add Dockerfiles and compose deployment
+|/  
+*   7ce378d Merge branch 'hotfix/1.0.1' into 'develop'
+|\  
+| * 835414f chore(release): 1.0.1
+| * f38c70b fix(order): reject empty product id
+| *   261e092 Merge branch 'release/1.0.0' into 'main'
+| |\  
+
+### Checkpoint karsilastirmasi
+# agac ayni: origin/develop == checkpoint/lab-03b (haric: .gitlab/CODEOWNERS)
+
+LAB 03-b cozumu ekip-02 icin uygulandi.
+cikis kodu: 0  sure: 45 sn
+
+################ dogrula/lab.sh lab-03-b 02
+
+LAB 03-B (ekip-02)
+
+Registry: uc imaj, 1.0.1 ve commit SHA etiketi ayni digest
+  GECTI  order-service:1.0.1 var (sha256:88b4eb8d213a…)
+  GECTI  order-service: commit SHA etiketi 36e782f ayni imaji gosteriyor
+  GECTI  product-service:1.0.1 var (sha256:3f41e3474b2f…)
+  GECTI  product-service: commit SHA etiketi 36e782f ayni imaji gosteriyor
+  GECTI  web-ui:1.0.1 var (sha256:e3ea8ba6af40…)
+  GECTI  web-ui: commit SHA etiketi 36e782f ayni imaji gosteriyor
+
+Repo (develop): compose.yaml ve nginx.conf
+  GECTI  imaj adi ${IMG} ve ${TAG} ile
+  GECTI  port ${WEB_PORT:-8080}:8080
+  GECTI  orders-data volume'u /data'da
+  GECTI  baglanti ayari ortam degiskeniyle
+  GECTI  port yayinlayan servis sayisi (yalnizca web-ui): 1
+  GECTI  compose.yaml icinde latest yok
+  GECTI  nginx: /api/products -> product-service
+  GECTI  nginx: /api/orders -> order-service
+  GECTI  order-service Dockerfile: /data dizini uygulama kullanicisinin
+
+Katilimci makinesi: Docker daemon'i registry'ye guveniyor (TLS dogrulamasi acik)
+  GECTI  /etc/docker/certs.d/gitlab.kurum.test:5050/ca.crt kurum CA'si
+  GECTI  insecure-registries kullanilmamis
+
+Test VM: /opt/saha/ekip02, Compose projesi ekip02
+  GECTI  order-service imaji registry'den, etiket 1.0.1: gitlab.kurum.test:5050/egitim/ekip-02/saha-ekipman-portal/order-service:1.0.1
+  GECTI  order-service port yayinlamiyor
+  GECTI  order-service root degil (uid=1654)
+  GECTI  product-service imaji registry'den, etiket 1.0.1: gitlab.kurum.test:5050/egitim/ekip-02/saha-ekipman-portal/product-service:1.0.1
+  GECTI  product-service port yayinlamiyor
+  GECTI  product-service root degil (uid=1654)
+  GECTI  web-ui imaji registry'den, etiket 1.0.1: gitlab.kurum.test:5050/egitim/ekip-02/saha-ekipman-portal/web-ui:1.0.1
+  GECTI  web-ui port yayinliyor: 8082 -> 8080
+  GECTI  web-ui root degil (uid=101)
+  GECTI  registry girisi ekibin kendi dizininde (DOCKER_CONFIG)
+  GECTI  test VM'de kaynak kod yok
+
+Smoke test ve kalicilik (http://test-vm.kurum.test:8082)
+  GECTI  arayuz: 200
+  GECTI  /api/products
+  GECTI  talep kaydi var (2 talep)
+  GECTI  order-service yeniden yaratildi, talepler duruyor: [{"id":1,"productId":"KBL-02","quantity":3,"createdAt":"2026-11-24T08:32:24.3913584Z"},{"id":2,"productId":"STD-03","quantity":1,"createdAt":"2026-11-24T08:32:27.1300812Z"}]
+  GECTI  veri volume'u: ekip02_orders-data
+
+Merge Request
+  GECTI  MR !7: feature/9-docker -> develop merge edilmis
+
+34 gecti, 0 kaldi
+cikis kodu: 0
+
+GENEL SONUC: GECTI

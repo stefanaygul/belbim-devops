@@ -1,0 +1,50 @@
+# BuildKit ve onceden yuklenen temel imajlar (2026-11-24 00:31)
+# Komut: dogrula/lab.sh temel-imaj-buildkit 02 DIS_ERISIM=1   (build onbellegi bos: 0B)
+
+On kosullar
+  GECTI  varsayilan builder surucusu: docker
+  GECTI  yuklu: gitlab.kurum.test:5050/egitim/base/dotnet/sdk:10.0
+  GECTI  yuklu: gitlab.kurum.test:5050/egitim/base/dotnet/aspnet:10.0
+  GECTI  yuklu: gitlab.kurum.test:5050/egitim/base/library/node:24-alpine
+  GECTI  yuklu: gitlab.kurum.test:5050/egitim/base/nginxinc/nginx-unprivileged:stable-alpine
+  GECTI  daemon registry'ye guvenmiyor: docker pull -> x509
+
+S1. LAB 03-A komutlari, varsayilan builder (ilk build)
+  GECTI  docker build order-service (cikis kodu, 9 sn): 0
+         #2 [internal] load metadata for gitlab.kurum.test:5050/egitim/base/dotnet/aspnet:10.0
+         #3 [internal] load metadata for gitlab.kurum.test:5050/egitim/base/dotnet/sdk:10.0
+  GECTI  order-service: build ciktisinda x509 yok
+  GECTI  docker build product-service (cikis kodu, 6 sn): 0
+         #2 [internal] load metadata for gitlab.kurum.test:5050/egitim/base/dotnet/sdk:10.0
+         #3 [internal] load metadata for gitlab.kurum.test:5050/egitim/base/dotnet/aspnet:10.0
+  GECTI  product-service: build ciktisinda x509 yok
+  GECTI  docker build web-ui (cikis kodu, 8 sn): 0
+         #2 [internal] load metadata for gitlab.kurum.test:5050/egitim/base/nginxinc/nginx-unprivileged:stable-alpine
+         #3 [internal] load metadata for gitlab.kurum.test:5050/egitim/base/library/node:24-alpine
+  GECTI  web-ui: build ciktisinda x509 yok
+
+S1b. Ikinci build: restore ve npm ci onbellekten
+  GECTI  order-service: kaynak degisti, restore CACHED
+  GECTI  web-ui: kaynak degisti, npm ci CACHED
+
+S2. --pull: registry'ye gitmeye zorlar
+  GECTI  docker build --pull (cikis kodu; basarisiz olmali): 1
+  GECTI  --pull hatasi x509
+
+S4. Eski builder (DOCKER_BUILDKIT=0)
+  BILGI  cikis kodu 0; son satir: Successfully tagged lab-dogrula-bk/product-service:dev
+
+S3. docker-container builder (yerel imajlari gormez)
+  GECTI  docker-container builder ile build (basarisiz olmali): 1
+         #3 ERROR: failed to do request: Head "https://gitlab.kurum.test:5050/v2/egitim/base/dotnet/aspnet/manifests/10.0": tls: failed to verify certificate: x509: certificate signed by unknown authority
+         #4 ERROR: failed to do request: Head "https://gitlab.kurum.test:5050/v2/egitim/base/dotnet/sdk/manifests/10.0": tls: failed to verify certificate: x509: certificate signed by unknown authority
+         ERROR: failed to build: failed to solve: gitlab.kurum.test:5050/egitim/base/dotnet/aspnet:10.0: failed to resolve source metadata for gitlab.kurum.test:5050/egitim/base/dotnet/aspnet:10.0: failed to do request: Head "https://gitlab.kurum.test:5050/v2/egitim/ba
+
+S5. Dockerfile'da '# syntax=' satiri (frontend imaji Docker Hub'dan istenir)
+  BILGI  cikis kodu 0
+         #2 resolve image config for docker-image://docker.io/docker/dockerfile:1
+         #3 docker-image://docker.io/docker/dockerfile:1@sha256:572cebbc2b15e6f84c077742952674889cb63cd5e9b80abdffcbe587b6f19183
+         #3 resolve docker.io/docker/dockerfile:1@sha256:572cebbc2b15e6f84c077742952674889cb63cd5e9b80abdffcbe587b6f19183 done
+
+17 gecti, 0 kaldi
+cikis kodu: 0

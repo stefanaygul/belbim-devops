@@ -1,0 +1,629 @@
+# LAB 03-B, ekip-01, cozum adimlari (2026-11-24 01:31)
+
+### Adim 1: uc imaji 1.0.1 ve commit SHA ile etiketle
+rol: ekip01-dev
+$ git switch feature/9-docker
+Already on 'feature/9-docker'
+Your branch is up to date with 'origin/feature/9-docker'.
+$ echo $IMG
+gitlab.kurum.test:5050/egitim/ekip-01/saha-ekipman-portal
+$ SHA=$(git rev-parse --short HEAD)   # afd5969
+$ docker build -q -f src/order-service/Dockerfile --build-arg MCR=gitlab.kurum.test:5050/egitim/base -t gitlab.kurum.test:5050/egitim/ekip-01/saha-ekipman-portal/order-service:1.0.1 -t gitlab.kurum.test:5050/egitim/ekip-01/saha-ekipman-portal/order-service:afd5969 .
+sha256:cc6f68d6220e580377ba5e02a986b014d5c4b0f04d51365b71bc6877ef8d495e
+$ docker build -q -f src/product-service/Dockerfile --build-arg MCR=gitlab.kurum.test:5050/egitim/base -t gitlab.kurum.test:5050/egitim/ekip-01/saha-ekipman-portal/product-service:1.0.1 -t gitlab.kurum.test:5050/egitim/ekip-01/saha-ekipman-portal/product-service:afd5969 .
+sha256:62d1d1ca3b1d01b0e1629dddacc2cd75ac6da917e409df5a020e836e7a2de50a
+$ docker build -q -f src/web-ui/Dockerfile --build-arg HUB=gitlab.kurum.test:5050/egitim/base -t gitlab.kurum.test:5050/egitim/ekip-01/saha-ekipman-portal/web-ui:1.0.1 -t gitlab.kurum.test:5050/egitim/ekip-01/saha-ekipman-portal/web-ui:afd5969 .
+sha256:4776d345b9897b76143aeea0c60cdbdf7238ee3a0847fbc34be1f9c8a16e22c1
+$ docker images --format 'table {{.Repository}}\t{{.Tag}}\t{{.ID}}' | grep -E 'REPOSITORY|/ekip-01/'
+REPOSITORY                                                                  TAG             IMAGE ID
+gitlab.kurum.test:5050/egitim/ekip-01/saha-ekipman-portal/web-ui            1.0.1           4776d345b989
+gitlab.kurum.test:5050/egitim/ekip-01/saha-ekipman-portal/web-ui            afd5969         4776d345b989
+gitlab.kurum.test:5050/egitim/ekip-01/saha-ekipman-portal/product-service   1.0.1           62d1d1ca3b1d
+gitlab.kurum.test:5050/egitim/ekip-01/saha-ekipman-portal/product-service   afd5969         62d1d1ca3b1d
+gitlab.kurum.test:5050/egitim/ekip-01/saha-ekipman-portal/order-service     1.0.1           cc6f68d6220e
+gitlab.kurum.test:5050/egitim/ekip-01/saha-ekipman-portal/order-service     afd5969         cc6f68d6220e
+
+### Arayuz: gitlab deploy-token 01 ekip01-deploy read_registry,write_registry lab-03-b-deploy-token
+  goruntu: lab-rehberleri/img/lab-03-b-deploy-token-form.png
+  tamam  deploy token olusturuldu: ekip01-deploy (read_registry,write_registry); deger yalnizca bir kez gosterilir
+  goruntu: lab-rehberleri/img/lab-03-b-deploy-token.png
+cikis kodu: 0
+
+### Adim 2: deploy token ile login -> x509
+$ echo "$TOKEN" | docker login $REGISTRY -u ekip01-deploy --password-stdin
+Error response from daemon: Get "https://gitlab.kurum.test:5050/v2/": tls: failed to verify certificate: x509: certificate signed by unknown authority
+# beklenen hata olustu: Docker daemon'i kurum CA'sina guvenmiyor
+
+### Adim 2: kurum CA'sini Docker daemon'ina tanit (TLS dogrulamasi kapatilmaz)
+$ sudo mkdir -p /etc/docker/certs.d/gitlab.kurum.test:5050
+$ sudo cp /etc/lab/kurum-ca.crt /etc/docker/certs.d/gitlab.kurum.test:5050/ca.crt
+$ ls -l /etc/docker/certs.d/
+total 4
+drwxr-xr-x 2 root root 4096 Nov 23 22:32 gitlab.kurum.test:5050
+
+### Adim 2 (kontrol): login olmadan push reddedilir
+$ docker push gitlab.kurum.test:5050/egitim/ekip-01/saha-ekipman-portal/order-service:1.0.1
+The push refers to repository [gitlab.kurum.test:5050/egitim/ekip-01/saha-ekipman-portal/order-service]
+013c54d0dc67: Waiting
+22c2ce3f3dd2: Waiting
+44136fa355b3: Waiting
+b36fd2f86853: Waiting
+error from registry: access forbidden
+HATA  hata olustu ama "denied" metni yok
+[3JTERM environment variable not set.
+
+cikis kodu: 1
+# (push-denied: gercek hata metni 'access forbidden'; betik buna gore duzeltildi)
+
+### Adim 2 (kontrol): login olmadan push reddedilir
+$ docker push gitlab.kurum.test:5050/egitim/ekip-01/saha-ekipman-portal/order-service:1.0.1
+The push refers to repository [gitlab.kurum.test:5050/egitim/ekip-01/saha-ekipman-portal/order-service]
+013c54d0dc67: Waiting
+22c2ce3f3dd2: Waiting
+b36fd2f86853: Waiting
+44136fa355b3: Waiting
+error from registry: access forbidden
+# beklenen hata olustu (cikis kodu 1): access forbidden
+
+### Adim 2: login ve push
+$ echo "$TOKEN" | docker login $REGISTRY -u ekip01-deploy --password-stdin
+Login Succeeded
+$ docker push --all-tags gitlab.kurum.test:5050/egitim/ekip-01/saha-ekipman-portal/order-service 2>&1 | grep -E 'digest:|denied|error'
+1.0.1: digest: sha256:cc6f68d6220e580377ba5e02a986b014d5c4b0f04d51365b71bc6877ef8d495e size: 856
+afd5969: digest: sha256:cc6f68d6220e580377ba5e02a986b014d5c4b0f04d51365b71bc6877ef8d495e size: 856
+$ docker push --all-tags gitlab.kurum.test:5050/egitim/ekip-01/saha-ekipman-portal/product-service 2>&1 | grep -E 'digest:|denied|error'
+1.0.1: digest: sha256:62d1d1ca3b1d01b0e1629dddacc2cd75ac6da917e409df5a020e836e7a2de50a size: 856
+afd5969: digest: sha256:62d1d1ca3b1d01b0e1629dddacc2cd75ac6da917e409df5a020e836e7a2de50a size: 856
+$ docker push --all-tags gitlab.kurum.test:5050/egitim/ekip-01/saha-ekipman-portal/web-ui 2>&1 | grep -E 'digest:|denied|error'
+1.0.1: digest: sha256:4776d345b9897b76143aeea0c60cdbdf7238ee3a0847fbc34be1f9c8a16e22c1 size: 856
+afd5969: digest: sha256:4776d345b9897b76143aeea0c60cdbdf7238ee3a0847fbc34be1f9c8a16e22c1 size: 856
+
+### Arayuz: gitlab registry 01 lab-03-b-registry 1.0.1
+  tamam  Container Registry: order-service, product-service, web-ui
+  goruntu: lab-rehberleri/img/lab-03-b-registry.png
+  tamam  order-service etiketi: 1.0.1
+  goruntu: lab-rehberleri/img/lab-03-b-registry-etiketler.png
+cikis kodu: 0
+
+### Adim 4: compose.yaml ve nginx.conf
+rol: ekip01-dev
+$ cat deploy/compose.yaml
+# deploy/compose.yaml - Saha Ekipman Talep Portalı
+#
+# IMG, TAG ve WEB_PORT ortamdan ya da bu dosyanın yanındaki .env dosyasından gelir:
+#   IMG=<registry>/<grup>/<ekip>/saha-ekipman-portal   TAG=1.0.1   WEB_PORT=8081
+# Yalnızca web-ui port yayınlar; API'lere Nginx üzerinden /api ile ulaşılır.
+services:
+  product-service:
+    image: ${IMG}/product-service:${TAG}
+
+  order-service:
+    image: ${IMG}/order-service:${TAG}
+    environment:
+      ConnectionStrings__Orders: Data Source=/data/orders.db
+    volumes:
+      - orders-data:/data
+
+  web-ui:
+    image: ${IMG}/web-ui:${TAG}
+    ports: ["${WEB_PORT:-8080}:8080"]
+    depends_on: [product-service, order-service]
+
+volumes:
+  orders-data:
+$ cat deploy/nginx.conf
+# deploy/nginx.conf - web-ui imajındaki Nginx ayarı
+#
+# Tarayıcı yalnızca web-ui ile konuşur. /api istekleri Compose servis adlarıyla
+# ilgili API'ye yönlendirilir; istek yolu olduğu gibi iletilir.
+server {
+  listen 8080;
+  root /usr/share/nginx/html;
+
+  location / { try_files $uri /index.html; }
+
+  location /api/products {
+    proxy_pass http://product-service:8080;
+  }
+
+  location /api/orders {
+    proxy_pass http://order-service:8080;
+  }
+}
+$ git add deploy
+$ git commit -m feat(deploy): add compose file and nginx reverse proxy
+[feature/9-docker 3ff91fc] feat(deploy): add compose file and nginx reverse proxy
+ 2 files changed, 31 insertions(+), 5 deletions(-)
+# nginx.conf imajin icinde: web-ui yeniden build edilir
+$ docker build -q -f src/web-ui/Dockerfile --build-arg HUB=gitlab.kurum.test:5050/egitim/base -t gitlab.kurum.test:5050/egitim/ekip-01/saha-ekipman-portal/web-ui:1.0.1 -t gitlab.kurum.test:5050/egitim/ekip-01/saha-ekipman-portal/web-ui:3ff91fc .
+sha256:f11300510a464f963bfba0053da0a6456508f606c8f9c3dd8622b751c3274f8c
+
+### Adim 5: lokalde compose up -> SQLite Error 14
+$ TAG=1.0.1 docker compose -p ekip01 -f deploy/compose.yaml config | head -n 30
+name: ekip01
+services:
+  order-service:
+    environment:
+      ConnectionStrings__Orders: Data Source=/data/orders.db
+    image: gitlab.kurum.test:5050/egitim/ekip-01/saha-ekipman-portal/order-service:1.0.1
+    networks:
+      default: null
+    volumes:
+      - type: volume
+        source: orders-data
+        target: /data
+        volume: {}
+  product-service:
+    image: gitlab.kurum.test:5050/egitim/ekip-01/saha-ekipman-portal/product-service:1.0.1
+    networks:
+      default: null
+  web-ui:
+    image: gitlab.kurum.test:5050/egitim/ekip-01/saha-ekipman-portal/web-ui:1.0.1
+    networks:
+      default: null
+    depends_on:
+      order-service:
+        condition: service_started
+        required: true
+      product-service:
+        condition: service_started
+        required: true
+    ports:
+      - mode: ingress
+$ docker compose -p ekip01 -f deploy/compose.yaml up -d
+ Network ekip01_default Creating 
+ Volume ekip01_orders-data Creating 
+ Volume ekip01_orders-data Created 
+ Network ekip01_default Created 
+ Container ekip01-product-service-1 Creating 
+ Container ekip01-order-service-1 Creating 
+ Container ekip01-product-service-1 Created 
+ Container ekip01-order-service-1 Created 
+ Container ekip01-web-ui-1 Creating 
+ Container ekip01-web-ui-1 Created 
+ Container ekip01-order-service-1 Starting 
+ Container ekip01-product-service-1 Starting 
+ Container ekip01-order-service-1 Started 
+ Container ekip01-product-service-1 Started 
+ Container ekip01-web-ui-1 Starting 
+ Container ekip01-web-ui-1 Started 
+$ docker compose -p ekip01 -f deploy/compose.yaml ps -a
+NAME                       IMAGE                                                                             COMMAND                  SERVICE           CREATED         STATUS                            PORTS
+ekip01-order-service-1     gitlab.kurum.test:5050/egitim/ekip-01/saha-ekipman-portal/order-service:1.0.1     "dotnet order-servic…"   order-service     8 seconds ago   Up 8 seconds                      
+ekip01-product-service-1   gitlab.kurum.test:5050/egitim/ekip-01/saha-ekipman-portal/product-service:1.0.1   "dotnet product-serv…"   product-service   8 seconds ago   Up 8 seconds                      
+ekip01-web-ui-1            gitlab.kurum.test:5050/egitim/ekip-01/saha-ekipman-portal/web-ui:1.0.1            "/docker-entrypoint.…"   web-ui            8 seconds ago   Up 8 seconds (health: starting)   0.0.0.0:8081->8080/tcp, [::]:8081->8080/tcp
+$ docker compose -p ekip01 -f deploy/compose.yaml logs order-service
+order-service-1  | Unhandled exception. Microsoft.Data.Sqlite.SqliteException (0x80004005): SQLite Error 14: 'unable to open database file'.
+# beklenen hata olustu: SQLite Error 14 (root olmayan kullanici /data'ya yazamiyor)
+$ docker compose -p ekip01 -f deploy/compose.yaml logs web-ui 2>&1 | tail -n 3
+web-ui-1  | 2026/11/23 22:33:17 [notice] 1#1: start worker process 34
+web-ui-1  | 2026/11/23 22:33:17 [notice] 1#1: start worker process 35
+web-ui-1  | 2026/11/23 22:33:17 [notice] 1#1: start worker process 36
+
+### Arayuz: uygulama katalog http://localhost:8080 lab-03-b-yerel-hata Veriler yüklenemedi
+HATA   katalog: page.goto: net::ERR_CONNECTION_REFUSED at http://localhost:8080/
+       Call log:
+         - navigating to "http://localhost:8080/", waiting until "load"
+       
+       sayfa: chrome-error://chromewebdata/
+       goruntu: lab-ortami/.cache/ui/hata-katalog-1795473206572.png
+
+cikis kodu: 1
+# (lokal adres http://localhost:$WEB_PORT; ekip-01 icin 8081)
+
+### Arayuz: uygulama katalog http://localhost:8081 lab-03-b-yerel-hata Veriler yüklenemedi
+  tamam  katalog listeleniyor: 4 ekipman (http://localhost:8081)
+  tamam  gorunuyor: Veriler yüklenemedi
+  goruntu: lab-rehberleri/img/lab-03-b-yerel-hata.png
+
+### Adim 5: /data dizinini Dockerfile'da olustur, sahipligini ver
+rol: ekip01-dev
+$ git diff | cat
+$ git add src/order-service/Dockerfile
+$ git commit -m fix(order): create the data directory for the non-root user
+[feature/9-docker d99149c] fix(order): create the data directory for the non-root user
+ 1 file changed, 2 insertions(+)
+# Kod degisti: uc imaj son commit'ten yeniden etiketlenir (1.0.1 ve d99149c)
+$ docker build -q -f src/order-service/Dockerfile --build-arg MCR=gitlab.kurum.test:5050/egitim/base -t gitlab.kurum.test:5050/egitim/ekip-01/saha-ekipman-portal/order-service:1.0.1 -t gitlab.kurum.test:5050/egitim/ekip-01/saha-ekipman-portal/order-service:d99149c .
+sha256:ed8f9301de52a75ab4ca1ec9218f37890cc4abdaf0bfa160990a6be80fa6aca2
+$ docker build -q -f src/product-service/Dockerfile --build-arg MCR=gitlab.kurum.test:5050/egitim/base -t gitlab.kurum.test:5050/egitim/ekip-01/saha-ekipman-portal/product-service:1.0.1 -t gitlab.kurum.test:5050/egitim/ekip-01/saha-ekipman-portal/product-service:d99149c .
+sha256:023c9f67fcc91dd463cdf58697217cee45f2b589589ffe2967b9a18bff472038
+$ docker build -q -f src/web-ui/Dockerfile --build-arg HUB=gitlab.kurum.test:5050/egitim/base -t gitlab.kurum.test:5050/egitim/ekip-01/saha-ekipman-portal/web-ui:1.0.1 -t gitlab.kurum.test:5050/egitim/ekip-01/saha-ekipman-portal/web-ui:d99149c .
+sha256:e957841e345d881d111849848dfcad3d4a5134548ab180267966bc95af34ceff
+# Eski volume root'a ait kaldi: -v ile silinip yeniden olusturulur
+$ docker compose -p ekip01 -f deploy/compose.yaml down -v
+ Container ekip01-web-ui-1 Stopping 
+ Container ekip01-web-ui-1 Stopped 
+ Container ekip01-web-ui-1 Removing 
+ Container ekip01-web-ui-1 Removed 
+ Container ekip01-product-service-1 Stopping 
+ Container ekip01-order-service-1 Stopping 
+ Container ekip01-order-service-1 Stopped 
+ Container ekip01-order-service-1 Removing 
+ Container ekip01-order-service-1 Removed 
+ Container ekip01-product-service-1 Stopped 
+ Container ekip01-product-service-1 Removing 
+ Container ekip01-product-service-1 Removed 
+ Volume ekip01_orders-data Removing 
+ Network ekip01_default Removing 
+ Volume ekip01_orders-data Removed 
+ Network ekip01_default Removed 
+$ docker compose -p ekip01 -f deploy/compose.yaml up -d
+ Network ekip01_default Creating 
+ Volume ekip01_orders-data Creating 
+ Volume ekip01_orders-data Created 
+ Network ekip01_default Created 
+ Container ekip01-product-service-1 Creating 
+ Container ekip01-order-service-1 Creating 
+ Container ekip01-product-service-1 Created 
+ Container ekip01-order-service-1 Created 
+ Container ekip01-web-ui-1 Creating 
+ Container ekip01-web-ui-1 Created 
+ Container ekip01-order-service-1 Starting 
+ Container ekip01-product-service-1 Starting 
+ Container ekip01-order-service-1 Started 
+ Container ekip01-product-service-1 Started 
+ Container ekip01-web-ui-1 Starting 
+ Container ekip01-web-ui-1 Started 
+$ docker compose -p ekip01 -f deploy/compose.yaml ps
+NAME                       IMAGE                                                                             COMMAND                  SERVICE           CREATED        STATUS                           PORTS
+ekip01-order-service-1     gitlab.kurum.test:5050/egitim/ekip-01/saha-ekipman-portal/order-service:1.0.1     "dotnet order-servic…"   order-service     1 second ago   Up 1 second                      
+ekip01-product-service-1   gitlab.kurum.test:5050/egitim/ekip-01/saha-ekipman-portal/product-service:1.0.1   "dotnet product-serv…"   product-service   1 second ago   Up 1 second                      
+ekip01-web-ui-1            gitlab.kurum.test:5050/egitim/ekip-01/saha-ekipman-portal/web-ui:1.0.1            "/docker-entrypoint.…"   web-ui            1 second ago   Up 1 second (health: starting)   0.0.0.0:8081->8080/tcp, [::]:8081->8080/tcp
+$ curl -fsS http://localhost:$WEB_PORT/api/products | head -c 70; echo
+[{"code":"ADP-01","name":"Terminal adaptörü","inStock":true},{"code"
+
+### Arayuz: uygulama talep http://localhost:8081 lab-03-b-yerel ADP-01 2
+  tamam  katalog listeleniyor: 4 ekipman (http://localhost:8081)
+HATA   talep: locator.selectOption: Error: strict mode violation: getByLabel('Ekipman') resolved to 2 elements:
+           1) <section aria-labelledby="catalog-title">…</section> aka getByRole('region', { name: 'Ekipman kataloğu' })
+           2) <select>…</select> aka getByLabel('EkipmanEkipman seçinADP-01 -')
+       
+       Call log:
+         - waiting for getByLabel('Ekipman')
+       sayfa: http://localhost:8081/
+       goruntu: lab-ortami/.cache/ui/hata-talep-1795473304554.png
+
+cikis kodu: 1
+# (uygulama.cjs: form secicisi duzeltildi, yeniden)
+
+### Arayuz: uygulama talep http://localhost:8081 lab-03-b-yerel ADP-01 2
+  tamam  katalog listeleniyor: 4 ekipman (http://localhost:8081)
+  tamam  talep olusturuldu: ADP-01 x 2
+  goruntu: lab-rehberleri/img/lab-03-b-yerel.png
+
+### Adim 5: container yeniden yaratilinca talep kaybolmuyor
+$ curl -fsS http://localhost:$WEB_PORT/api/orders; echo
+[{"id":1,"productId":"ADP-01","quantity":2,"createdAt":"2026-11-23T22:36:23.3806526Z"}]
+$ docker compose -p ekip01 -f deploy/compose.yaml down
+ Container ekip01-web-ui-1 Stopping 
+ Container ekip01-web-ui-1 Stopped 
+ Container ekip01-web-ui-1 Removing 
+ Container ekip01-web-ui-1 Removed 
+ Container ekip01-order-service-1 Stopping 
+ Container ekip01-product-service-1 Stopping 
+ Container ekip01-order-service-1 Stopped 
+ Container ekip01-order-service-1 Removing 
+ Container ekip01-order-service-1 Removed 
+ Container ekip01-product-service-1 Stopped 
+ Container ekip01-product-service-1 Removing 
+ Container ekip01-product-service-1 Removed 
+ Network ekip01_default Removing 
+ Network ekip01_default Removed 
+$ docker compose -p ekip01 -f deploy/compose.yaml up -d
+ Network ekip01_default Creating 
+ Network ekip01_default Created 
+ Container ekip01-product-service-1 Creating 
+ Container ekip01-order-service-1 Creating 
+ Container ekip01-product-service-1 Created 
+ Container ekip01-order-service-1 Created 
+ Container ekip01-web-ui-1 Creating 
+ Container ekip01-web-ui-1 Created 
+ Container ekip01-order-service-1 Starting 
+ Container ekip01-product-service-1 Starting 
+ Container ekip01-order-service-1 Started 
+ Container ekip01-product-service-1 Started 
+ Container ekip01-web-ui-1 Starting 
+ Container ekip01-web-ui-1 Started 
+$ curl -fsS http://localhost:$WEB_PORT/api/orders; echo
+[{"id":1,"productId":"ADP-01","quantity":2,"createdAt":"2026-11-23T22:36:23.3806526Z"}]
+$ docker volume ls --filter name=ekip01_orders-data
+DRIVER    VOLUME NAME
+local     ekip01_orders-data
+$ docker compose -p ekip01 -f deploy/compose.yaml down
+ Container ekip01-web-ui-1 Stopping 
+ Container ekip01-web-ui-1 Stopped 
+ Container ekip01-web-ui-1 Removing 
+ Container ekip01-web-ui-1 Removed 
+ Container ekip01-order-service-1 Stopping 
+ Container ekip01-product-service-1 Stopping 
+ Container ekip01-product-service-1 Stopped 
+ Container ekip01-product-service-1 Removing 
+ Container ekip01-order-service-1 Stopped 
+ Container ekip01-order-service-1 Removing 
+ Container ekip01-product-service-1 Removed 
+ Container ekip01-order-service-1 Removed 
+ Network ekip01_default Removing 
+ Network ekip01_default Removed 
+rol: ekip01-dev
+$ git push
+remote: 
+remote: To create a merge request for feature/9-docker, visit:        
+remote:   https://gitlab.kurum.test/egitim/ekip-01/saha-ekipman-portal/-/merge_requests/new?merge_request%5Bsource_branch%5D=feature%2F9-docker        
+remote: 
+To gitlab.kurum.test:egitim/ekip-01/saha-ekipman-portal.git
+   afd5969..d99149c  feature/9-docker -> feature/9-docker
+
+### Adim 2: login ve push
+$ echo "$TOKEN" | docker login $REGISTRY -u ekip01-deploy --password-stdin
+Login Succeeded
+$ docker push --all-tags gitlab.kurum.test:5050/egitim/ekip-01/saha-ekipman-portal/order-service 2>&1 | grep -E 'digest:|denied|error'
+1.0.1: digest: sha256:ed8f9301de52a75ab4ca1ec9218f37890cc4abdaf0bfa160990a6be80fa6aca2 size: 856
+afd5969: digest: sha256:cc6f68d6220e580377ba5e02a986b014d5c4b0f04d51365b71bc6877ef8d495e size: 856
+d99149c: digest: sha256:ed8f9301de52a75ab4ca1ec9218f37890cc4abdaf0bfa160990a6be80fa6aca2 size: 856
+$ docker push --all-tags gitlab.kurum.test:5050/egitim/ekip-01/saha-ekipman-portal/product-service 2>&1 | grep -E 'digest:|denied|error'
+1.0.1: digest: sha256:023c9f67fcc91dd463cdf58697217cee45f2b589589ffe2967b9a18bff472038 size: 856
+afd5969: digest: sha256:62d1d1ca3b1d01b0e1629dddacc2cd75ac6da917e409df5a020e836e7a2de50a size: 856
+d99149c: digest: sha256:023c9f67fcc91dd463cdf58697217cee45f2b589589ffe2967b9a18bff472038 size: 856
+$ docker push --all-tags gitlab.kurum.test:5050/egitim/ekip-01/saha-ekipman-portal/web-ui 2>&1 | grep -E 'digest:|denied|error'
+1.0.1: digest: sha256:e957841e345d881d111849848dfcad3d4a5134548ab180267966bc95af34ceff size: 856
+3ff91fc: digest: sha256:f11300510a464f963bfba0053da0a6456508f606c8f9c3dd8622b751c3274f8c size: 856
+afd5969: digest: sha256:4776d345b9897b76143aeea0c60cdbdf7238ee3a0847fbc34be1f9c8a16e22c1 size: 856
+d99149c: digest: sha256:e957841e345d881d111849848dfcad3d4a5134548ab180267966bc95af34ceff size: 856
+cikis kodu: 0
+
+### Adim 6: ikinci VM'e compose.yaml
+$ scp deploy/compose.yaml deploy@test-vm.kurum.test:/opt/saha/ekip01/compose.yaml
+$ ssh deploy@test-vm.kurum.test "cat > /opt/saha/ekip01/.env"   # IMG, TAG=1.0.1, WEB_PORT=8081
+$ ssh deploy@test-vm.kurum.test "ls -a && cat .env"
+.
+..
+.env
+compose.yaml
+IMG=gitlab.kurum.test:5050/egitim/ekip-01/saha-ekipman-portal
+TAG=1.0.1
+WEB_PORT=8081
+
+### Adim 6 (kontrol): ikinci VM'de login olmadan pull reddedilir
+$ ssh deploy@test-vm.kurum.test "docker compose -p ekip01 pull"
+ Image gitlab.kurum.test:5050/egitim/ekip-01/saha-ekipman-portal/web-ui:1.0.1 Error error from registry: access forbidden
+ Image gitlab.kurum.test:5050/egitim/ekip-01/saha-ekipman-portal/order-service:1.0.1 Interrupted 
+ Image gitlab.kurum.test:5050/egitim/ekip-01/saha-ekipman-portal/product-service:1.0.1 Interrupted 
+Error response from daemon: error from registry: access forbidden
+Error response from daemon: error from registry: access forbidden
+HATA: denied bekleniyordu
+TERM environment variable not set.
+[3J
+cikis kodu: 1
+# (vm-denied: gercek hata metni 'access forbidden')
+
+### Adim 6 (kontrol): ikinci VM'de login olmadan pull reddedilir
+$ ssh deploy@test-vm.kurum.test "docker compose -p ekip01 pull"
+ Image gitlab.kurum.test:5050/egitim/ekip-01/saha-ekipman-portal/web-ui:1.0.1 Error error from registry: access forbidden
+ Image gitlab.kurum.test:5050/egitim/ekip-01/saha-ekipman-portal/product-service:1.0.1 Error error from registry: access forbidden
+ Image gitlab.kurum.test:5050/egitim/ekip-01/saha-ekipman-portal/order-service:1.0.1 Interrupted 
+Error response from daemon: error from registry: access forbidden
+Error response from daemon: error from registry: access forbidden
+Error response from daemon: error from registry: access forbidden
+# beklenen hata olustu: access forbidden
+
+### Arayuz: gitlab deploy-token 01 ekip01-pull read_registry lab-03-b-pull-token
+  goruntu: lab-rehberleri/img/lab-03-b-pull-token-form.png
+  tamam  deploy token olusturuldu: ekip01-pull (read_registry); deger yalnizca bir kez gosterilir
+  goruntu: lab-rehberleri/img/lab-03-b-pull-token.png
+
+### Adim 6: ikinci VM'de login (read_registry), pull, up
+$ echo "$TOKEN" | ssh deploy@test-vm.kurum.test "docker login $REGISTRY -u ekip01-pull --password-stdin"
+Login Succeeded
+$ ssh deploy@test-vm.kurum.test "docker compose -p ekip01 pull 2>&1 | tail -n 4"
+ 8fe2a0139dc8 Extracting 1B
+ 8fe2a0139dc8 Pull complete 0B
+ 637112be986b Pull complete 0B
+ Image gitlab.kurum.test:5050/egitim/ekip-01/saha-ekipman-portal/order-service:1.0.1 Pulled 
+$ ssh deploy@test-vm.kurum.test "docker compose -p ekip01 up -d 2>&1 | tail -n 6"
+ Container ekip01-order-service-1 Starting 
+ Container ekip01-product-service-1 Starting 
+ Container ekip01-order-service-1 Started 
+ Container ekip01-product-service-1 Started 
+ Container ekip01-web-ui-1 Starting 
+ Container ekip01-web-ui-1 Started 
+$ ssh deploy@test-vm.kurum.test "docker compose -p ekip01 ps"
+NAME                       IMAGE                                                                             COMMAND                  SERVICE           CREATED         STATUS                           PORTS
+ekip01-order-service-1     gitlab.kurum.test:5050/egitim/ekip-01/saha-ekipman-portal/order-service:1.0.1     "dotnet order-servic…"   order-service     2 seconds ago   Up 1 second                      
+ekip01-product-service-1   gitlab.kurum.test:5050/egitim/ekip-01/saha-ekipman-portal/product-service:1.0.1   "dotnet product-serv…"   product-service   2 seconds ago   Up 1 second                      
+ekip01-web-ui-1            gitlab.kurum.test:5050/egitim/ekip-01/saha-ekipman-portal/web-ui:1.0.1            "/docker-entrypoint.…"   web-ui            1 second ago    Up 1 second (health: starting)   0.0.0.0:8081->8080/tcp, [::]:8081->8080/tcp
+cikis kodu: 0
+
+### Kontrol: yalnizca read_registry yetkili token ile push reddedilir
+$ docker login $REGISTRY -u ekip01-pull   # read_registry
+$ docker push gitlab.kurum.test:5050/egitim/ekip-01/saha-ekipman-portal/order-service:yetki-denemesi
+The push refers to repository [gitlab.kurum.test:5050/egitim/ekip-01/saha-ekipman-portal/order-service]
+bb836933c93b: Layer already exists
+bffcdbeaf3b5: Layer already exists
+5589f4335d64: Layer already exists
+e4a6967a0357: Layer already exists
+8fe2a0139dc8: Layer already exists
+637112be986b: Layer already exists
+013c54d0dc67: Layer already exists
+e1d6a17e6416: Already exists
+b36fd2f86853: Layer already exists
+44136fa355b3: Already exists
+13b7adcbc582: Layer already exists
+failed commit on ref "index-sha256:ed8f9301de52a75ab4ca1ec9218f37890cc4abdaf0bfa160990a6be80fa6aca2": server message: insufficient_scope: authorization failed
+HATA  hata olustu ama "denied" metni yok
+[3JTERM environment variable not set.
+
+cikis kodu: 1
+# (salt okunur token: gercek hata metni 'insufficient_scope: authorization failed')
+
+### Kontrol: yalnizca read_registry yetkili token ile push reddedilir
+$ docker login $REGISTRY -u ekip01-pull   # read_registry
+$ docker push gitlab.kurum.test:5050/egitim/ekip-01/saha-ekipman-portal/order-service:yetki-denemesi
+The push refers to repository [gitlab.kurum.test:5050/egitim/ekip-01/saha-ekipman-portal/order-service]
+bb836933c93b: Layer already exists
+b36fd2f86853: Layer already exists
+44136fa355b3: Already exists
+e4a6967a0357: Layer already exists
+bffcdbeaf3b5: Layer already exists
+8fe2a0139dc8: Layer already exists
+637112be986b: Layer already exists
+013c54d0dc67: Layer already exists
+e1d6a17e6416: Already exists
+5589f4335d64: Layer already exists
+13b7adcbc582: Layer already exists
+failed commit on ref "index-sha256:ed8f9301de52a75ab4ca1ec9218f37890cc4abdaf0bfa160990a6be80fa6aca2": server message: insufficient_scope: authorization failed
+# beklenen hata olustu (cikis kodu 1): insufficient_scope: authorization failed
+# Dogru token ile yeniden login
+$ docker push gitlab.kurum.test:5050/egitim/ekip-01/saha-ekipman-portal/order-service:1.0.1 2>&1 | grep -E 'digest:|denied|forbidden'
+1.0.1: digest: sha256:ed8f9301de52a75ab4ca1ec9218f37890cc4abdaf0bfa160990a6be80fa6aca2 size: 856
+
+### Adim 7: smoke test
+$ curl -fsS $TEST_URL/api/products | head -c 60; echo
+[{"code":"ADP-01","name":"Terminal adaptörü","inStock":tru
+$ curl -fsS -o /dev/null -w '%{http_code}\n' -X POST $TEST_URL/api/orders -H 'Content-Type: application/json' -d '{ "productId": "KBL-02", "quantity": 3 }'
+201
+$ curl -fsS $TEST_URL/api/orders; echo
+[{"id":1,"productId":"KBL-02","quantity":3,"createdAt":"2026-11-23T22:38:22.8790378Z"}]
+# Kalicilik: container'lar silinip yeniden yaratilir, talep durur
+$ ssh deploy@test-vm.kurum.test "docker compose -p ekip01 down 2>&1 | tail -n 2 && docker compose -p ekip01 up -d 2>&1 | tail -n 2"
+ Network ekip01_default Removing 
+ Network ekip01_default Removed 
+ Container ekip01-web-ui-1 Starting 
+ Container ekip01-web-ui-1 Started 
+$ curl -fsS $TEST_URL/api/orders; echo
+[{"id":1,"productId":"KBL-02","quantity":3,"createdAt":"2026-11-23T22:38:22.8790378Z"}]
+
+### Arayuz: uygulama talep http://test-vm.kurum.test:8081 lab-03-b-test-vm STD-03 1
+  tamam  katalog listeleniyor: 4 ekipman (http://test-vm.kurum.test:8081)
+  tamam  talep olusturuldu: STD-03 x 1
+  goruntu: lab-rehberleri/img/lab-03-b-test-vm.png
+cikis kodu: 0
+
+### Arayuz: gitlab mr-ac 01 dev feature/9-docker develop build(docker): add Dockerfiles and compose deployment 3 evet evet lab-03-b-mr
+  tamam  MR sablonu kendiliginden geldi (.gitlab/merge_request_templates/Default.md)
+  goruntu: lab-rehberleri/img/lab-03-b-mr-sablon.png
+  tamam  reviewer: ekip01-lead
+  goruntu: lab-rehberleri/img/lab-03-b-mr-form.png
+  tamam  MR !7 acildi: feature/9-docker -> develop (squash: evet, kaynak branch silinsin: evet)
+  goruntu: lab-rehberleri/img/lab-03-b-mr.png
+
+### Arayuz: gitlab mr-merge 01 lead feature/9-docker lab-03-b-merge develop
+  goruntu: lab-rehberleri/img/lab-03-b-merge-oncesi.png
+  tamam  !7: ekip01-lead merge etti
+  goruntu: lab-rehberleri/img/lab-03-b-merge.png
+
+### Adim 7: merge sonrasi
+rol: ekip01-dev
+$ git switch develop
+Switched to branch 'develop'
+Your branch is up to date with 'origin/develop'.
+$ git pull --ff-only
+From gitlab.kurum.test:egitim/ekip-01/saha-ekipman-portal
+   ac9504a..36433a1  develop    -> origin/develop
+Updating ac9504a..36433a1
+Fast-forward
+ .dockerignore                  | 13 +++++++++++++
+ deploy/compose.yaml            | 24 +++++++++++++++++++++---
+ deploy/nginx.conf              | 21 +++++++++++++++++----
+ src/order-service/Dockerfile   | 18 ++++++++++++++++++
+ src/product-service/Dockerfile | 16 ++++++++++++++++
+ src/web-ui/Dockerfile          | 15 +++++++++++++++
+ 6 files changed, 100 insertions(+), 7 deletions(-)
+ create mode 100644 .dockerignore
+ create mode 100644 src/order-service/Dockerfile
+ create mode 100644 src/product-service/Dockerfile
+ create mode 100644 src/web-ui/Dockerfile
+$ git fetch --prune
+From gitlab.kurum.test:egitim/ekip-01/saha-ekipman-portal
+ - [deleted]         (none)     -> origin/feature/9-docker
+$ git branch -D feature/9-docker
+Deleted branch feature/9-docker (was d99149c).
+$ git log --oneline --graph -n 6 origin/develop
+*   36433a1 Merge branch 'feature/9-docker' into 'develop'
+|\  
+| * 6896032 build(docker): add Dockerfiles and compose deployment
+|/  
+*   ac9504a Merge branch 'hotfix/1.0.1' into 'develop'
+|\  
+| * 2ddb896 chore(release): 1.0.1
+| * e2a876e fix(order): reject empty product id
+| *   d46692d Merge branch 'release/1.0.0' into 'main'
+| |\  
+
+### Checkpoint karsilastirmasi
+# agac ayni: origin/develop == checkpoint/lab-03b (haric: .gitlab/CODEOWNERS)
+cikis kodu: 0
+
+# Dogrulama: dogrula/lab.sh lab-03-b 01
+
+LAB 03-B (ekip-01)
+
+Registry: uc imaj, 1.0.1 ve commit SHA etiketi ayni digest
+  GECTI  order-service:1.0.1 var (sha256:ed8f9301de52…)
+  GECTI  order-service: commit SHA etiketi d99149c ayni imaji gosteriyor
+  GECTI  product-service:1.0.1 var (sha256:023c9f67fcc9…)
+  GECTI  product-service: commit SHA etiketi d99149c ayni imaji gosteriyor
+  GECTI  web-ui:1.0.1 var (sha256:e957841e345d…)
+  GECTI  web-ui: commit SHA etiketi d99149c ayni imaji gosteriyor
+
+Repo (develop): compose.yaml ve nginx.conf
+  GECTI  imaj adi ${IMG} ve ${TAG} ile
+  GECTI  port ${WEB_PORT:-8080}:8080
+  GECTI  orders-data volume'u /data'da
+  GECTI  baglanti ayari ortam degiskeniyle
+  GECTI  port yayinlayan servis sayisi (yalnizca web-ui): 1
+  GECTI  compose.yaml icinde latest yok
+  GECTI  nginx: /api/products -> product-service
+  GECTI  nginx: /api/orders -> order-service
+  GECTI  order-service Dockerfile: /data dizini uygulama kullanicisinin
+
+Katilimci makinesi: Docker daemon'i registry'ye guveniyor (TLS dogrulamasi acik)
+  GECTI  /etc/docker/certs.d/gitlab.kurum.test:5050/ca.crt kurum CA'si
+  GECTI  insecure-registries kullanilmamis
+
+Test VM: /opt/saha/ekip01, Compose projesi ekip01
+  GECTI  order-service imaji registry'den, etiket 1.0.1: gitlab.kurum.test:5050/egitim/ekip-01/saha-ekipman-portal/order-service:1.0.1
+  GECTI  order-service port yayinlamiyor
+  GECTI  order-service root degil (uid=1654)
+  GECTI  product-service imaji registry'den, etiket 1.0.1: gitlab.kurum.test:5050/egitim/ekip-01/saha-ekipman-portal/product-service:1.0.1
+  GECTI  product-service port yayinlamiyor
+  GECTI  product-service root degil (uid=1654)
+  GECTI  web-ui imaji registry'den, etiket 1.0.1: gitlab.kurum.test:5050/egitim/ekip-01/saha-ekipman-portal/web-ui:1.0.1
+  GECTI  web-ui port yayinliyor: 8081 -> 8080
+  GECTI  web-ui root degil (uid=101)
+  GECTI  registry girisi ekibin kendi dizininde (DOCKER_CONFIG)
+  GECTI  test VM'de kaynak kod yok
+
+Smoke test ve kalicilik (http://test-vm.kurum.test:8081)
+  GECTI  arayuz: 200
+  GECTI  /api/products
+  GECTI  talep kaydi var (2 talep)
+  GECTI  order-service yeniden yaratildi, talepler duruyor: [{"id":1,"productId":"KBL-02","quantity":3,"createdAt":"2026-11-23T22:38:22.8790378Z"},{"id":2,"productId":"STD-03","quantity":1,"createdAt":"2026-11-23T22:38:25.7731345Z"}]
+  GECTI  veri volume'u: ekip01_orders-data
+
+Merge Request
+  GECTI  MR !7: feature/9-docker -> develop merge edilmis
+
+34 gecti, 0 kaldi
+cikis kodu: 0
+# Ek deneme (2026-11-24 03:05): /api kurallari olan web-ui imaji tek basina (servisler yokken) calisir mi?
+$ docker run --rm $IMG/web-ui:1.0.1
+2026/11/24 00:04:57 [emerg] 1#1: host not found in upstream "product-service" in /etc/nginx/conf.d/default.conf:12
+nginx: [emerg] host not found in upstream "product-service" in /etc/nginx/conf.d/default.conf:12
+cikis kodu: 1
+
+# Ek deneme (2026-11-24 04:34): ogrenci rehberindeki vm() yardimcisi, yazildigi haliyle
+$ vm "ls -a && cat .env"
+.
+..
+.docker
+.env
+compose.yaml
+IMG=gitlab.kurum.test:5050/egitim/ekip-01/saha-ekipman-portal
+TAG=1.0.1
+WEB_PORT=8081
+$ vm docker compose -p ekip$EKIP ps
+NAME                       IMAGE                            
+ekip01-order-service-1     gitlab.kurum.test:5050/egitim/eki
+ekip01-product-service-1   gitlab.kurum.test:5050/egitim/eki
+ekip01-web-ui-1            gitlab.kurum.test:5050/egitim/eki

@@ -1,0 +1,6 @@
+SonarScanner for .NET 12.1
+Using the .NET Core version of the SonarScanner for .NET
+Post-processing started.
+15:53:04.762  Temporary analysis directory (usually .sonarqube) doesn't exist. The "begin" step was probably not executed.
+15:53:04.762  Post-processing failed. Exit code: 1
+GECTI: begin/build olmadan end reddedildi

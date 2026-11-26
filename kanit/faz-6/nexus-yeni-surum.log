@@ -1,0 +1,10 @@
+  Determining projects to restore...
+  Restored /home/ekip99/saha-ekipman-portal/src/common-contracts/common-contracts.csproj (in 31 ms).
+  common-contracts -> /home/ekip99/saha-ekipman-portal/src/common-contracts/bin/Release/net10.0/common-contracts.dll
+  The package Saha.Common.Contracts.Ekip99.1.0.1 is missing a readme. Go to https://aka.ms/nuget/authoring-best-practices/readme to learn why package readmes are important.
+  Successfully created package '/tmp/tmp.lXc1skV55n/Saha.Common.Contracts.Ekip99.1.0.1.nupkg'.
+Pushing Saha.Common.Contracts.Ekip99.1.0.1.nupkg to 'https://nexus.kurum.test/repository/nuget-hosted/'...
+  PUT https://nexus.kurum.test/repository/nuget-hosted/
+  Created https://nexus.kurum.test/repository/nuget-hosted/ 64ms
+Your package was pushed.
+GECTI: 1.0.0 ikinci yayin reddinden sonra yeni 1.0.1 surumu yayinlandi; kaynak degismedi

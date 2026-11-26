@@ -1,0 +1,99 @@
+# Faz 1 kanit: web-ui kurulum, test ve build (main)
+# tarih: 2026-11-23 15:38 +03 | container: node:24.22.3-alpine3.24
+# Not: Nexus Faz 2'de kurulacak. Bu kosuda .npmrc'deki kaynak yerine --registry ile npmjs kullanildi.
+
+$ node --version && npm --version
+v24.22.3
+11.19.1
+
+$ npm ci --registry=https://registry.npmjs.org/
+npm warn deprecated whatwg-encoding@3.1.1: Use @exodus/bytes instead for a more spec-conformant and faster implementation
+npm warn deprecated glob@10.5.0: Old versions of glob are not supported, and contain widely publicized security vulnerabilities, which have been fixed in the current version. Please update. Support for old versions may be purchased (at exorbitant rates) by contacting i@izs.me
+
+added 475 packages in 10s
+npm warn install-scripts 1 package has install scripts not yet covered by allowScripts:
+npm warn install-scripts   @parcel/watcher@2.6.0 (install: node scripts/build-from-source.js)
+npm warn install-scripts
+npm warn install-scripts Run `npm install-scripts ls` to review, or `npm install-scripts approve <pkg>` to allow.
+npm notice
+npm notice New major version of npm available! 11.19.1 -> 12.2.3
+npm notice Changelog: https://github.com/npm/cli/releases/tag/v12.2.3
+npm notice To update run: npm install -g npm@12.2.3
+npm notice
+
+$ npm test -- --coverage --ci
+
+> web-ui@1.0.0 test
+> jest --coverage --ci
+
+PASS src/api.test.js
+PASS src/components/CatalogList.test.jsx
+PASS src/components/OrderList.test.jsx
+PASS src/App.test.jsx
+PASS src/components/OrderForm.test.jsx
+------------------|---------|----------|---------|---------|-------------------
+File              | % Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s 
+------------------|---------|----------|---------|---------|-------------------
+All files         |   97.67 |       95 |     100 |   97.61 |                   
+ src              |   95.83 |      100 |     100 |   95.83 |                   
+  App.jsx         |     100 |      100 |     100 |     100 |                   
+  api.js          |    92.3 |      100 |     100 |    92.3 | 22                
+ src/components   |     100 |       90 |     100 |     100 |                   
+  CatalogList.jsx |     100 |      100 |     100 |     100 |                   
+  OrderForm.jsx   |     100 |      100 |     100 |     100 |                   
+  OrderList.jsx   |     100 |       75 |     100 |     100 | 25                
+------------------|---------|----------|---------|---------|-------------------
+
+Test Suites: 5 passed, 5 total
+Tests:       14 passed, 14 total
+Snapshots:   0 total
+Time:        2.512 s
+Ran all test suites.
+
+$ ls junit.xml coverage/lcov.info
+-rw-r--r--    1 root     root          1737 Nov 23 12:38 coverage/lcov.info
+-rw-r--r--    1 root     root          3057 Nov 23 12:38 junit.xml
+
+$ npm run build
+
+> web-ui@1.0.0 build
+> vite build
+
+vite v8.3.8 building client environment for production...
+transforming...
+✓ 20 modules transformed.
+rendering chunks...
+computing gzip size...
+dist/index.html                   0.41 kB │ gzip:  0.28 kB
+dist/assets/index-DpRJsg-p.css    0.87 kB │ gzip:  0.48 kB
+dist/assets/index-BNMgny15.js   222.94 kB │ gzip: 69.66 kB
+
+✓ built in 87ms
+
+$ npm ls --depth=0
+web-ui@1.0.0 /app
++-- @babel/core@7.29.13
++-- @babel/preset-env@7.29.14
++-- @babel/preset-react@7.29.7
++-- @testing-library/dom@10.4.2
++-- @testing-library/jest-dom@8.0.0
++-- @testing-library/react@16.3.3
++-- @testing-library/user-event@14.6.13
++-- @vitejs/plugin-react@6.3.0
++-- babel-jest@30.5.2
++-- jest-environment-jsdom@30.5.2
++-- jest-junit@17.0.0
++-- jest@30.5.2
++-- react-dom@19.3.1
++-- react@19.3.1
+`-- vite@8.3.8
+
+
+$ npm ls react
+web-ui@1.0.0 /app
++-- @testing-library/react@16.3.3
+| `-- react@19.3.1 deduped
++-- react-dom@19.3.1
+| `-- react@19.3.1 deduped
+`-- react@19.3.1
+

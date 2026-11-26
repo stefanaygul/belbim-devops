@@ -1,0 +1,362 @@
+# BELBIM DevOps egitimi - yerel lab ortami (sandbox)
+#
+# Profiller:
+#   cekirdek : gitlab, nexus, workstation, test-vm          (Gun 1-3)
+#   ci       : jenkins, jenkins-agent, agent-docker, sonarqube, sonar-db   (Gun 4-5)
+#   araclar  : bootstrap ve dogrulama betiklerinin calistigi tek seferlik container
+# proxy ve dns her profilde calisir.
+#
+# Kurallar: host'un Docker soketi hicbir container'a baglanmaz; portlar yalnizca
+# 127.0.0.1 uzerinde yayinlanir; imaj etiketleri VERSIONS.md ile aynidir.
+
+name: belbim-lab
+
+networks:
+  lab:
+    ipam:
+      config:
+        - subnet: ${LAB_SUBNET}.0/24
+
+volumes:
+  gitlab-config:
+  gitlab-logs:
+  gitlab-data:
+  nexus-data:
+  workstation-docker:
+  workstation-docker-etc:
+  jenkins-home:
+  jenkins-agent-secret:
+  jenkins-agent-work:
+  agent-docker-data:
+  agent-docker-sock:
+  sonarqube-data:
+  sonarqube-extensions:
+  sonarqube-logs:
+  sonar-db-data:
+  workstation-home:
+  testvm-docker:
+  testvm-saha:
+  testvm-home:
+  testvm-hostkeys:
+
+services:
+  # Ic ice Docker daemon'larinda calisan container'lar (docker build icindeki
+  # restore, test VM'deki uygulama) Docker'in gomulu DNS'ine (127.0.0.11)
+  # ulasamaz. Lab adlarini onlar icin bu servis cozer.
+  dns:
+    image: coredns/coredns:1.15.0
+    command: ["-conf", "/etc/coredns/Corefile"]
+    environment:
+      LAB_DOMAIN: ${LAB_DOMAIN}
+      LAB_SUBNET: ${LAB_SUBNET}
+    volumes:
+      - ./images/dns/Corefile:/etc/coredns/Corefile:ro
+    networks:
+      lab:
+        ipv4_address: ${LAB_SUBNET}.53
+    mem_limit: 128m
+    restart: unless-stopped
+
+  # TLS sonlandirma. Dort servis adi bu container'in ag takma adidir; ag icinden
+  # ve host tarayicisindan ayni URL kullanilir.
+  proxy:
+    image: nginx:1.31.9-alpine3.24
+    environment:
+      LAB_DOMAIN: ${LAB_DOMAIN}
+    volumes:
+      - ./images/proxy/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./images/proxy/snippets:/etc/nginx/snippets:ro
+      - ./images/proxy/templates:/etc/nginx/templates:ro
+      - ./certs/server.crt:/etc/nginx/certs/server.crt:ro
+      - ./certs/server.key:/etc/nginx/certs/server.key:ro
+    networks:
+      lab:
+        ipv4_address: ${LAB_SUBNET}.10
+        aliases:
+          - gitlab.${LAB_DOMAIN}
+          - jenkins.${LAB_DOMAIN}
+          - sonar.${LAB_DOMAIN}
+          - nexus.${LAB_DOMAIN}
+    ports:
+      - "127.0.0.1:${HOST_HTTPS_PORT}:443"
+      - "127.0.0.1:${HOST_REGISTRY_PORT}:5050"
+      - "127.0.0.1:${HOST_GITLAB_SSH_PORT}:22"
+    mem_limit: 128m
+    restart: unless-stopped
+
+  gitlab:
+    image: gitlab/gitlab-ce:19.6.1-ce.0
+    profiles: [cekirdek]
+    hostname: gitlab
+    shm_size: 256m
+    environment:
+      GITLAB_ROOT_PASSWORD: ${GITLAB_ROOT_PASSWORD}
+      # Webhook gibi giden isteklerde lab CA'sina guven. Dosya kopyalanir: reconfigure
+      # bu klasordeki dosyalari tasiyip baglar, salt okunur baglama bunu bozar.
+      GITLAB_PRE_RECONFIGURE_SCRIPT: >-
+        mkdir -p /etc/gitlab/trusted-certs &&
+        cp /lab/certs/ca.crt /etc/gitlab/trusted-certs/lab-ca.crt
+      GITLAB_OMNIBUS_CONFIG: |
+        external_url 'https://gitlab.${LAB_DOMAIN}'
+        # TLS proxy'de sonlanir; GitLab'in kendi nginx'i duz HTTP dinler.
+        gitlab_rails['nginx']['listen_port'] = 80
+        gitlab_rails['nginx']['listen_https'] = false
+        gitlab_rails['nginx']['proxy_set_headers'] = { 'X-Forwarded-Proto' => 'https', 'X-Forwarded-Ssl' => 'on' }
+        gitlab_rails['nginx']['real_ip_trusted_addresses'] = ['${LAB_SUBNET}.0/24']
+        gitlab_rails['nginx']['real_ip_header'] = 'X-Forwarded-For'
+        letsencrypt['enable'] = false
+        gitlab_rails['gitlab_shell_ssh_port'] = 22
+        # Container Registry
+        registry_external_url 'https://gitlab.${LAB_DOMAIN}:5050'
+        registry['nginx']['listen_port'] = 5050
+        registry['nginx']['listen_https'] = false
+        registry['nginx']['proxy_set_headers'] = { 'X-Forwarded-Proto' => 'https', 'X-Forwarded-Ssl' => 'on' }
+        # Resmi dusuk bellek (memory-constrained) ayarlari
+        puma['worker_processes'] = 0
+        sidekiq['concurrency'] = 10
+        prometheus_monitoring['enable'] = false
+        gitlab_kas['enable'] = false
+        gitlab_rails['env'] = { 'MALLOC_CONF' => 'dirty_decay_ms:1000,muzzy_decay_ms:1000' }
+        gitaly['configuration'] = {
+          concurrency: [
+            { rpc: '/gitaly.SmartHTTPService/PostReceivePack', max_per_repo: 3 },
+            { rpc: '/gitaly.SSHService/SSHUploadPack', max_per_repo: 3 },
+          ],
+        }
+        gitaly['env'] = {
+          'MALLOC_CONF' => 'dirty_decay_ms:1000,muzzy_decay_ms:1000',
+          'GITALY_COMMAND_SPAWN_MAX_PARALLEL' => '2',
+        }
+        # Kapali ag: disari veri gonderme
+        gitlab_rails['usage_ping_enabled'] = false
+        gitlab_rails['store_initial_root_password'] = false
+    volumes:
+      - gitlab-config:/etc/gitlab
+      - gitlab-logs:/var/log/gitlab
+      - gitlab-data:/var/opt/gitlab
+      - ./certs/ca.crt:/lab/certs/ca.crt:ro
+    networks: [lab]
+    mem_limit: 6g
+    restart: unless-stopped
+
+  nexus:
+    image: sonatype/nexus3:3.98.3
+    profiles: [cekirdek]
+    hostname: nexus
+    environment:
+      # Imajin varsayilan heap degeri container sinirina sigmaz; acikca verilir.
+      INSTALL4J_ADD_VM_PARAMS: >-
+        -Xms1g -Xmx1536m -XX:MaxDirectMemorySize=1g
+        -Djava.util.prefs.userRoot=/nexus-data/javaprefs
+        -Dnexus.skipDefaultRepositories=true
+        -Dnexus.onboarding.enabled=false
+    volumes:
+      - nexus-data:/nexus-data
+    networks: [lab]
+    mem_limit: 3g
+    restart: unless-stopped
+
+  # Katilimcinin egitim makinesi. Kendi Docker daemon'i vardir (1/3).
+  workstation:
+    build:
+      context: ./images
+      dockerfile: workstation/Dockerfile
+    image: belbim-lab/workstation:faz2
+    profiles: [cekirdek]
+    hostname: workstation
+    privileged: true
+    init: true
+    environment:
+      LAB_DOMAIN: ${LAB_DOMAIN}
+      LAB_DNS: ${LAB_SUBNET}.53
+      EKIP_SAYISI: ${EKIP_SAYISI}
+    volumes:
+      - workstation-docker:/var/lib/docker
+      - workstation-docker-etc:/etc/docker   # katilimcinin ekledigi certs.d kalici olsun
+      - workstation-home:/home
+      - ./certs/ca.crt:/lab/certs/ca.crt:ro
+      - ./lab.env:/etc/lab/lab.env:ro
+    networks: [lab]
+    ports:
+      - "127.0.0.1:${HOST_WORKSTATION_VITE_PORT}:5173"
+      - "127.0.0.1:${HOST_WORKSTATION_WEB_PORT}:8080"
+    mem_limit: 4g
+    restart: unless-stopped
+
+  # "Ikinci VM" ve "test VM". Kendi Docker daemon'i vardir (2/3).
+  test-vm:
+    build:
+      context: ./images
+      dockerfile: test-vm/Dockerfile
+    image: belbim-lab/test-vm:faz2
+    profiles: [cekirdek]
+    hostname: test-vm
+    privileged: true
+    init: true
+    environment:
+      LAB_DOMAIN: ${LAB_DOMAIN}
+      LAB_DNS: ${LAB_SUBNET}.53
+    volumes:
+      - testvm-docker:/var/lib/docker
+      - testvm-saha:/opt/saha
+      - testvm-home:/home/deploy
+      - testvm-hostkeys:/etc/ssh/hostkeys
+      - ./certs/ca.crt:/lab/certs/ca.crt:ro
+    networks:
+      lab:
+        ipv4_address: ${LAB_SUBNET}.20
+        aliases:
+          - test-vm.${LAB_DOMAIN}
+    ports:
+      - "127.0.0.1:${HOST_TESTVM_PORTS}:8081-8090"
+      - "127.0.0.1:${HOST_TESTVM_PROVA_PORT}:8099"   # prova ekibi ekip-99
+    mem_limit: 2g
+    restart: unless-stopped
+
+  # ---------------------------------------------------------------- ci profili (Gun 4-5)
+  # Jenkins controller: executor 0; agent'in baglanti sirrini ortak volume'a yazar.
+  jenkins:
+    build:
+      context: ./images
+      dockerfile: jenkins/Dockerfile
+      additional_contexts:
+        certs: ./certs
+    image: belbim-lab/jenkins:faz5
+    profiles: [ci]
+    hostname: jenkins
+    environment:
+      LAB_DOMAIN: ${LAB_DOMAIN}
+      JENKINS_ADMIN_PASSWORD: ${JENKINS_ADMIN_PASSWORD}
+    volumes:
+      - jenkins-home:/var/jenkins_home
+      - jenkins-agent-secret:/var/jenkins_agent
+    networks: [lab]
+    mem_limit: 2g
+    restart: unless-stopped
+
+  # Jenkins agent (label dotnet-docker). Docker daemon'i ayridir: agent-docker (3/3).
+  jenkins-agent:
+    build:
+      context: ./images
+      dockerfile: jenkins-agent/Dockerfile
+      additional_contexts:
+        certs: ./certs
+    image: belbim-lab/jenkins-agent:faz5
+    profiles: [ci]
+    hostname: jenkins-agent
+    init: true
+    depends_on: [jenkins, agent-docker]
+    environment:
+      JENKINS_URL: http://jenkins:8080
+      JENKINS_AGENT_NAME: agent-1
+      JENKINS_WEB_SOCKET: "true"
+      JENKINS_AGENT_WORKDIR: /home/jenkins/agent
+    volumes:
+      - jenkins-agent-work:/home/jenkins/agent
+      - jenkins-agent-secret:/var/jenkins_agent:ro
+      - agent-docker-sock:/run/agent-docker
+    networks: [lab]
+    mem_limit: 3g
+    restart: unless-stopped
+
+  # Agent'in Docker daemon'i. Soket ortak volume'dadir (990 grubu); host soketi kullanilmaz.
+  # Registry'ye guven yonetici tarafindan kuruludur (certs.d).
+  agent-docker:
+    image: docker:29.10.0-dind
+    profiles: [ci]
+    hostname: agent-docker
+    privileged: true
+    init: true
+    environment:
+      DOCKER_TLS_CERTDIR: ""
+      LAB_DOMAIN: ${LAB_DOMAIN}
+      LAB_DNS: ${LAB_SUBNET}.53
+    # Registry icin lab CA'si certs.d altina acilista kopyalanir (yol ':' icerdigi icin
+    # dogrudan baglanamaz), sonra daemon baslar.
+    entrypoint: ["/bin/sh", "/usr/local/bin/lab-agent-docker"]
+    volumes:
+      - agent-docker-data:/var/lib/docker
+      - agent-docker-sock:/run/agent-docker
+      - ./certs/ca.crt:/lab/certs/ca.crt:ro
+      - ./images/agent-docker/entrypoint.sh:/usr/local/bin/lab-agent-docker:ro
+    networks: [lab]
+    mem_limit: 3g
+    restart: unless-stopped
+
+  sonarqube:
+    build:
+      context: ./images
+      dockerfile: sonarqube/Dockerfile
+      additional_contexts:
+        certs: ./certs
+    image: belbim-lab/sonarqube:faz4
+    profiles: [ci]
+    hostname: sonarqube
+    depends_on: [sonar-db]
+    environment:
+      SONAR_JDBC_URL: jdbc:postgresql://sonar-db:5432/sonar
+      SONAR_JDBC_USERNAME: sonar
+      SONAR_JDBC_PASSWORD: ${SONAR_DB_PASSWORD}
+      SONAR_WEB_JAVAOPTS: -Xmx512m
+      SONAR_CE_JAVAOPTS: -Xmx512m
+      SONAR_SEARCH_JAVAOPTS: -Xms512m -Xmx512m
+      SONAR_TELEMETRY_ENABLE: "false"
+    volumes:
+      - sonarqube-data:/opt/sonarqube/data
+      - sonarqube-extensions:/opt/sonarqube/extensions
+      - sonarqube-logs:/opt/sonarqube/logs
+    networks: [lab]
+    mem_limit: 4g
+    restart: unless-stopped
+
+  sonar-db:
+    image: postgres:17.12-alpine3.24
+    profiles: [ci]
+    hostname: sonar-db
+    environment:
+      POSTGRES_USER: sonar
+      POSTGRES_PASSWORD: ${SONAR_DB_PASSWORD}
+      POSTGRES_DB: sonar
+    volumes:
+      - sonar-db-data:/var/lib/postgresql/data
+    networks: [lab]
+    mem_limit: 512m
+    restart: unless-stopped
+
+  # Bootstrap ve dogrulama betikleri burada calisir: lab agindadir, lab CA'sina
+  # guvenir. `docker compose run --rm araclar <komut>` ile kullanilir.
+  araclar:
+    build:
+      context: ./images
+      dockerfile: araclar/Dockerfile
+    image: belbim-lab/araclar:faz2
+    profiles: [araclar]
+    env_file: .env
+    environment:
+      HOST_UID: ${HOST_UID:-0}
+      HOST_GID: ${HOST_GID:-0}
+    volumes:
+      - ./:/lab/ortam
+      - ../portal-starter:/lab/portal-starter:ro
+    working_dir: /lab/ortam
+    networks: [lab]
+    mem_limit: 512m
+
+  # Arayuz adimlari icin tarayici (Playwright). Katilimci makinesinin ag alanini paylasir:
+  # rehberdeki adresler (GitLab, http://localhost:5173, http://localhost:8080, test VM)
+  # katilimcinin tarayicisindaki gibi acilir. Ekran goruntuleri lab-rehberleri/img altina yazilir.
+  tarayici:
+    build:
+      context: ./images
+      dockerfile: tarayici/Dockerfile
+    image: belbim-lab/tarayici:faz3
+    profiles: [araclar]
+    env_file: .env
+    network_mode: "service:workstation"
+    volumes:
+      - ./:/lab/ortam:ro
+      - ../lab-rehberleri/img:/lab/img
+      - ./.cache/ui:/lab/cikti
+    working_dir: /lab/ortam/dogrula/ui
+    shm_size: 1g
+    mem_limit: 2g

@@ -1,0 +1,29 @@
+# Docker bellek ayari degismeden once lab'in duzgun durdurulmasi (2026-11-24 11:55)
+# Sirayla ve uzun bekleme suresiyle (docker compose stop -t); volume'lara dokunulmaz.
+ Container belbim-lab-workstation-1  Stopped
+  workstation (bekleme siniri 120 sn): cikis kodu 0, 3 sn surdu, host yuk: 3.42 2.86 3.17
+ Container belbim-lab-test-vm-1  Stopped
+  test-vm (bekleme siniri 120 sn): cikis kodu 0, 1 sn surdu, host yuk: 3.42 2.86 3.17
+ Container belbim-lab-nexus-1  Stopped
+  nexus (bekleme siniri 180 sn): cikis kodu 0, 29 sn surdu, host yuk: 4.15 3.09 3.24
+ Container belbim-lab-gitlab-1  Stopped
+  gitlab (bekleme siniri 300 sn): cikis kodu 0, 35 sn surdu, host yuk: 3.33 2.99 3.20
+ Container belbim-lab-proxy-1  Stopped
+  proxy (bekleme siniri 30 sn): cikis kodu 0, 0 sn surdu, host yuk: 3.33 2.99 3.20
+ Container belbim-lab-dns-1  Stopped
+  dns (bekleme siniri 30 sn): cikis kodu 0, 1 sn surdu, host yuk: 3.33 2.99 3.20
+
+SERVICE       STATUS
+dns           Exited (0) Less than a second ago
+gitlab        Exited (1) Less than a second ago
+nexus         Exited (143) 35 seconds ago
+proxy         Exited (0) Less than a second ago
+test-vm       Exited (0) About a minute ago
+workstation   Exited (143) About a minute ago
+
+# belbim-lab volume sayisi (hepsi yerinde olmali: 11)
+11
+# calisan container'lar (kullanicinin digerleri etkilenmemeli)
+hyprena-frontend-1 Up 15 hours
+hyprena-backend-1 Up 15 hours
+kind-registry Up 15 hours

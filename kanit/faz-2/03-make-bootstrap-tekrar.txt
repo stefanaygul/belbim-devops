@@ -1,0 +1,71 @@
+$ make bootstrap   (ikinci calistirma: degisiklik beklenmez)
+
+==> GitLab yonetici token'i
+    tamam  token gecerli
+
+==> GitLab ayarlari
+    surum: 19.6.1
+    tamam  giden istek izin listesi: ["jenkins.kurum.test"]
+
+==> Gruplar
+    tamam  grup egitim (var)
+    tamam  grup egitim/sablonlar (var)
+
+==> Ekipler
+    tamam  grup egitim/ekip-01 (var)
+    tamam  kullanici ekip01-lead (var)
+    tamam  kullanici ekip01-dev (var)
+    tamam  grup egitim/ekip-02 (var)
+    tamam  kullanici ekip02-lead (var)
+    tamam  kullanici ekip02-dev (var)
+
+==> Temel imaj projesi
+    tamam  proje egitim/base (var)
+
+==> Sablon proje
+    tamam  proje egitim/sablonlar/portal-starter (var)
+    sablon hazir: lab/01a-conflict@59562d2 lab/01b-rename@756affb main@174fe06 
+    tamam  sablon branch'leri guncel
+    tamam  sablon proje: main korumali
+
+==> Nexus yonetici parolasi
+    tamam  Nexus yonetici parolasi gecerli
+
+==> Nexus Community Edition onaylari
+    tamam  EULA daha once kabul edilmis
+    tamam  telemetri bildirimi daha once onaylanmis
+
+==> Nexus guvenlik ayarlari
+    tamam  anonim okuma acik
+    tamam  realm'ler: ["NexusAuthenticatingRealm","NpmToken","NuGetApiKey"]
+
+==> Nexus depolari
+    tamam  depo nuget.org-proxy (var, ayarlar esitlendi)
+    tamam  depo nuget-hosted (var, ayarlar esitlendi)
+    tamam  depo nuget-group (var, ayarlar esitlendi)
+    tamam  depo npm-proxy (var, ayarlar esitlendi)
+    tamam  depo npm-hosted (var, ayarlar esitlendi)
+    tamam  depo npm-group (var, ayarlar esitlendi)
+    tamam  hosted depolarda redeploy kapali (ALLOW_ONCE)
+
+==> Nexus rol ve kullanicilari
+    tamam  rol lab-yayinci (var, ayarlar esitlendi)
+    tamam  kullanici ekip01 (var)
+    tamam  kullanici ekip02 (var)
+
+==> Temel imajlar (egitim/base)
+    tamam  dotnet/sdk:10.0 (guncel: mcr.microsoft.com/dotnet/sdk:10.0.404)
+    tamam  dotnet/aspnet:10.0 (guncel: mcr.microsoft.com/dotnet/aspnet:10.0.15)
+    tamam  library/node:24-alpine (guncel: node:24.22.3-alpine3.24)
+    tamam  nginxinc/nginx-unprivileged:stable-alpine (guncel: nginxinc/nginx-unprivileged:1.31.7-alpine3.24)
+
+==> workstation
+    tamam  kullanici ekip01, SSH anahtari hazir
+    tamam  kullanici ekip02, SSH anahtari hazir
+
+==> test-vm
+    tamam  /opt/saha/ekip01, ekip01 anahtari deploy kullanicisinda yetkili
+    tamam  /opt/saha/ekip02, ekip02 anahtari deploy kullanicisinda yetkili
+
+Bootstrap tamamlandi. Denetim icin: make dogrula
+[sure: 8 sn, cikis kodu: 0]

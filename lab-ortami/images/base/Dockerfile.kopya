@@ -1,0 +1,6 @@
+# Ic aynaya oldugu gibi alinan temel imaj (yalnizca kaynak etiketi eklenir).
+ARG KAYNAK
+FROM ${KAYNAK}
+ARG KAYNAK
+ARG CA_PARMAK_IZI=
+LABEL lab.kaynak="${KAYNAK}" lab.ca="${CA_PARMAK_IZI}"

@@ -1,0 +1,50 @@
+
+[1mLAB 03-B (ekip-99)[0m
+
+[1mRegistry: uc imaj, 1.0.1 ve commit SHA etiketi ayni digest[0m
+  [32mGECTI[0m  order-service:1.0.1 var (sha256:dbc5b7b5a1b0…)
+  [32mGECTI[0m  order-service: commit SHA etiketi ab8f8e5 ayni imaji gosteriyor
+  [32mGECTI[0m  product-service:1.0.1 var (sha256:68675364b801…)
+  [32mGECTI[0m  product-service: commit SHA etiketi ab8f8e5 ayni imaji gosteriyor
+  [32mGECTI[0m  web-ui:1.0.1 var (sha256:80bdba0e01a8…)
+  [32mGECTI[0m  web-ui: commit SHA etiketi ab8f8e5 ayni imaji gosteriyor
+
+[1mRepo (develop): compose.yaml ve nginx.conf[0m
+  [32mGECTI[0m  imaj adi ${IMG} ve ${TAG} ile
+  [32mGECTI[0m  port ${WEB_PORT:-8080}:8080
+  [32mGECTI[0m  orders-data volume'u /data'da
+  [32mGECTI[0m  baglanti ayari ortam degiskeniyle
+  [32mGECTI[0m  port yayinlayan servis sayisi (yalnizca web-ui): 1
+  [32mGECTI[0m  compose.yaml icinde latest yok
+  [32mGECTI[0m  nginx: /api/products -> product-service
+  [32mGECTI[0m  nginx: /api/orders -> order-service
+  [32mGECTI[0m  order-service Dockerfile: /data dizini uygulama kullanicisinin
+
+[1mKatilimci makinesi: Docker daemon'i registry'ye guveniyor (TLS dogrulamasi acik)[0m
+  [32mGECTI[0m  /etc/docker/certs.d/gitlab.kurum.test:5050/ca.crt kurum CA'si
+  [32mGECTI[0m  insecure-registries kullanilmamis
+
+[1mTest VM: /opt/saha/ekip99, Compose projesi ekip99[0m
+  [32mGECTI[0m  order-service imaji registry'den, etiket 1.0.1: gitlab.kurum.test:5050/egitim/ekip-99/saha-ekipman-portal/order-service:1.0.1
+  [32mGECTI[0m  order-service port yayinlamiyor
+  [32mGECTI[0m  order-service root degil (uid=1654)
+  [32mGECTI[0m  product-service imaji registry'den, etiket 1.0.1: gitlab.kurum.test:5050/egitim/ekip-99/saha-ekipman-portal/product-service:1.0.1
+  [32mGECTI[0m  product-service port yayinlamiyor
+  [32mGECTI[0m  product-service root degil (uid=1654)
+  [32mGECTI[0m  web-ui imaji registry'den, etiket 1.0.1: gitlab.kurum.test:5050/egitim/ekip-99/saha-ekipman-portal/web-ui:1.0.1
+  [32mGECTI[0m  web-ui port yayinliyor: 8099 -> 8080
+  [32mGECTI[0m  web-ui root degil (uid=101)
+  [32mGECTI[0m  registry girisi ekibin kendi dizininde (DOCKER_CONFIG)
+  [32mGECTI[0m  test VM'de kaynak kod yok
+
+[1mSmoke test ve kalicilik (http://test-vm.kurum.test:8099)[0m
+  [32mGECTI[0m  arayuz: 200
+  [32mGECTI[0m  /api/products
+  [32mGECTI[0m  talep kaydi var (2 talep)
+  [32mGECTI[0m  order-service yeniden yaratildi, talepler duruyor: [{"id":1,"productId":"KBL-02","quantity":3,"createdAt":"2026-11-24T16:29:26.3973185Z"},{"id":2,"productId":"STD-03","quantity":1,"createdAt":"2026-11-24T16:29:29.4378909Z"}]
+  [32mGECTI[0m  veri volume'u: ekip99_orders-data
+
+[1mMerge Request[0m
+  [32mGECTI[0m  MR !7: feature/9-docker -> develop merge edilmis
+
+34 gecti, 0 kaldi

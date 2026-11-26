@@ -1,0 +1,163 @@
+# LAB 01-B, ekip-02 (2026-11-24 02:20)
+
+## Adim 3'un olumsuz yonu: katalog degisti, test henuz guncellenmedi -> test kirmizi olmali
+M  src/product-service/Data/catalog.json
+  Failed SahaPortal.ProductService.Tests.CatalogStoreTests.Catalog_contains_the_expected_product_codes [8 ms]
+   Assert.Equal() Failure: Collections differ
+Expected: ["ADP-01", "KBL-02", "STD-03"]
+Actual:   ["ADP-01", "KBL-02", "STD-03", "SRJ-04"]
+Failed!  - Failed:     1, Passed:     4, Skipped:     0, Total:     5, Duration: 113 ms - product-service.tests.dll (net10.0)
+Passed!  - Failed:     0, Passed:     4, Skipped:     0, Total:     4, Duration: 470 ms - order-service.tests.dll (net10.0)
+0
+
+
+### Adim 1: feature branch
+$ git switch main
+Already on 'main'
+Your branch is up to date with 'origin/main'.
+$ git switch -c feature/katalog-sarj-unitesi
+Switched to a new branch 'feature/katalog-sarj-unitesi'
+
+### Adim 2-3: kataloga SRJ-04, testi guncelle
+$ git status --short
+M  src/product-service/Data/catalog.json
+M  tests/product-service.tests/CatalogStoreTests.cs
+$ git diff HEAD | cat
+diff --git a/src/product-service/Data/catalog.json b/src/product-service/Data/catalog.json
+index cec9467..b810674 100644
+--- a/src/product-service/Data/catalog.json
++++ b/src/product-service/Data/catalog.json
+@@ -1,5 +1,6 @@
+ [
+   { "code": "ADP-01", "name": "Terminal adaptörü" },
+   { "code": "KBL-02", "name": "Bağlantı kablosu" },
+-  { "code": "STD-03", "name": "Cihaz standı" }
++  { "code": "STD-03", "name": "Cihaz standı" },
++  { "code": "SRJ-04", "name": "Şarj ünitesi" }
+ ]
+diff --git a/tests/product-service.tests/CatalogStoreTests.cs b/tests/product-service.tests/CatalogStoreTests.cs
+index f9d5d60..ab9ef21 100644
+--- a/tests/product-service.tests/CatalogStoreTests.cs
++++ b/tests/product-service.tests/CatalogStoreTests.cs
+@@ -11,7 +11,7 @@ public class CatalogStoreTests
+ 
+         var codes = catalog.GetAll().Select(p => p.Code).ToArray();
+ 
+-        Assert.Equal(["ADP-01", "KBL-02", "STD-03"], codes);
++        Assert.Equal(["ADP-01", "KBL-02", "STD-03", "SRJ-04"], codes);
+     }
+ 
+     [Fact]
+$ dotnet test SahaPortal.sln
+  Determining projects to restore...
+  All projects are up-to-date for restore.
+  common-contracts -> /home/ekip02/saha-ekipman-portal/src/common-contracts/bin/Debug/net10.0/common-contracts.dll
+  product-service -> /home/ekip02/saha-ekipman-portal/src/product-service/bin/Debug/net10.0/product-service.dll
+  order-service -> /home/ekip02/saha-ekipman-portal/src/order-service/bin/Debug/net10.0/order-service.dll
+  order-service.tests -> /home/ekip02/saha-ekipman-portal/tests/order-service.tests/bin/Debug/net10.0/order-service.tests.dll
+Test run for /home/ekip02/saha-ekipman-portal/tests/order-service.tests/bin/Debug/net10.0/order-service.tests.dll (.NETCoreApp,Version=v10.0)
+  product-service.tests -> /home/ekip02/saha-ekipman-portal/tests/product-service.tests/bin/Debug/net10.0/product-service.tests.dll
+Test run for /home/ekip02/saha-ekipman-portal/tests/product-service.tests/bin/Debug/net10.0/product-service.tests.dll (.NETCoreApp,Version=v10.0)
+A total of 1 test files matched the specified pattern.
+A total of 1 test files matched the specified pattern.
+
+Passed!  - Failed:     0, Passed:     5, Skipped:     0, Total:     5, Duration: 105 ms - product-service.tests.dll (net10.0)
+VSTEST_ARTIFACTS_DIRECTORY environment variable was not found, falling back to a user-private temporary directory. This is most likely caused by an outdated Microsoft.NET.Test.Sdk package reference in the test project.
+
+Passed!  - Failed:     0, Passed:     4, Skipped:     0, Total:     4, Duration: 431 ms - order-service.tests.dll (net10.0)
+VSTEST_ARTIFACTS_DIRECTORY environment variable was not found, falling back to a user-private temporary directory. This is most likely caused by an outdated Microsoft.NET.Test.Sdk package reference in the test project.
+
+### Adim 4: Conventional Commits ile commit
+$ git add src/product-service tests/product-service.tests
+$ git commit -m feat(catalog): add charging unit
+[feature/katalog-sarj-unitesi 6fa6933] feat(catalog): add charging unit
+ 2 files changed, 3 insertions(+), 2 deletions(-)
+
+### Adim 5: lab/01b-rename merge, conflict
+$ git merge origin/lab/01b-rename
+Auto-merging src/product-service/Data/catalog.json
+CONFLICT (content): Merge conflict in src/product-service/Data/catalog.json
+Automatic merge failed; fix conflicts and then commit the result.
+# beklenen hata olustu (cikis kodu 1): CONFLICT (content)
+$ git status --short
+UU src/product-service/Data/catalog.json
+$ cat src/product-service/Data/catalog.json
+[
+  { "code": "ADP-01", "name": "Terminal adaptörü" },
+  { "code": "KBL-02", "name": "Bağlantı kablosu" },
+  { "code": "STD-03", "name": "Cihaz standı" },
+<<<<<<< HEAD
+  { "code": "SRJ-04", "name": "Şarj ünitesi" }
+=======
+  { "code": "SRJ-04", "name": "Hızlı şarj" }
+>>>>>>> origin/lab/01b-rename
+]
+# Cozum: 'Sarj unitesi' satiri kalir, isaretler silinir
+$ ! grep -n '^<<<<<<<\|^=======\|^>>>>>>>' src/product-service/Data/catalog.json
+
+### Adim 6: testleri yeniden calistir, merge'u tamamla
+$ git add src/product-service/Data/catalog.json
+$ dotnet test SahaPortal.sln
+  Determining projects to restore...
+  All projects are up-to-date for restore.
+  common-contracts -> /home/ekip02/saha-ekipman-portal/src/common-contracts/bin/Debug/net10.0/common-contracts.dll
+  product-service -> /home/ekip02/saha-ekipman-portal/src/product-service/bin/Debug/net10.0/product-service.dll
+  order-service -> /home/ekip02/saha-ekipman-portal/src/order-service/bin/Debug/net10.0/order-service.dll
+  product-service.tests -> /home/ekip02/saha-ekipman-portal/tests/product-service.tests/bin/Debug/net10.0/product-service.tests.dll
+Test run for /home/ekip02/saha-ekipman-portal/tests/product-service.tests/bin/Debug/net10.0/product-service.tests.dll (.NETCoreApp,Version=v10.0)
+A total of 1 test files matched the specified pattern.
+  order-service.tests -> /home/ekip02/saha-ekipman-portal/tests/order-service.tests/bin/Debug/net10.0/order-service.tests.dll
+Test run for /home/ekip02/saha-ekipman-portal/tests/order-service.tests/bin/Debug/net10.0/order-service.tests.dll (.NETCoreApp,Version=v10.0)
+A total of 1 test files matched the specified pattern.
+
+Passed!  - Failed:     0, Passed:     5, Skipped:     0, Total:     5, Duration: 115 ms - product-service.tests.dll (net10.0)
+VSTEST_ARTIFACTS_DIRECTORY environment variable was not found, falling back to a user-private temporary directory. This is most likely caused by an outdated Microsoft.NET.Test.Sdk package reference in the test project.
+
+Passed!  - Failed:     0, Passed:     4, Skipped:     0, Total:     4, Duration: 456 ms - order-service.tests.dll (net10.0)
+VSTEST_ARTIFACTS_DIRECTORY environment variable was not found, falling back to a user-private temporary directory. This is most likely caused by an outdated Microsoft.NET.Test.Sdk package reference in the test project.
+$ git commit --no-edit
+[feature/katalog-sarj-unitesi e775d59] Merge remote-tracking branch 'origin/lab/01b-rename' into feature/katalog-sarj-unitesi
+
+### Adim 7: gecmis
+$ git log --oneline --graph --all | head -n 12
+*   e775d59 Merge remote-tracking branch 'origin/lab/01b-rename' into feature/katalog-sarj-unitesi
+|\  
+* | 6fa6933 feat(catalog): add charging unit
+| | * a2e8221 fix(order): align EntityFrameworkCore version
+| | | *   9fa7fc9 Merge branch 'feature/9-docker' into 'develop'
+| | | |\  
+| | | | * 942066f build(docker): add Dockerfiles and compose deployment
+| | | |/  
+| | | | * 11289ab build: add .dockerignore
+| | | | * ab28646 build(web-ui): add Node and Nginx Dockerfile
+| | | | * fd134ff build(product): add multi-stage Dockerfile
+| | | | * 728651a build(order): add multi-stage Dockerfile
+
+LAB 01-b cozumu ekip-02 icin uygulandi.
+cikis kodu: 0
+
+# Dogrulama: dogrula/lab.sh lab-01-b 02
+
+LAB 01-B (ekip-02)
+  GECTI  branch var: feature/katalog-sarj-unitesi@e775d59
+  GECTI  yarim kalmis merge yok
+
+Katalog
+  GECTI  catalog.json gecerli JSON
+  GECTI  SRJ-04 kaydi (tek olmali): 1
+  GECTI  SRJ-04 adi: Şarj ünitesi
+  GECTI  conflict isareti kalmamis
+  GECTI  test SRJ-04 kaydini bekliyor
+
+Merge ve gecmis
+  GECTI  lab/01b-rename merge edilmis
+  GECTI  lab/01b-rename'i getiren merge commit'i: 1
+  GECTI  commit mesajlari Conventional Commits biciminde (1 commit)
+
+Testler (feature/katalog-sarj-unitesi)
+  GECTI  dotnet test (cikis kodu): 0
+         Passed!  - Failed:     0, Passed:     5, Skipped:     0, Total:     5, Duration: 113 ms - product-service.tests.dll (net10.0)
+         Passed!  - Failed:     0, Passed:     4, Skipped:     0, Total:     4, Duration: 472 ms - order-service.tests.dll (net10.0)
+
+11 gecti, 0 kaldi
+cikis kodu: 0

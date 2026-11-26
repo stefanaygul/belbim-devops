@@ -1,0 +1,6 @@
+
+kosu=20261124T162306Z
+baslangic=01-a
+son=05-b
+paylasilan=0
+gorseller=/lab/cikti/prova-20261124T162306Z

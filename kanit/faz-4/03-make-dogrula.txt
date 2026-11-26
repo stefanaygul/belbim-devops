@@ -1,0 +1,145 @@
+# make dogrula, Docker yeniden baslatildiktan sonra (2026-11-24 12:14)
+
+Ad cozumleme
+  GECTI  gitlab.kurum.test (ag takma adi): 172.30.99.10
+  GECTI  gitlab.kurum.test (lab DNS): 172.30.99.10
+  GECTI  jenkins.kurum.test (ag takma adi): 172.30.99.10
+  GECTI  jenkins.kurum.test (lab DNS): 172.30.99.10
+  GECTI  sonar.kurum.test (ag takma adi): 172.30.99.10
+  GECTI  sonar.kurum.test (lab DNS): 172.30.99.10
+  GECTI  nexus.kurum.test (ag takma adi): 172.30.99.10
+  GECTI  nexus.kurum.test (lab DNS): 172.30.99.10
+  GECTI  test-vm.kurum.test (ag takma adi): 172.30.99.20
+  GECTI  test-vm.kurum.test (lab DNS): 172.30.99.20
+  GECTI  lab DNS dis adlari da cozuyor (api.nuget.org)
+
+TLS (dogrulama acik)
+  GECTI  https://gitlab.kurum.test/users/sign_in: 200
+  GECTI  https://nexus.kurum.test/service/rest/v1/status: 200
+  GECTI  https://gitlab.kurum.test:5050/v2/: 401
+  GECTI  lab CA'si olmadan baglanti reddediliyor
+  GECTI  sertifikayi veren: Egitim Lab Root CA
+
+GitLab SSH
+  GECTI  gitlab.kurum.test:22 SSH host anahtari sunuyor: ssh-ed25519
+  GECTI  anahtarsiz SSH girisi GitLab tarafindan reddediliyor
+
+GitLab
+  GECTI  surum: 19.6.1
+  GECTI  surum turu (enterprise): false
+  GECTI  giden istek izin listesi: ["jenkins.kurum.test"]
+  GECTI  webhook'lardan yerel aga istek: false
+  GECTI  kayit olma kapali: false
+  GECTI  grup egitim gorunurluk: public
+  GECTI  grup sablonlar gorunurluk: public
+  GECTI  grup egitim/ekip-01 gorunurluk: private
+  GECTI  ekip01-lead rolu (40 = Maintainer): 40
+  GECTI  ekip01-dev rolu (30 = Developer): 30
+  BILGI  ekip-01 altinda proje var: lab yapilmis ya da checkpoint uygulanmis (yeni kurulumda bos olur)
+  GECTI  ekip01-lead parolasiyla giris: 200
+  GECTI  ekip01-dev parolasiyla giris: 200
+  GECTI  grup egitim/ekip-02 gorunurluk: private
+  GECTI  ekip02-lead rolu (40 = Maintainer): 40
+  GECTI  ekip02-dev rolu (30 = Developer): 30
+  BILGI  ekip-02 altinda proje var: lab yapilmis ya da checkpoint uygulanmis (yeni kurulumda bos olur)
+  GECTI  ekip02-lead parolasiyla giris: 200
+  GECTI  ekip02-dev parolasiyla giris: 200
+  GECTI  yanlis parola reddediliyor (HTTP 401)
+  GECTI  sablon proje gorunurluk: public
+  GECTI  sablon varsayilan branch: main
+  GECTI  sablon branch'leri (anonim git ls-remote) starter ile ayni: 11289ab checkpoint/lab-03a 174fe06 main 59562d2 lab/01a-conflict 621ce23 checkpoint/lab-02b-main 756affb lab/01b-rename 8a5349e checkpoint/gun2 8a5349e checkpoint/lab-02b 9fa7fc9 checkpoint/gun3 9fa7fc9 checkpoint/lab-03b a7af75a checkpoint/lab-02a-main c0e7e82 checkpoint/gun1 cc4e219 checkpoint/lab-01a fd0a349 checkpoint/lab-02a 
+  GECTI  sablonda .gitlab-ci.yml yok: 404
+
+Container Registry (egitim/base, anonim okuma)
+  GECTI  dotnet/sdk:10.0: mcr.microsoft.com/dotnet/sdk:10.0.404
+  GECTI  dotnet/aspnet:10.0: mcr.microsoft.com/dotnet/aspnet:10.0.15
+  GECTI  library/node:24-alpine: node:24.22.3-alpine3.24
+  GECTI  nginxinc/nginx-unprivileged:stable-alpine: nginxinc/nginx-unprivileged:1.31.7-alpine3.24
+
+Nexus
+  GECTI  depolar: npm-group:npm:group npm-hosted:npm:hosted npm-proxy:npm:proxy nuget-group:nuget:group nuget-hosted:nuget:hosted nuget.org-proxy:nuget:proxy
+  GECTI  nuget-hosted redeploy kapali: ALLOW_ONCE
+  GECTI  npm-hosted redeploy kapali: ALLOW_ONCE
+  GECTI  etkin realm'ler: ["NexusAuthenticatingRealm","NpmToken","NuGetApiKey"]
+  GECTI  anonim okuma: true
+  GECTI  nuget-group anonim okunuyor: 200
+  GECTI  nuget-group servis adresleri HTTPS: https://nexus.kurum.test/repository/nuget-group/v3/content/
+  GECTI  npm-group anonim okunuyor: 200
+  GECTI  Nexus ekip01 parolasiyla giris (yonetici ucunda 403 beklenir): 403
+  GECTI  Nexus ekip02 parolasiyla giris (yonetici ucunda 403 beklenir): 403
+    Community Edition EULA kabul durumu: true
+
+54 gecti, 0 kaldi
+
+workstation (ekip01)
+  GECTI  EKIP: 01
+  GECTI  IMG: gitlab.kurum.test:5050/egitim/ekip-01/saha-ekipman-portal
+  GECTI  TEST_URL: http://test-vm.kurum.test:8081
+  GECTI  .NET SDK: 10.0.404
+  GECTI  Node.js: v24.22.3
+  GECTI  sudo yetkisi var
+  GECTI  Docker daemon'a erisim var (docker grubu)
+
+Starter proje: klonla (HTTPS, lab CA'si isletim sisteminde)
+  GECTI  git clone https://gitlab.kurum.test/egitim/sablonlar/portal-starter.git
+  GECTI  NuGet kaynagi yalnizca Nexus: 1
+  GECTI  NuGet kaynagi adresi
+  GECTI  .npmrc registry: registry=https://nexus.kurum.test/repository/npm-group/
+
+dotnet restore / build / test (onbellek bos, paketler Nexus'tan)
+  GECTI  dotnet restore cikis kodu: 0
+  GECTI  restore uyarilari (NU1900 dahil): 0
+  GECTI  dotnet build cikis kodu: 0
+  GECTI  build: 0 uyari
+  GECTI  build: 0 hata
+  GECTI  dotnet test cikis kodu: 0
+  GECTI  gecen test projesi sayisi: 2
+
+npm ci / npm test (onbellek bos, paketler Nexus'tan)
+  GECTI  npm ci cikis kodu: 0
+  GECTI  npm paketleri Nexus'tan indirildi (476 istek)
+  GECTI  Nexus disina giden npm istegi: 0
+  GECTI  npm test cikis kodu: 0
+  GECTI  Jest: 14 test gecti
+
+Docker daemon'i ve lab CA'si (katilimci LAB 03-B'de tanitir)
+  BILGI  certs.d/gitlab.kurum.test:5050 var: LAB 03-B yapilmis (yeni kurulumda bulunmaz)
+  GECTI  daemon registry'ye lab CA'si ile guveniyor (TLS dogrulamasi acik)
+  GECTI  temel imaj makinede yuklu: dotnet/sdk:10.0
+  GECTI  temel imaj makinede yuklu: dotnet/aspnet:10.0
+  GECTI  temel imaj makinede yuklu: library/node:24-alpine
+  GECTI  temel imaj makinede yuklu: nginxinc/nginx-unprivileged:stable-alpine
+  GECTI  insecure-registries kullanilmamis
+
+Test VM'e SSH (ekip anahtari)
+  GECTI  deploy kullanicisiyla baglanti
+  GECTI  test VM'de Docker calisiyor
+  GECTI  ekip dizini var
+  GECTI  deploy kullanicisinin sudo yetkisi yok
+
+33 gecti, 0 kaldi
+
+test-vm: ic ice container'da ad cozumleme, CA ve Nexus
+  GECTI  Node temel imaji: anonim pull, lab DNS, lab CA (fetch nexus -> 200)
+  GECTI  SDK temel imaji: container icinde git clone + dotnet restore (Nexus)
+  GECTI  test VM'deki imaj sayisi denetimden once ve sonra ayni (ekiplerin imajlarina dokunulmadi): 6
+
+Nexus proxy onbellegi
+  GECTI  nuget.org-proxy onbelleginde paket var (ilk sayfa: 72)
+  GECTI  npm-proxy onbelleginde paket var (ilk sayfa: 100)
+
+2 gecti, 0 kaldi
+
+Host
+  GECTI  host -> https://gitlab.kurum.test (lab CA'si ile, 127.0.0.1:443): 200
+  GECTI  host -> https://nexus.kurum.test (lab CA'si ile, 127.0.0.1:443): 200
+  GECTI  host -> registry (127.0.0.1:5050): 401
+  GECTI  yayinlanan portlarin host adresi: 127.0.0.1 
+  GECTI  host Docker soketini baglayan container: 0
+  GECTI  kendi Docker daemon'i olan container'lar: test-vm workstation 
+  BILGI  /etc/hosts icinde gitlab.kurum.test kaydi yok; tarayicidan erisim icin lab-ortami/README.md "Host hazirligi" adimlari gerekir
+
+9 gecti, 0 kaldi
+
+CEKIRDEK ORTAM: GECTI
+cikis kodu: 0

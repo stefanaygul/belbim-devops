@@ -1,0 +1,124 @@
+
+[1m### Adim 1: feature branch[0m
+$ git switch main
+Already on 'main'
+Your branch is up to date with 'origin/main'.
+$ git switch -c feature/katalog-sarj-unitesi
+Switched to a new branch 'feature/katalog-sarj-unitesi'
+
+[1m### Adim 2-3: kataloga SRJ-04, testi guncelle[0m
+$ git status --short
+M  src/product-service/Data/catalog.json
+M  tests/product-service.tests/CatalogStoreTests.cs
+$ git diff HEAD | cat
+diff --git a/src/product-service/Data/catalog.json b/src/product-service/Data/catalog.json
+index cec9467..b810674 100644
+--- a/src/product-service/Data/catalog.json
++++ b/src/product-service/Data/catalog.json
+@@ -1,5 +1,6 @@
+ [
+   { "code": "ADP-01", "name": "Terminal adaptörü" },
+   { "code": "KBL-02", "name": "Bağlantı kablosu" },
+-  { "code": "STD-03", "name": "Cihaz standı" }
++  { "code": "STD-03", "name": "Cihaz standı" },
++  { "code": "SRJ-04", "name": "Şarj ünitesi" }
+ ]
+diff --git a/tests/product-service.tests/CatalogStoreTests.cs b/tests/product-service.tests/CatalogStoreTests.cs
+index f9d5d60..ab9ef21 100644
+--- a/tests/product-service.tests/CatalogStoreTests.cs
++++ b/tests/product-service.tests/CatalogStoreTests.cs
+@@ -11,7 +11,7 @@ public class CatalogStoreTests
+ 
+         var codes = catalog.GetAll().Select(p => p.Code).ToArray();
+ 
+-        Assert.Equal(["ADP-01", "KBL-02", "STD-03"], codes);
++        Assert.Equal(["ADP-01", "KBL-02", "STD-03", "SRJ-04"], codes);
+     }
+ 
+     [Fact]
+$ dotnet test SahaPortal.sln
+  Determining projects to restore...
+  All projects are up-to-date for restore.
+  common-contracts -> /home/ekip99/saha-ekipman-portal/src/common-contracts/bin/Debug/net10.0/common-contracts.dll
+  product-service -> /home/ekip99/saha-ekipman-portal/src/product-service/bin/Debug/net10.0/product-service.dll
+  order-service -> /home/ekip99/saha-ekipman-portal/src/order-service/bin/Debug/net10.0/order-service.dll
+  product-service.tests -> /home/ekip99/saha-ekipman-portal/tests/product-service.tests/bin/Debug/net10.0/product-service.tests.dll
+  order-service.tests -> /home/ekip99/saha-ekipman-portal/tests/order-service.tests/bin/Debug/net10.0/order-service.tests.dll
+Test run for /home/ekip99/saha-ekipman-portal/tests/product-service.tests/bin/Debug/net10.0/product-service.tests.dll (.NETCoreApp,Version=v10.0)
+Test run for /home/ekip99/saha-ekipman-portal/tests/order-service.tests/bin/Debug/net10.0/order-service.tests.dll (.NETCoreApp,Version=v10.0)
+A total of 1 test files matched the specified pattern.A total of 1 test files matched the specified pattern.
+
+
+Passed!  - Failed:     0, Passed:     5, Skipped:     0, Total:     5, Duration: 129 ms - product-service.tests.dll (net10.0)
+VSTEST_ARTIFACTS_DIRECTORY environment variable was not found, falling back to a user-private temporary directory. This is most likely caused by an outdated Microsoft.NET.Test.Sdk package reference in the test project.
+
+Passed!  - Failed:     0, Passed:     4, Skipped:     0, Total:     4, Duration: 561 ms - order-service.tests.dll (net10.0)
+VSTEST_ARTIFACTS_DIRECTORY environment variable was not found, falling back to a user-private temporary directory. This is most likely caused by an outdated Microsoft.NET.Test.Sdk package reference in the test project.
+
+[1m### Adim 4: Conventional Commits ile commit[0m
+$ git add src/product-service tests/product-service.tests
+$ git commit -m feat(catalog): add charging unit
+[feature/katalog-sarj-unitesi b1968cf] feat(catalog): add charging unit
+ 2 files changed, 3 insertions(+), 2 deletions(-)
+
+[1m### Adim 5: lab/01b-rename merge, conflict[0m
+$ git merge origin/lab/01b-rename
+Auto-merging src/product-service/Data/catalog.json
+CONFLICT (content): Merge conflict in src/product-service/Data/catalog.json
+Automatic merge failed; fix conflicts and then commit the result.
+# beklenen hata olustu (cikis kodu 1): CONFLICT (content)
+$ git status --short
+UU src/product-service/Data/catalog.json
+$ cat src/product-service/Data/catalog.json
+[
+  { "code": "ADP-01", "name": "Terminal adaptörü" },
+  { "code": "KBL-02", "name": "Bağlantı kablosu" },
+  { "code": "STD-03", "name": "Cihaz standı" },
+<<<<<<< HEAD
+  { "code": "SRJ-04", "name": "Şarj ünitesi" }
+=======
+  { "code": "SRJ-04", "name": "Hızlı şarj" }
+>>>>>>> origin/lab/01b-rename
+]
+# Cozum: 'Sarj unitesi' satiri kalir, isaretler silinir
+$ ! grep -n '^<<<<<<<\|^=======\|^>>>>>>>' src/product-service/Data/catalog.json
+
+[1m### Adim 6: testleri yeniden calistir, merge'u tamamla[0m
+$ git add src/product-service/Data/catalog.json
+$ dotnet test SahaPortal.sln
+  Determining projects to restore...
+  All projects are up-to-date for restore.
+  common-contracts -> /home/ekip99/saha-ekipman-portal/src/common-contracts/bin/Debug/net10.0/common-contracts.dll
+  product-service -> /home/ekip99/saha-ekipman-portal/src/product-service/bin/Debug/net10.0/product-service.dll
+  order-service -> /home/ekip99/saha-ekipman-portal/src/order-service/bin/Debug/net10.0/order-service.dll
+  product-service.tests -> /home/ekip99/saha-ekipman-portal/tests/product-service.tests/bin/Debug/net10.0/product-service.tests.dll
+  order-service.tests -> /home/ekip99/saha-ekipman-portal/tests/order-service.tests/bin/Debug/net10.0/order-service.tests.dll
+Test run for /home/ekip99/saha-ekipman-portal/tests/product-service.tests/bin/Debug/net10.0/product-service.tests.dll (.NETCoreApp,Version=v10.0)
+Test run for /home/ekip99/saha-ekipman-portal/tests/order-service.tests/bin/Debug/net10.0/order-service.tests.dll (.NETCoreApp,Version=v10.0)
+A total of 1 test files matched the specified pattern.
+A total of 1 test files matched the specified pattern.
+
+Passed!  - Failed:     0, Passed:     5, Skipped:     0, Total:     5, Duration: 139 ms - product-service.tests.dll (net10.0)
+VSTEST_ARTIFACTS_DIRECTORY environment variable was not found, falling back to a user-private temporary directory. This is most likely caused by an outdated Microsoft.NET.Test.Sdk package reference in the test project.
+
+Passed!  - Failed:     0, Passed:     4, Skipped:     0, Total:     4, Duration: 524 ms - order-service.tests.dll (net10.0)
+VSTEST_ARTIFACTS_DIRECTORY environment variable was not found, falling back to a user-private temporary directory. This is most likely caused by an outdated Microsoft.NET.Test.Sdk package reference in the test project.
+$ git commit --no-edit
+[feature/katalog-sarj-unitesi 8fd9500] Merge remote-tracking branch 'origin/lab/01b-rename' into feature/katalog-sarj-unitesi
+
+[1m### Adim 7: gecmis[0m
+$ git log --oneline --graph --all | head -n 12
+*   8fd9500 Merge remote-tracking branch 'origin/lab/01b-rename' into feature/katalog-sarj-unitesi
+|\  
+* | b1968cf feat(catalog): add charging unit
+| | * d563fc6 fix(order): align EntityFrameworkCore version
+| | | *   c5d2ecd Merge branch 'release/1.1.0' into 'develop'
+| | | |\  
+| | | | | *   2fe47e7 Merge branch 'release/1.1.0' into 'main'
+| | | | | |\  
+| | | | | |/  
+| | | | |/|   
+| | | | * | fa39292 chore(release): 1.1.0
+| | | |/ /  
+
+[32mLAB 01-b cozumu ekip-99 icin uygulandi.[0m

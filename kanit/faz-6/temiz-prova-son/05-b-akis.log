@@ -1,0 +1,589 @@
+
+[1m### Adim 1a: Jenkins icin ayri bir SSH anahtari; test VM'de yetkilendir[0m
+rol: ekip99-dev
+$ ssh-keygen -q -t ed25519 -N  -C jenkins-ekip99 -f /home/ekip99/.ssh/jenkins-test-vm
+$ ssh-copy-id -i ~/.ssh/jenkins-test-vm.pub deploy@test-vm.kurum.test 2>&1 | tail -n 2
+and check to make sure that only the key(s) you wanted were added.
+
+$ ssh -o IdentitiesOnly=yes -i ~/.ssh/jenkins-test-vm deploy@test-vm.kurum.test 'hostname; ls -ld /opt/saha/ekip99'
+test-vm
+drwxr-xr-x 3 deploy deploy 4096 Nov 24 16:29 /opt/saha/ekip99
+# Ozel anahtar (~/.ssh/jenkins-test-vm) Jenkins'e test-vm-ssh credential'i olarak eklenir; baska yere kopyalanmaz
+
+[1m### Arayuz: jenkins credential 99 test-vm-ssh ssh ekip99-ssh deploy Test VM deploy anahtari (Jenkins) lab-05-b-credential-ssh[0m
+ Container belbim-lab-workstation-1  Running
+  goruntu: /lab/cikti/prova-20261124T162306Z/lab-05-b-credential-ssh.png
+  tamam  credential test-vm-ssh (ssh) ekip-99 klasorune eklendi
+
+[1m### Adim 1b: Deploy, smoke test ve SemVer stage'leri; deploy/deploy.sh[0m
+rol: ekip99-dev
+$ git switch develop
+Already on 'develop'
+Your branch is up to date with 'origin/develop'.
+$ git pull --ff-only
+Already up to date.
+$ git switch -c feature/deploy
+Switched to a new branch 'feature/deploy'
+$ grep -n -E "stage\(|when|sshagent|deploy.sh|curl|TAG_NAME|manifest inspect|docker (tag|push)|disableConcurrentBuilds|TEST_URL|WEB_PORT  " Jenkinsfile
+26:    disableConcurrentBuilds()
+38:    WEB_PORT          = '8099'
+39:    TEST_URL          = "http://test-vm.kurum.test:${WEB_PORT}"
+43:    stage('Restore') {
+50:    stage('Build') {
+51:      when { not { branch 'develop' } }
+57:    stage('Unit Test') {
+58:      when { not { branch 'develop' } }
+70:    stage('Build + Test + SonarQube') {
+71:      when { branch 'develop' }
+82:    stage('Quality Gate') {
+83:      when { branch 'develop' }
+91:    stage('web-ui') {
+106:    stage('Docker Build & Push') {
+107:      when { anyOf { branch 'develop'; branch 'main' } }
+117:                  docker push $IMG/$s:$SHA
+125:    // TAG_NAME tag build'inde tanımlıdır (v1.1.0); SemVer etiketi baştaki v atılarak üretilir.
+126:    stage('Docker: SemVer etiketi') {
+127:      when { buildingTag() }
+133:                SURUM=${TAG_NAME#v}
+137:                  until docker manifest inspect $IMG/$s:$SHA > /dev/null 2>&1; do
+147:                  docker tag $IMG/$s:$SHA $IMG/$s:$SURUM
+148:                  docker push -q $IMG/$s:$SURUM
+155:    // (deploy/deploy.sh) çalışır: önce pull (etiket registry'de yoksa çalışan sürüme dokunmaz),
+157:    stage('Deploy: test') {
+158:      when { anyOf { branch 'develop'; buildingTag() } }
+161:          env.DEPLOY_TAG = env.TAG_NAME ? env.TAG_NAME.replaceFirst(/^v/, '') : sh(script: 'git rev-parse --short HEAD', returnStdout: true).trim()
+164:        sshagent(['test-vm-ssh']) {
+165:          sh 'scp deploy/compose.yaml deploy/deploy.sh $TEST_VM:$VM_DIZIN/'
+168:              script: 'ssh $TEST_VM "sh $VM_DIZIN/deploy.sh $IMG $DEPLOY_TAG $WEB_PORT $DEPLOY_COMMIT $BUILD_URL"').trim()
+179:    stage('Smoke test') {
+180:      when { anyOf { branch 'develop'; buildingTag() } }
+184:        sh '''curl -fsS --retry 10 --retry-connrefused --retry-delay 3 "$TEST_URL/api/products" | grep -q '"code"'
+185:              curl -fsS --retry 10 --retry-connrefused --retry-delay 3 -o /dev/null "$TEST_URL/api/orders"
+186:              echo "smoke test: $TEST_URL yanıt veriyor (TAG=$DEPLOY_TAG)"'''
+$ ls -l deploy/ | cut -c1-10,40-
+total 12
+-rw-r--r--29 compose.yaml
+-rwxr-xr-x39 deploy.sh
+-rw-r--r--29 nginx.conf
+$ git add Jenkinsfile deploy/deploy.sh
+$ git commit -q -m ci: deploy to the test VM and run a smoke test
+$ git push -q -u origin feature/deploy
+remote: 
+remote: To create a merge request for feature/deploy, visit:        
+remote:   https://gitlab.kurum.test/egitim/ekip-99/saha-ekipman-portal/-/merge_requests/new?merge_request%5Bsource_branch%5D=feature%2Fdeploy        
+remote: 
+$ git log --oneline -n 1
+838376c ci: deploy to the test VM and run a smoke test
+
+[1m### CI durumu: build feature/deploy SUCCESS skipped due to when|Finished:[0m
+    GitLab  : feature/deploy son commit'i 838376c0
+    Jenkins : ekip-99/saha-portal-ekip99/feature/deploy #1 -> SUCCESS (9 sn), derlenen commit 838376c0 (ayni SHA)
+    GitLab  : commit status jenkins = success (ref feature/deploy) -> https://jenkins.kurum.test/job/ekip-99/job/saha-portal-ekip99/job/feature%252Fdeploy/1/display/redirect
+    Jenkins konsolu (#1):
+      | Stage "Build + Test + SonarQube" skipped due to when conditional
+      | Stage "Quality Gate" skipped due to when conditional
+      | Stage "Docker Build & Push" skipped due to when conditional
+      | Stage "Docker: SemVer etiketi" skipped due to when conditional
+      | Stage "Deploy: test" skipped due to when conditional
+      | Stage "Smoke test" skipped due to when conditional
+      | Finished: SUCCESS
+    [32mtamam[0m  feature/deploy: build SUCCESS, GitLab commit status jenkins=success
+
+[1m### Arayuz: gitlab mr-ac 99 dev feature/deploy develop ci: deploy to the test VM and run a smoke test - evet evet lab-05-b-mr-deploy[0m
+ Container belbim-lab-workstation-1  Running
+  tamam  MR sablonu kendiliginden geldi (.gitlab/merge_request_templates/Default.md)
+  goruntu: /lab/cikti/prova-20261124T162306Z/lab-05-b-mr-deploy-sablon.png
+  tamam  reviewer: ekip99-lead
+  goruntu: /lab/cikti/prova-20261124T162306Z/lab-05-b-mr-deploy-form.png
+  tamam  MR !13 acildi: feature/deploy -> develop (squash: evet, kaynak branch silinsin: evet)
+  goruntu: /lab/cikti/prova-20261124T162306Z/lab-05-b-mr-deploy.png
+
+[1m### CI durumu: mr feature/deploy mergeable[0m
+    MR !13 (feature/deploy): detailed_merge_status=mergeable, head_pipeline=success, sha=838376c0
+    MR'in son commit'i 838376c0 icin commit status: jenkins=success
+    [32mtamam[0m  MR !13: mergeable
+
+[1m### Arayuz: gitlab mr-merge 99 lead feature/deploy lab-05-b-merge-deploy develop[0m
+ Container belbim-lab-workstation-1  Running
+  goruntu: /lab/cikti/prova-20261124T162306Z/lab-05-b-merge-deploy-oncesi.png
+  tamam  !13: ekip99-lead merge etti
+  goruntu: /lab/cikti/prova-20261124T162306Z/lab-05-b-merge-deploy.png
+
+[1m### CI durumu: build develop SUCCESS KAYIT|smoke test:|Finished:[0m
+    GitLab  : develop son commit'i 0883ba60
+    Jenkins : ekip-99/saha-portal-ekip99/develop #7 -> SUCCESS (23 sn), derlenen commit 0883ba60 (ayni SHA)
+    GitLab  : commit status jenkins = success (ref develop) -> https://jenkins.kurum.test/job/ekip-99/job/saha-portal-ekip99/job/develop/7/display/redirect
+    Jenkins konsolu (#7):
+      | KAYIT 2026-11-24T16:40:15Z tag=0883ba6 commit=0883ba60fedf56f5661dfc25dc8e6d7088f4ead8 kaynak=https://jenkins.kurum.test/job/ekip-99/job/saha-portal-ekip99/job/develop/7/ product-service@sha256:dcf6761abaa49698a8da03ab2620f43a060795aa873b1573192cddcfe68a654b order-service@sha256:54bacf843e8843d28665698eb61d90eaad228a9e32c1a001bc3c898c3bdfd18d web-ui@sha256:3f721246d372ca9a41935ca74a7b097448d3c81f0435f702665547657641b094
+      | + echo smoke test: http://test-vm.kurum.test:8099 yanıt veriyor (TAG=0883ba6)
+      | smoke test: http://test-vm.kurum.test:8099 yanıt veriyor (TAG=0883ba6)
+      | Finished: SUCCESS
+    [32mtamam[0m  develop: build SUCCESS, GitLab commit status jenkins=success
+
+[1m### CI durumu: deploy develop[0m
+    Jenkins develop #7 (SUCCESS) aciklama: test VM: TAG=0883ba6 · commit=0883ba6 · product-service@sha256:dcf6761abaa4… · order-service@sha256:54bacf843e88… · web-ui@sha256:3f721246d372…
+
+[1m### Arayuz: jenkins sayfa 99 /job/develop/lastBuild/ test VM: TAG= lab-05-b-jenkins-develop-deploy[0m
+ Container belbim-lab-workstation-1  Running
+  tamam  gorunuyor: test VM: TAG=
+  goruntu: /lab/cikti/prova-20261124T162306Z/lab-05-b-jenkins-develop-deploy.png
+rol: ekip99-dev
+$ git switch develop
+Switched to branch 'develop'
+Your branch is up to date with 'origin/develop'.
+$ git pull --ff-only
+From gitlab.kurum.test:egitim/ekip-99/saha-ekipman-portal
+   ef6931c..0883ba6  develop    -> origin/develop
+Updating ef6931c..0883ba6
+Fast-forward
+ Jenkinsfile      | 83 +++++++++++++++++++++++++++++++++++++++++++++++++++++++-
+ deploy/deploy.sh | 36 ++++++++++++++++++++++++
+ 2 files changed, 118 insertions(+), 1 deletion(-)
+ create mode 100755 deploy/deploy.sh
+$ git fetch --prune
+From gitlab.kurum.test:egitim/ekip-99/saha-ekipman-portal
+ - [deleted]         (none)     -> origin/feature/deploy
+$ git branch -D feature/deploy
+Deleted branch feature/deploy (was 838376c).
+
+[1m### Test VM: Jenkins'in yaptigi ilk deploy[0m
+$ vm "cat .env; tail -n 1 deploy-kayit.log"
+IMG=gitlab.kurum.test:5050/egitim/ekip-99/saha-ekipman-portal
+TAG=0883ba6
+WEB_PORT=8099
+2026-11-24T16:40:15Z tag=0883ba6 commit=0883ba60fedf56f5661dfc25dc8e6d7088f4ead8 kaynak=https://jenkins.kurum.test/job/ekip-99/job/saha-portal-ekip99/job/develop/7/ product-service@sha256:dcf6761abaa49698a8da03ab2620f43a060795aa873b1573192cddcfe68a654b order-service@sha256:54bacf843e8843d28665698eb61d90eaad228a9e32c1a001bc3c898c3bdfd18d web-ui@sha256:3f721246d372ca9a41935ca74a7b097448d3c81f0435f702665547657641b094
+$ curl -fsS $TEST_URL/api/products | head -c 60; echo
+[{"code":"ADP-01","name":"Terminal adaptörü","inStock":tru
+
+[1m### Arayuz: gitlab issue-ac 99 dev Miktarı 1'den küçük talep açılabiliyor Saha personeli miktarı 0 ya da negatif olan talep oluşturabiliyor. Kabul kriteri: POST /api/orders miktar 1'den küçükse 400 döner; web-ui hata mesajını gösterir; geçerli talep kaydedilir. lab-05-b-issue[0m
+ Container belbim-lab-workstation-1  Running
+  goruntu: /lab/cikti/prova-20261124T162306Z/lab-05-b-issue-form.png
+  tamam  issue #7 acildi: Miktarı 1'den küçük talep açılabiliyor
+  goruntu: /lab/cikti/prova-20261124T162306Z/lab-05-b-issue.png
+
+[1m### Adim 2-3: feature/12-miktar-dogrulama; once kirmizi test[0m
+rol: ekip99-dev
+$ git switch develop
+Already on 'develop'
+Your branch is up to date with 'origin/develop'.
+$ git pull --ff-only
+Already up to date.
+$ git switch -c feature/12-miktar-dogrulama
+Switched to a new branch 'feature/12-miktar-dogrulama'
+$ git diff --stat
+$ dotnet test tests/order-service.tests --nologo -v q
+Test run for /home/ekip99/saha-ekipman-portal/tests/order-service.tests/bin/Debug/net10.0/order-service.tests.dll (.NETCoreApp,Version=v10.0)
+A total of 1 test files matched the specified pattern.
+[xUnit.net 00:00:00.57]     SahaPortal.OrderService.Tests.OrdersApiTests.Post_order_with_quantity_below_one_returns_400(quantity: 0) [FAIL]
+[xUnit.net 00:00:00.57]     SahaPortal.OrderService.Tests.OrdersApiTests.Post_order_with_quantity_below_one_returns_400(quantity: -1) [FAIL]
+
+Failed!  - Failed:     2, Passed:    19, Skipped:     0, Total:    21, Duration: 502 ms - order-service.tests.dll (net10.0)
+VSTEST_ARTIFACTS_DIRECTORY environment variable was not found, falling back to a user-private temporary directory. This is most likely caused by an outdated Microsoft.NET.Test.Sdk package reference in the test project.
+# beklenen hata olustu (cikis kodu 1): Failed!
+
+[1m### Adim 3: dogrulama; testler yesil[0m
+rol: ekip99-dev
+$ git switch feature/12-miktar-dogrulama
+Already on 'feature/12-miktar-dogrulama'
+M	tests/order-service.tests/OrdersApiTests.cs
+$ git diff HEAD -- src/order-service | grep -E '^\+' | grep -v '^+++'
++    public const int MinQuantity = 1;
++
++        if (request.Quantity < MinQuantity)
++        {
++            return Results.BadRequest(new { error = $"Miktar en az {MinQuantity} olmalı." });
++        }
++
+$ dotnet test tests/order-service.tests --nologo -v q 2>&1 | grep -E 'Passed!|Failed!'
+Passed!  - Failed:     0, Passed:    21, Skipped:     0, Total:    21, Duration: 486 ms - order-service.tests.dll (net10.0)
+$ cd src/web-ui && npx jest src/api.test.js 2>&1 | grep -E 'Tests:|failed'
+  ✓ a failed request reports the message sent by the API
+  ✓ a failed request without a body reports the HTTP status
+Tests:       5 passed, 5 total
+$ git add src/order-service tests/order-service.tests
+$ git commit -q -m fix(order): reject quantities below one
+$ git push -q -u origin feature/12-miktar-dogrulama
+remote: 
+remote: To create a merge request for feature/12-miktar-dogrulama, visit:        
+remote:   https://gitlab.kurum.test/egitim/ekip-99/saha-ekipman-portal/-/merge_requests/new?merge_request%5Bsource_branch%5D=feature%2F12-miktar-dogrulama        
+remote: 
+
+[1m### CI durumu: build feature/12-miktar-dogrulama SUCCESS Passed!|Finished:[0m
+    GitLab  : feature/12-miktar-dogrulama son commit'i 17c1aa3b
+    Jenkins : ekip-99/saha-portal-ekip99/feature/12-miktar-dogrulama #1 -> SUCCESS (9 sn), derlenen commit 17c1aa3b (ayni SHA)
+    GitLab  : commit status jenkins = success (ref feature/12-miktar-dogrulama) -> https://jenkins.kurum.test/job/ekip-99/job/saha-portal-ekip99/job/feature%252F12-miktar-dogrulama/1/display/redirect
+    Jenkins konsolu (#1):
+      | Passed!  - Failed:     0, Passed:     8, Skipped:     0, Total:     8, Duration: 128 ms - product-service.tests.dll (net10.0)
+      | Passed!  - Failed:     0, Passed:    21, Skipped:     0, Total:    21, Duration: 568 ms - order-service.tests.dll (net10.0)
+      | Finished: SUCCESS
+    [32mtamam[0m  feature/12-miktar-dogrulama: build SUCCESS, GitLab commit status jenkins=success
+
+[1m### Arayuz: gitlab mr-ac 99 dev feature/12-miktar-dogrulama develop fix(order): reject quantities below one 7 evet evet lab-05-b-mr-miktar[0m
+ Container belbim-lab-workstation-1  Running
+  tamam  MR sablonu kendiliginden geldi (.gitlab/merge_request_templates/Default.md)
+  goruntu: /lab/cikti/prova-20261124T162306Z/lab-05-b-mr-miktar-sablon.png
+  tamam  reviewer: ekip99-lead
+  goruntu: /lab/cikti/prova-20261124T162306Z/lab-05-b-mr-miktar-form.png
+  tamam  MR !14 acildi: feature/12-miktar-dogrulama -> develop (squash: evet, kaynak branch silinsin: evet)
+  goruntu: /lab/cikti/prova-20261124T162306Z/lab-05-b-mr-miktar.png
+
+[1m### CI durumu: mr feature/12-miktar-dogrulama mergeable[0m
+    MR !14 (feature/12-miktar-dogrulama): detailed_merge_status=mergeable, head_pipeline=success, sha=17c1aa3b
+    MR'in son commit'i 17c1aa3b icin commit status: jenkins=success
+    [32mtamam[0m  MR !14: mergeable
+
+[1m### Arayuz: gitlab mr-onayla 99 lead feature/12-miktar-dogrulama lab-05-b-mr-onay[0m
+ Container belbim-lab-workstation-1  Running
+  tamam  !14: ekip99-lead onayladi
+  goruntu: /lab/cikti/prova-20261124T162306Z/lab-05-b-mr-onay.png
+
+[1m### Arayuz: gitlab mr-merge 99 lead feature/12-miktar-dogrulama lab-05-b-merge-miktar develop[0m
+ Container belbim-lab-workstation-1  Running
+  goruntu: /lab/cikti/prova-20261124T162306Z/lab-05-b-merge-miktar-oncesi.png
+  tamam  !14: ekip99-lead merge etti
+  goruntu: /lab/cikti/prova-20261124T162306Z/lab-05-b-merge-miktar.png
+
+[1m### CI durumu: build develop SUCCESS Quality gate|KAYIT|smoke test:|Finished:[0m
+    GitLab  : develop son commit'i 1e35a445
+    Jenkins : ekip-99/saha-portal-ekip99/develop #8 -> SUCCESS (27 sn), derlenen commit 1e35a445 (ayni SHA)
+    GitLab  : commit status jenkins = success (ref develop) -> https://jenkins.kurum.test/job/ekip-99/job/saha-portal-ekip99/job/develop/8/display/redirect
+    Jenkins konsolu (#8):
+      | SonarQube task 'af7e4063-369d-4eec-9f67-0b35230f155c' completed. Quality gate is 'OK'
+      | KAYIT 2026-11-24T16:41:39Z tag=1e35a44 commit=1e35a4453f1dc59fb732076577b184afe98af6bc kaynak=https://jenkins.kurum.test/job/ekip-99/job/saha-portal-ekip99/job/develop/8/ product-service@sha256:11b7b6c087d56b0da8a0a8f4d21fc5f2aa97acddc377d018be3fe4b28803a0cc order-service@sha256:a8aa5342a37d019e284a96f20a10489fe9178b91a227562d5eb122f74a2de8b7 web-ui@sha256:f8034d6545499a61f0ee2322462ca0e30121c324b18fafd8701f88a3f67a76d5
+      | + echo smoke test: http://test-vm.kurum.test:8099 yanıt veriyor (TAG=1e35a44)
+      | smoke test: http://test-vm.kurum.test:8099 yanıt veriyor (TAG=1e35a44)
+      | Finished: SUCCESS
+    [32mtamam[0m  develop: build SUCCESS, GitLab commit status jenkins=success
+
+[1m### CI durumu: sonar OK[0m
+    SonarQube: saha-portal-ekip99 son analiz commit 1e35a445 (develop'un son commit'i)
+    Quality Gate: OK
+      kosul new_coverage: OK  deger=98.0  esik=LT 80
+      kosul new_duplicated_lines_density: OK  deger=0.0  esik=GT 3
+      kosul new_violations: OK  deger=0  esik=GT 0
+    olcumler: {"coverage":"72.9","new_lines":"200","new_violations":"0","ncloc":"543","new_coverage":"98.0","new_lines_to_cover":"35"}
+    [32mtamam[0m  Quality Gate OK (beklenen)
+
+[1m### Adim 5: develop'a merge; test VM'e otomatik deploy[0m
+rol: ekip99-dev
+$ git switch develop
+Switched to branch 'develop'
+Your branch is up to date with 'origin/develop'.
+$ git pull --ff-only
+From gitlab.kurum.test:egitim/ekip-99/saha-ekipman-portal
+   0883ba6..1e35a44  develop    -> origin/develop
+Updating 0883ba6..1e35a44
+Fast-forward
+ src/order-service/Endpoints/OrderEndpoints.cs |  7 +++++++
+ tests/order-service.tests/OrdersApiTests.cs   | 23 +++++++++++++++++++++++
+ 2 files changed, 30 insertions(+)
+$ git fetch --prune
+From gitlab.kurum.test:egitim/ekip-99/saha-ekipman-portal
+ - [deleted]         (none)     -> origin/feature/12-miktar-dogrulama
+$ git branch -D feature/12-miktar-dogrulama
+Deleted branch feature/12-miktar-dogrulama (was 17c1aa3).
+$ vm "cat .env; tail -n 1 deploy-kayit.log"
+IMG=gitlab.kurum.test:5050/egitim/ekip-99/saha-ekipman-portal
+TAG=1e35a44
+WEB_PORT=8099
+2026-11-24T16:41:39Z tag=1e35a44 commit=1e35a4453f1dc59fb732076577b184afe98af6bc kaynak=https://jenkins.kurum.test/job/ekip-99/job/saha-portal-ekip99/job/develop/8/ product-service@sha256:11b7b6c087d56b0da8a0a8f4d21fc5f2aa97acddc377d018be3fe4b28803a0cc order-service@sha256:a8aa5342a37d019e284a96f20a10489fe9178b91a227562d5eb122f74a2de8b7 web-ui@sha256:f8034d6545499a61f0ee2322462ca0e30121c324b18fafd8701f88a3f67a76d5
+$ curl -s -w " HTTP %{http_code}\n" -X POST $TEST_URL/api/orders -d {"productId":"ADP-01","quantity":0}
+{"error":"Miktar en az 1 olmalı."} HTTP 400
+$ curl -s -w " HTTP %{http_code}\n" -X POST $TEST_URL/api/orders -d {"productId":"ADP-01","quantity":2}
+{"id":3,"productId":"ADP-01","quantity":2,"createdAt":"2026-11-24T16:41:44.7010223Z"} HTTP 201
+
+[1m### Arayuz: uygulama red http://test-vm.kurum.test:8099 lab-05-b-arayuz-red ADP-01 0 Miktar en az 1 olmalı.[0m
+ Container belbim-lab-workstation-1  Running
+  tamam  katalog listeleniyor: 4 ekipman (http://test-vm.kurum.test:8099)
+  tamam  talep reddedildi: ADP-01 x 0 -> "Miktar en az 1 olmalı."
+  goruntu: /lab/cikti/prova-20261124T162306Z/lab-05-b-arayuz-red.png
+
+[1m### Adim 6: release/1.1.0; CHANGELOG[0m
+rol: ekip99-dev
+$ git switch develop
+Already on 'develop'
+Your branch is up to date with 'origin/develop'.
+$ git pull --ff-only
+Already up to date.
+$ git switch -c release/1.1.0
+Switched to a new branch 'release/1.1.0'
+$ git diff HEAD | grep -E '^\+' | grep -v '^+++'
++## [1.1.0] - 2026-11-06
++
++### Added
++
++- order: talep özeti uç noktası (`GET /api/orders/summary`)
++- ci: Jenkins pipeline, SonarQube Quality Gate, test ortamına otomatik deploy
++
++### Changed
++
++- common-contracts: servisler sözleşmeleri Nexus'taki NuGet paketinden alır
++
++### Fixed
++
++- order: miktarı 1'den küçük talep açılamaz (#7)
++
+$ git commit -q -am chore(release): 1.1.0
+$ git push -q -u origin release/1.1.0
+remote: 
+remote: To create a merge request for release/1.1.0, visit:        
+remote:   https://gitlab.kurum.test/egitim/ekip-99/saha-ekipman-portal/-/merge_requests/new?merge_request%5Bsource_branch%5D=release%2F1.1.0        
+remote: 
+
+[1m### Arayuz: gitlab mr-ac 99 dev release/1.1.0 main chore(release): 1.1.0 - hayir hayir lab-05-b-mr-release[0m
+ Container belbim-lab-workstation-1  Running
+  tamam  MR sablonu kendiliginden geldi (.gitlab/merge_request_templates/Default.md)
+  goruntu: /lab/cikti/prova-20261124T162306Z/lab-05-b-mr-release-sablon.png
+  tamam  reviewer: ekip99-lead
+  goruntu: /lab/cikti/prova-20261124T162306Z/lab-05-b-mr-release-form.png
+  tamam  MR !15 acildi: release/1.1.0 -> main (squash: hayir, kaynak branch silinsin: hayir)
+  goruntu: /lab/cikti/prova-20261124T162306Z/lab-05-b-mr-release.png
+
+[1m### CI durumu: mr release/1.1.0 mergeable[0m
+    MR !15 (release/1.1.0): detailed_merge_status=mergeable, head_pipeline=success, sha=6d5cf14c
+    MR'in son commit'i 6d5cf14c icin commit status: jenkins=success
+    [32mtamam[0m  MR !15: mergeable
+
+[1m### Arayuz: gitlab mr-merge 99 lead release/1.1.0 lab-05-b-release-merge main[0m
+ Container belbim-lab-workstation-1  Running
+  goruntu: /lab/cikti/prova-20261124T162306Z/lab-05-b-release-merge-oncesi.png
+  tamam  !15: ekip99-lead merge etti
+  goruntu: /lab/cikti/prova-20261124T162306Z/lab-05-b-release-merge.png
+
+[1m### CI durumu: build main SUCCESS Stage "Docker Build|digest|Finished:[0m
+    GitLab  : main son commit'i b3b77b66
+    Jenkins : ekip-99/saha-portal-ekip99/main #2 -> SUCCESS (12 sn), derlenen commit b3b77b66 (ayni SHA)
+    GitLab  : commit status jenkins = success (ref main) -> https://jenkins.kurum.test/job/ekip-99/job/saha-portal-ekip99/job/main/2/display/redirect
+    Jenkins konsolu (#2):
+      | b3b77b6: digest: sha256:07ef4cffe328467fe234a0f35b1774b13ef3e9390d846471de82625e9430c213 size: 856
+      | b3b77b6: digest: sha256:fa18f041338fc7c4af57018c0ac9f445930c9efd02a656db84c12400cd10ab1c size: 856
+      | b3b77b6: digest: sha256:809cd059e7f9fabef1eb17d0efad857f64e01c7e5d25e290ba320581e63da29c size: 856
+      | Finished: SUCCESS
+    [32mtamam[0m  main: build SUCCESS, GitLab commit status jenkins=success
+
+[1m### Arayuz: gitlab mr-ac 99 dev release/1.1.0 develop chore(release): merge 1.1.0 back into develop - hayir evet lab-05-b-mr-release-geri[0m
+ Container belbim-lab-workstation-1  Running
+  tamam  MR sablonu kendiliginden geldi (.gitlab/merge_request_templates/Default.md)
+  goruntu: /lab/cikti/prova-20261124T162306Z/lab-05-b-mr-release-geri-sablon.png
+  tamam  reviewer: ekip99-lead
+  goruntu: /lab/cikti/prova-20261124T162306Z/lab-05-b-mr-release-geri-form.png
+  tamam  MR !16 acildi: release/1.1.0 -> develop (squash: hayir, kaynak branch silinsin: evet)
+  goruntu: /lab/cikti/prova-20261124T162306Z/lab-05-b-mr-release-geri.png
+
+[1m### CI durumu: mr release/1.1.0 mergeable[0m
+    MR !16 (release/1.1.0): detailed_merge_status=mergeable, head_pipeline=success, sha=6d5cf14c
+    MR'in son commit'i 6d5cf14c icin commit status: jenkins=success
+    [32mtamam[0m  MR !16: mergeable
+
+[1m### Arayuz: gitlab mr-merge 99 lead release/1.1.0 lab-05-b-release-geri-merge develop[0m
+ Container belbim-lab-workstation-1  Running
+  goruntu: /lab/cikti/prova-20261124T162306Z/lab-05-b-release-geri-merge-oncesi.png
+  tamam  !16: ekip99-lead merge etti
+  goruntu: /lab/cikti/prova-20261124T162306Z/lab-05-b-release-geri-merge.png
+
+[1m### CI durumu: build develop SUCCESS KAYIT|Finished:[0m
+    GitLab  : develop son commit'i 36b08ed0
+    Jenkins : ekip-99/saha-portal-ekip99/develop #9 -> SUCCESS (22 sn), derlenen commit 36b08ed0 (ayni SHA)
+    GitLab  : commit status jenkins = success (ref develop) -> https://jenkins.kurum.test/job/ekip-99/job/saha-portal-ekip99/job/develop/9/display/redirect
+    Jenkins konsolu (#9):
+      | KAYIT 2026-11-24T16:43:15Z tag=36b08ed commit=36b08ed05a8264527047aa928c1f45c013d50ab5 kaynak=https://jenkins.kurum.test/job/ekip-99/job/saha-portal-ekip99/job/develop/9/ product-service@sha256:69fd26aab5d3dcf57817201b00c9c75a61723f3e4255a5ef8bd0e826d81190d5 order-service@sha256:e7deeff8d482606b90a3cb3f20bf2bcc147a396d73ed7791c401598b3f59a96b web-ui@sha256:3003222a660ad552fe73c8fb0d45d2a4bdb72255d36ff03287d11b7101c2aaef
+      | Finished: SUCCESS
+    [32mtamam[0m  develop: build SUCCESS, GitLab commit status jenkins=success
+
+[1m### Arayuz: jenkins tag-kesfi 99 lab-05-b-tag-kesfi[0m
+ Container belbim-lab-workstation-1  Running
+  goruntu: /lab/cikti/prova-20261124T162306Z/lab-05-b-tag-kesfi.png
+  tamam  tag kesfi ve build stratejileri kayitli (Discover tags; Regular branches; Tags: en cok 1 gunluk); eklenen: Discover tags, Regular branches, Tags
+
+[1m### Arayuz: gitlab webhook-tag 99 https://jenkins.kurum.test/project/ekip-99/saha-portal-ekip99 lab-05-b-webhook-tag[0m
+ Container belbim-lab-workstation-1  Running
+  goruntu: /lab/cikti/prova-20261124T162306Z/lab-05-b-webhook-tag.png
+  tamam  webhook https://jenkins.kurum.test/project/ekip-99/saha-portal-ekip99: Push events + Tag push events
+  goruntu: /lab/cikti/prova-20261124T162306Z/lab-05-b-webhook-tag-liste.png
+
+[1m### Adim 6: v1.1.0 tag'i (lider; korumali tag)[0m
+rol: ekip99-lead
+$ git fetch -q origin
+$ git log --oneline -n 1 origin/main
+b3b77b6 Merge branch 'release/1.1.0' into 'main'
+$ git tag -a v1.1.0 -m release: v1.1.0 origin/main
+$ git push -q origin v1.1.0
+$ git show -s --format='%h %s' v1.1.0^{commit}
+b3b77b6 Merge branch 'release/1.1.0' into 'main'
+
+[1m### CI durumu: build v1.1.0 SUCCESS SURUM=|manifest inspect|KAYIT|smoke test:|Finished:[0m
+    GitLab  : v1.1.0 son commit'i b3b77b66
+    Jenkins : ekip-99/saha-portal-ekip99/v1.1.0 #1 -> SUCCESS (12 sn), derlenen commit b3b77b66 (ayni SHA)
+    GitLab  : commit status jenkins = success (ref main) -> https://jenkins.kurum.test/job/ekip-99/job/saha-portal-ekip99/job/main/2/display/redirect
+    GitLab  : commit status jenkins = success (ref v1.1.0) -> https://jenkins.kurum.test/job/ekip-99/job/saha-portal-ekip99/job/v1.1.0/1/display/redirect
+    Jenkins konsolu (#1):
+      | + SURUM=1.1.0
+      | + docker manifest inspect gitlab.kurum.test:5050/egitim/ekip-99/saha-ekipman-portal/product-service:b3b77b6
+      | + docker manifest inspect gitlab.kurum.test:5050/egitim/ekip-99/saha-ekipman-portal/order-service:b3b77b6
+      | + docker manifest inspect gitlab.kurum.test:5050/egitim/ekip-99/saha-ekipman-portal/web-ui:b3b77b6
+      | KAYIT 2026-11-24T16:43:44Z tag=1.1.0 commit=b3b77b66467c70d2a2b1371e5b82f5954b83c507 kaynak=https://jenkins.kurum.test/job/ekip-99/job/saha-portal-ekip99/job/v1.1.0/1/ product-service@sha256:07ef4cffe328467fe234a0f35b1774b13ef3e9390d846471de82625e9430c213 order-service@sha256:fa18f041338fc7c4af57018c0ac9f445930c9efd02a656db84c12400cd10ab1c web-ui@sha256:809cd059e7f9fabef1eb17d0efad857f64e01c7e5d25e290ba320581e63da29c
+      | + echo smoke test: http://test-vm.kurum.test:8099 yanıt veriyor (TAG=1.1.0)
+      | smoke test: http://test-vm.kurum.test:8099 yanıt veriyor (TAG=1.1.0)
+      | Finished: SUCCESS
+    [32mtamam[0m  v1.1.0: build SUCCESS, GitLab commit status jenkins=success
+
+[1m### CI durumu: deploy v1.1.0[0m
+    Jenkins v1.1.0 #1 (SUCCESS) aciklama: test VM: TAG=1.1.0 · commit=b3b77b6 · product-service@sha256:07ef4cffe328… · order-service@sha256:fa18f041338f… · web-ui@sha256:809cd059e7f9…
+
+[1m### Arayuz: jenkins sayfa 99 /job/v1.1.0/lastBuild/ TAG=1.1.0 lab-05-b-jenkins-tag[0m
+ Container belbim-lab-workstation-1  Running
+  tamam  gorunuyor: TAG=1.1.0
+  goruntu: /lab/cikti/prova-20261124T162306Z/lab-05-b-jenkins-tag.png
+
+[1m### Adim 7: v1.1.0 test ortaminda; smoke test ve kayit[0m
+$ vm "cat .env; docker compose -p ekip99 images"
+IMG=gitlab.kurum.test:5050/egitim/ekip-99/saha-ekipman-portal
+TAG=1.1.0
+WEB_PORT=8099
+CONTAINER                  REPOSITORY                                                                  TAG                 PLATFORM            IMAGE ID            SIZE                CREATED
+ekip99-order-service-1     gitlab.kurum.test:5050/egitim/ekip-99/saha-ekipman-portal/order-service     1.1.0               linux/arm64         fa18f041338f        435MB               2 minutes ago
+ekip99-product-service-1   gitlab.kurum.test:5050/egitim/ekip-99/saha-ekipman-portal/product-service   1.1.0               linux/arm64         07ef4cffe328        376MB               5 minutes ago
+ekip99-web-ui-1            gitlab.kurum.test:5050/egitim/ekip-99/saha-ekipman-portal/web-ui            1.1.0               linux/arm64         809cd059e7f9        92.3MB              9 minutes ago
+$ vm "tail -n 2 deploy-kayit.log"
+2026-11-24T16:43:15Z tag=36b08ed commit=36b08ed05a8264527047aa928c1f45c013d50ab5 kaynak=https://jenkins.kurum.test/job/ekip-99/job/saha-portal-ekip99/job/develop/9/ product-service@sha256:69fd26aab5d3dcf57817201b00c9c75a61723f3e4255a5ef8bd0e826d81190d5 order-service@sha256:e7deeff8d482606b90a3cb3f20bf2bcc147a396d73ed7791c401598b3f59a96b web-ui@sha256:3003222a660ad552fe73c8fb0d45d2a4bdb72255d36ff03287d11b7101c2aaef
+2026-11-24T16:43:44Z tag=1.1.0 commit=b3b77b66467c70d2a2b1371e5b82f5954b83c507 kaynak=https://jenkins.kurum.test/job/ekip-99/job/saha-portal-ekip99/job/v1.1.0/1/ product-service@sha256:07ef4cffe328467fe234a0f35b1774b13ef3e9390d846471de82625e9430c213 order-service@sha256:fa18f041338fc7c4af57018c0ac9f445930c9efd02a656db84c12400cd10ab1c web-ui@sha256:809cd059e7f9fabef1eb17d0efad857f64e01c7e5d25e290ba320581e63da29c
+$ curl -s -w " HTTP %{http_code}\n" -X POST $TEST_URL/api/orders -d {"productId":"ADP-01","quantity":0}
+{"error":"Miktar en az 1 olmalı."} HTTP 400
+$ curl -s -w " HTTP %{http_code}\n" -X POST $TEST_URL/api/orders -d {"productId":"ADP-01","quantity":2}
+{"id":5,"productId":"ADP-01","quantity":2,"createdAt":"2026-11-24T16:43:51.6655108Z"} HTTP 201
+$ curl -fsS -o /dev/null -w 'GET /api/orders/summary HTTP %{http_code}\n' $TEST_URL/api/orders/summary
+GET /api/orders/summary HTTP 200
+
+[1m### Ayni imaj, iki etiket: SemVer ve commit SHA ayni digest[0m
+$ docker buildx imagetools inspect $IMG/order-service:1.1.0 --format '{{json .Manifest.Digest}}' | tr -d '"' | sed 's/^/order-service:1.1.0   /'; echo; docker buildx imagetools inspect $IMG/order-service:b3b77b6 --format '{{json .Manifest.Digest}}' | tr -d '"' | sed 's/^/order-service:b3b77b6 /'; echo
+order-service:1.1.0   sha256:fa18f041338fc7c4af57018c0ac9f445930c9efd02a656db84c12400cd10ab1c
+order-service:b3b77b6 sha256:fa18f041338fc7c4af57018c0ac9f445930c9efd02a656db84c12400cd10ab1c
+$ docker buildx imagetools inspect $IMG/product-service:1.1.0 --format '{{json .Manifest.Digest}}' | tr -d '"' | sed 's/^/product-service:1.1.0   /'; echo; docker buildx imagetools inspect $IMG/product-service:b3b77b6 --format '{{json .Manifest.Digest}}' | tr -d '"' | sed 's/^/product-service:b3b77b6 /'; echo
+product-service:1.1.0   sha256:07ef4cffe328467fe234a0f35b1774b13ef3e9390d846471de82625e9430c213
+product-service:b3b77b6 sha256:07ef4cffe328467fe234a0f35b1774b13ef3e9390d846471de82625e9430c213
+$ docker buildx imagetools inspect $IMG/web-ui:1.1.0 --format '{{json .Manifest.Digest}}' | tr -d '"' | sed 's/^/web-ui:1.1.0   /'; echo; docker buildx imagetools inspect $IMG/web-ui:b3b77b6 --format '{{json .Manifest.Digest}}' | tr -d '"' | sed 's/^/web-ui:b3b77b6 /'; echo
+web-ui:1.1.0   sha256:809cd059e7f9fabef1eb17d0efad857f64e01c7e5d25e290ba320581e63da29c
+web-ui:b3b77b6 sha256:809cd059e7f9fabef1eb17d0efad857f64e01c7e5d25e290ba320581e63da29c
+
+[1m### Arayuz: uygulama talep http://test-vm.kurum.test:8099 lab-05-b-arayuz-1-1-0 KBL-02 2[0m
+ Container belbim-lab-workstation-1  Running
+  tamam  katalog listeleniyor: 4 ekipman (http://test-vm.kurum.test:8099)
+  tamam  talep olusturuldu: KBL-02 x 2
+  goruntu: /lab/cikti/prova-20261124T162306Z/lab-05-b-arayuz-1-1-0.png
+
+[1m### Arayuz: gitlab registry 99 lab-05-b-registry 1.1.0[0m
+ Container belbim-lab-workstation-1  Running
+  tamam  Container Registry: order-service, product-service, web-ui
+  goruntu: /lab/cikti/prova-20261124T162306Z/lab-05-b-registry.png
+  tamam  order-service etiketi: 1.1.0
+  goruntu: /lab/cikti/prova-20261124T162306Z/lab-05-b-registry-etiketler.png
+
+[1m### Adim 8: rollback provasi: 1.0.1'e don[0m
+$ vm "docker compose -p ekip99 images | grep -E 'IMAGE|order-service'"
+CONTAINER                  REPOSITORY                                                                  TAG                 PLATFORM            IMAGE ID            SIZE                CREATED
+ekip99-order-service-1     gitlab.kurum.test:5050/egitim/ekip-99/saha-ekipman-portal/order-service     1.1.0               linux/arm64         fa18f041338f        435MB               2 minutes ago
+# Hedef etiket registry'de mi? (deploy.sh once pull eder; yoksa calisan surume dokunmaz)
+$ docker buildx imagetools inspect $IMG/order-service:1.0.1 --format '{{json .Manifest.Digest}}'
+"sha256:dbc5b7b5a1b051fe08565558d7102059aad876597b8bc4de01927b8124deb49d"$ vm "sh deploy.sh gitlab.kurum.test:5050/egitim/ekip-99/saha-ekipman-portal 1.0.1 8099 - elle"
+ Image gitlab.kurum.test:5050/egitim/ekip-99/saha-ekipman-portal/order-service:1.0.1 Pulling 
+ Image gitlab.kurum.test:5050/egitim/ekip-99/saha-ekipman-portal/web-ui:1.0.1 Pulling 
+ Image gitlab.kurum.test:5050/egitim/ekip-99/saha-ekipman-portal/product-service:1.0.1 Pulling 
+ Image gitlab.kurum.test:5050/egitim/ekip-99/saha-ekipman-portal/order-service:1.0.1 Pulled 
+ Image gitlab.kurum.test:5050/egitim/ekip-99/saha-ekipman-portal/product-service:1.0.1 Pulled 
+ Image gitlab.kurum.test:5050/egitim/ekip-99/saha-ekipman-portal/web-ui:1.0.1 Pulled 
+ Container ekip99-order-service-1 Recreate 
+ Container ekip99-product-service-1 Recreate 
+ Container ekip99-product-service-1 Recreated 
+ Container ekip99-order-service-1 Recreated 
+ Container ekip99-web-ui-1 Recreate 
+ Container ekip99-web-ui-1 Recreated 
+ Container ekip99-order-service-1 Starting 
+ Container ekip99-product-service-1 Starting 
+ Container ekip99-order-service-1 Started 
+ Container ekip99-product-service-1 Started 
+ Container ekip99-web-ui-1 Starting 
+ Container ekip99-web-ui-1 Started 
+KAYIT 2026-11-24T16:43:58Z tag=1.0.1 commit=- kaynak=elle product-service@sha256:68675364b8015aba831d9b0d7e0ada3445f1274f84c7e46907d30b94995e5161 order-service@sha256:dbc5b7b5a1b051fe08565558d7102059aad876597b8bc4de01927b8124deb49d web-ui@sha256:80bdba0e01a8153a5a3613ba5a406a42be1b43c2b89a52f2f1164a725b59fde5
+$ vm "docker compose -p ekip99 images | grep -E 'IMAGE|order-service'"
+CONTAINER                  REPOSITORY                                                                  TAG                 PLATFORM            IMAGE ID            SIZE                CREATED
+ekip99-order-service-1     gitlab.kurum.test:5050/egitim/ekip-99/saha-ekipman-portal/order-service     1.0.1               linux/arm64         dbc5b7b5a1b0        604MB               14 minutes ago
+$ curl -fsS $TEST_URL/api/products | head -c 40; echo
+[{"code":"ADP-01","name":"Terminal adapt
+$ curl -s -o /dev/null -w 'GET /api/orders/summary HTTP %{http_code} (1.0.1 bu uc noktayi bilmez)\n' $TEST_URL/api/orders/summary
+GET /api/orders/summary HTTP 404 (1.0.1 bu uc noktayi bilmez)
+
+[1m### Arayuz: jenkins build-baslat 99 v1.1.0 lab-05-b-yeniden-1-1-0[0m
+ Container belbim-lab-workstation-1  Running
+  goruntu: /lab/cikti/prova-20261124T162306Z/lab-05-b-yeniden-1-1-0.png
+  tamam  v1.1.0: Build Now -> #2 SUCCESS
+
+[1m### Adim 8: yeniden 1.1.0 (Jenkins'te v1.1.0 job'i yeniden calisti)[0m
+$ vm "docker compose -p ekip99 images | grep -E 'IMAGE|order-service'"
+CONTAINER                  REPOSITORY                                                                  TAG                 PLATFORM            IMAGE ID            SIZE                CREATED
+ekip99-order-service-1     gitlab.kurum.test:5050/egitim/ekip-99/saha-ekipman-portal/order-service     1.1.0               linux/arm64         fa18f041338f        435MB               2 minutes ago
+$ vm "tail -n 3 deploy-kayit.log"
+2026-11-24T16:43:44Z tag=1.1.0 commit=b3b77b66467c70d2a2b1371e5b82f5954b83c507 kaynak=https://jenkins.kurum.test/job/ekip-99/job/saha-portal-ekip99/job/v1.1.0/1/ product-service@sha256:07ef4cffe328467fe234a0f35b1774b13ef3e9390d846471de82625e9430c213 order-service@sha256:fa18f041338fc7c4af57018c0ac9f445930c9efd02a656db84c12400cd10ab1c web-ui@sha256:809cd059e7f9fabef1eb17d0efad857f64e01c7e5d25e290ba320581e63da29c
+2026-11-24T16:43:58Z tag=1.0.1 commit=- kaynak=elle product-service@sha256:68675364b8015aba831d9b0d7e0ada3445f1274f84c7e46907d30b94995e5161 order-service@sha256:dbc5b7b5a1b051fe08565558d7102059aad876597b8bc4de01927b8124deb49d web-ui@sha256:80bdba0e01a8153a5a3613ba5a406a42be1b43c2b89a52f2f1164a725b59fde5
+2026-11-24T16:44:11Z tag=1.1.0 commit=b3b77b66467c70d2a2b1371e5b82f5954b83c507 kaynak=https://jenkins.kurum.test/job/ekip-99/job/saha-portal-ekip99/job/v1.1.0/2/ product-service@sha256:07ef4cffe328467fe234a0f35b1774b13ef3e9390d846471de82625e9430c213 order-service@sha256:fa18f041338fc7c4af57018c0ac9f445930c9efd02a656db84c12400cd10ab1c web-ui@sha256:809cd059e7f9fabef1eb17d0efad857f64e01c7e5d25e290ba320581e63da29c
+$ curl -s -o /dev/null -w 'GET /api/orders/summary HTTP %{http_code}\n' $TEST_URL/api/orders/summary
+GET /api/orders/summary HTTP 200
+
+[1m### Arayuz: gitlab sayfa 99 dev /-/issues/7 Closed lab-05-b-issue-kapandi[0m
+ Container belbim-lab-workstation-1  Running
+  tamam  gorunuyor: Closed
+  goruntu: /lab/cikti/prova-20261124T162306Z/lab-05-b-issue-kapandi.png
+
+[1m### Son durum[0m
+rol: ekip99-dev
+$ git switch develop
+Switched to branch 'develop'
+Your branch is behind 'origin/develop' by 2 commits, and can be fast-forwarded.
+  (use "git pull" to update your local branch)
+$ git pull --ff-only
+Updating 1e35a44..36b08ed
+Fast-forward
+ CHANGELOG.md | 15 +++++++++++++++
+ 1 file changed, 15 insertions(+)
+$ git fetch --prune --tags
+From gitlab.kurum.test:egitim/ekip-99/saha-ekipman-portal
+ - [deleted]         (none)     -> origin/release/1.1.0
+$ git log --oneline --graph -n 10 origin/develop
+*   36b08ed Merge branch 'release/1.1.0' into 'develop'
+|\  
+| * 6d5cf14 chore(release): 1.1.0
+|/  
+*   1e35a44 Merge branch 'feature/12-miktar-dogrulama' into 'develop'
+|\  
+| * 17c1aa3 fix(order): reject quantities below one
+|/  
+*   0883ba6 Merge branch 'feature/deploy' into 'develop'
+|\  
+| * 838376c ci: deploy to the test VM and run a smoke test
+|/  
+*   ef6931c Merge branch 'feature/ortak-paket' into 'develop'
+|\  
+| * 84041f2 build(contracts): consume common contracts as a NuGet package
+|/  
+*   ae34571 Merge branch 'feature/siparis-ozeti-testleri' into 'develop'
+|\  
+| * 85dc48b test(order): cover the order summary
+|/  
+$ git log --oneline --graph -n 4 origin/main
+*   b3b77b6 Merge branch 'release/1.1.0' into 'main'
+|\  
+| * 6d5cf14 chore(release): 1.1.0
+| *   1e35a44 Merge branch 'feature/12-miktar-dogrulama' into 'develop'
+| |\  
+| | * 17c1aa3 fix(order): reject quantities below one
+| |/  
+
+[1m### Checkpoint karsilastirmasi[0m
+# agac ayni: origin/develop == checkpoint/final (haric: .gitlab/CODEOWNERS Jenkinsfile ci/analyze.sh src/common-contracts/common-contracts.csproj src/order-service/order-service.csproj src/product-service/product-service.csproj)
+# Jenkinsfile: checkpoint/final ile ayni (NN yerine 99)
+# ci/analyze.sh: checkpoint/final ile ayni (NN yerine 99)
+# src/common-contracts/common-contracts.csproj: checkpoint/final ile ayni (NN yerine 99)
+# src/order-service/order-service.csproj: checkpoint/final ile ayni (NN yerine 99)
+# src/product-service/product-service.csproj: checkpoint/final ile ayni (NN yerine 99)
+# agac ayni: origin/main == checkpoint/final-main (haric: .gitlab/CODEOWNERS Jenkinsfile ci/analyze.sh src/common-contracts/common-contracts.csproj src/order-service/order-service.csproj src/product-service/product-service.csproj)
+
+[32mLAB 05-b cozumu ekip-99 icin uygulandi.[0m

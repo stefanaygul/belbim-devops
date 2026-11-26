@@ -1,0 +1,53 @@
+[1mLAB 05-B (ekip-02)[0m
+[1mRepo (develop): Jenkinsfile'in son hali, deploy/deploy.sh[0m
+  [32mGECTI[0m  Deploy stage'i develop ve tag build'inde
+  [32mGECTI[0m  Smoke test stage'i
+  [32mGECTI[0m  deploy SSH anahtari credential'dan (sshagent)
+  [32mGECTI[0m  smoke test curl -f ile (HTTP hatasinda kirilir)
+  [32mGECTI[0m  tag build'i: SemVer etiketi TAG_NAME'den
+  [32mGECTI[0m  tag build'i: SHA imajina etiket eklenir
+  [32mGECTI[0m  tag build'i imaji yeniden derlemiyor
+  [32mGECTI[0m  imaj yoksa anlasilir hatayla durur
+  [32mGECTI[0m  test ortami adresi (TEST_URL): TEST_URL          = "http://test-vm.kurum.test:${WEB_PORT}"
+  [32mGECTI[0m  Jenkinsfile: token degeri yok
+  [32mGECTI[0m  deploy.sh: once pull (etiket registry'de yoksa durur)
+  [32mGECTI[0m  deploy.sh: kayit dosyasi
+  [32mGECTI[0m  deploy.sh: ekibin registry girisi (DOCKER_CONFIG)
+  [32mGECTI[0m  order-service: miktar dogrulamasi
+[1mGitLab: release, tag, issue[0m
+  [32mGECTI[0m  v1.1.0, main'in son commit'ini gosteriyor: 37a7bbf9
+  [32mGECTI[0m  v1.1.0 aciklamali (annotated) tag
+  [32mGECTI[0m  main CHANGELOG: [1.1.0]
+  ATLANDI MR gecmisi (checkpoint bunu geri kurmaz)
+[1mJenkins: test-vm-ssh, tag kesfi, v1.1.0 build'i[0m
+  [32mGECTI[0m  klasor credential'i test-vm-ssh: SSH Username with private key
+  [32mGECTI[0m  job: tag kesfi (Discover tags)
+  [32mGECTI[0m  job: tag build stratejisi
+  [32mGECTI[0m  webhook: Tag push events: true
+  [32mGECTI[0m  v1.1.0 build'i #1: SUCCESS
+  [32mGECTI[0m  v1.1.0 build'i main'in commit'ini derledi: 37a7bbf9
+  [32mGECTI[0m  build aciklamasinda etiket
+  [32mGECTI[0m  build aciklamasinda commit
+  [32mGECTI[0m  build aciklamasinda imaj digest'i
+[1mRegistry: v1.1.0 ve commit SHA ayni imaj[0m
+  [32mGECTI[0m  order-service: 1.1.0 = 37a7bbf (sha256:f3d4ee86f019…)
+  [32mGECTI[0m  order-service:1.0.1 registry'de (rollback hedefi)
+  [32mGECTI[0m  product-service: 1.1.0 = 37a7bbf (sha256:ebb2fd5d71c7…)
+  [32mGECTI[0m  product-service:1.0.1 registry'de (rollback hedefi)
+  [32mGECTI[0m  web-ui: 1.1.0 = 37a7bbf (sha256:46799e8761f9…)
+  [32mGECTI[0m  web-ui:1.0.1 registry'de (rollback hedefi)
+[1mTest ortami: calisan surum ve deploy kaydi[0m
+  [32mGECTI[0m  calisan imajlar: order-service:1.1.0 product-service:1.1.0 web-ui:1.1.0 
+  [32mGECTI[0m  son deploy kaydi: etiket
+  [32mGECTI[0m  son deploy kaydi: commit SHA
+  [32mGECTI[0m  son deploy kaydi: order-service digest'i registry'dekiyle ayni
+  [32mGECTI[0m  son deploy kaydi: Jenkins build adresi
+  ATLANDI rollback provasi (checkpoint bunu geri kurmaz)
+[1mSmoke test (http://test-vm.kurum.test:8082)[0m
+  [32mGECTI[0m  GET /api/products: 200
+  [32mGECTI[0m  GET /api/orders/summary (1.1.0'da var): 200
+  [32mGECTI[0m  POST quantity=0: 400
+  [32mGECTI[0m  POST quantity=2: 201
+[1mIz: issue'dan imaja[0m
+  BILGI  issue #- -> MR !- -> develop -> release/1.1.0 -> main 37a7bbf -> v1.1.0 -> order-service:1.1.0 sha256:f3d4ee86f019… -> test VM (deploy-kayit.log)
+41 gecti, 0 kaldi

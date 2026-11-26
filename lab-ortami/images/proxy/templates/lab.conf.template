@@ -1,0 +1,71 @@
+# ${LAB_DOMAIN} container baslarken yerine yazilir; nginx degiskenleri ($host vb.) oldugu gibi kalir.
+
+server {
+    listen 80 default_server;
+    return 301 https://$host$request_uri;
+}
+
+server {
+    listen 443 ssl default_server;
+    return 444;
+}
+
+server {
+    listen 443 ssl;
+    http2 on;
+    server_name gitlab.${LAB_DOMAIN};
+
+    location / {
+        set $upstream http://gitlab:80;
+        proxy_pass $upstream;
+        include /etc/nginx/snippets/proxy.conf;
+    }
+}
+
+# Container Registry: gitlab.<D>:5050
+server {
+    listen 5050 ssl;
+    server_name gitlab.${LAB_DOMAIN};
+
+    location / {
+        set $upstream http://gitlab:5050;
+        proxy_pass $upstream;
+        include /etc/nginx/snippets/proxy.conf;
+    }
+}
+
+server {
+    listen 443 ssl;
+    http2 on;
+    server_name nexus.${LAB_DOMAIN};
+
+    location / {
+        set $upstream http://nexus:8081;
+        proxy_pass $upstream;
+        include /etc/nginx/snippets/proxy.conf;
+    }
+}
+
+server {
+    listen 443 ssl;
+    http2 on;
+    server_name jenkins.${LAB_DOMAIN};
+
+    location / {
+        set $upstream http://jenkins:8080;
+        proxy_pass $upstream;
+        include /etc/nginx/snippets/proxy.conf;
+    }
+}
+
+server {
+    listen 443 ssl;
+    http2 on;
+    server_name sonar.${LAB_DOMAIN};
+
+    location / {
+        set $upstream http://sonarqube:9000;
+        proxy_pass $upstream;
+        include /etc/nginx/snippets/proxy.conf;
+    }
+}

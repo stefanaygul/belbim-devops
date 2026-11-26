@@ -1,0 +1,63 @@
+
+[1mLAB 04-B (ekip-99)[0m
+
+[1mRepo (develop): ci/analyze.sh ve Jenkinsfile[0m
+  [32mGECTI[0m  analyze.sh sirasi: begin build test end 
+  [32mGECTI[0m  proje anahtari degiskenden
+  [32mGECTI[0m  coverage raporu opencover biciminde
+  [32mGECTI[0m  sonar.branch.name gonderilmiyor
+  [32mGECTI[0m  token betikte degil (withSonarQubeEnv ortamdan verir)
+  [32mGECTI[0m  ci/analyze.sh: token degeri yok
+  [32mGECTI[0m  ci/analyze.sh calistirilabilir (git modu 100755): true
+  [32mGECTI[0m  proje anahtari
+  [32mGECTI[0m  analiz withSonarQubeEnv icinde, ekibin token'iyla
+  [32mGECTI[0m  Quality Gate pipeline'i durduruyor
+  [32mGECTI[0m  analiz ve kapi yalnizca develop'ta (when { branch 'develop' }): 2
+  [32mGECTI[0m  imaj yalnizca develop ve main'de
+  [32mGECTI[0m  imaj etiketi commit SHA
+  [32mGECTI[0m  registry girisi credential ile, parola standart giristen
+  [32mGECTI[0m  latest etiketi yok
+  [32mGECTI[0m  tek durum adi (jenkins): 3/3
+  [32mGECTI[0m  Jenkinsfile: token degeri yok
+  [32mGECTI[0m  .gitlab-ci.yml yok
+
+[1mJenkins: credential'lar[0m
+  [32mGECTI[0m  klasor credential'i sonar-token: Secret text
+  [32mGECTI[0m  klasor credential'i gitlab-registry: Username with password
+  [32mGECTI[0m  Jenkins'in deploy token'i ekip99-jenkins: ["read_registry","write_registry"]
+
+[1mSonarQube: proje, yeni kod tanimi, Quality Gate[0m
+  [32mGECTI[0m  proje var: saha-portal-ekip99
+  [32mGECTI[0m  analiz edilen tek branch (ana branch): develop
+  [32mGECTI[0m  son analiz develop'un son commit'i: c476deddf9fbe06e2512b7fe09bdbf97b2126eb5
+  [32mGECTI[0m  Quality Gate: OK
+  [32mGECTI[0m  yeni kod donemi (New Code): PREVIOUS_VERSION
+  [32mGECTI[0m  yeni kod coverage kosulu (deger %97.8, esik %80): OK
+  [32mGECTI[0m  analiz sayisi: 3 (taban, testsiz kod, testler)
+  [32mGECTI[0m  kapi gecmisi: once kaldi, sonra gecti (Failed -> Passed)
+
+[1mJenkins: develop build'leri[0m
+  [32mGECTI[0m  develop #5 (commit c476ded) sonucu: SUCCESS
+  [32mGECTI[0m  analiz gonderildi
+  [32mGECTI[0m  kapi sonucu Jenkins'e geldi
+  [32mGECTI[0m  imaj gonderildi
+  [32mGECTI[0m  develop #4: Quality Gate kaldi, pipeline durdu (commit 7cfe056)
+  [32mGECTI[0m  develop #4: kapi sonucu ERROR
+  [32mGECTI[0m  develop #4: Docker stage'i atlandi
+
+[1mRegistry: commit SHA etiketli imajlar[0m
+  [32mGECTI[0m  order-service:c476ded var (develop'un son commit'i)
+  [32mGECTI[0m  order-service:7cfe056 yok (kapida kalan commit icin imaj uretilmedi)
+  [32mGECTI[0m  product-service:c476ded var (develop'un son commit'i)
+  [32mGECTI[0m  product-service:7cfe056 yok (kapida kalan commit icin imaj uretilmedi)
+  [32mGECTI[0m  web-ui:c476ded var (develop'un son commit'i)
+  [32mGECTI[0m  web-ui:7cfe056 yok (kapida kalan commit icin imaj uretilmedi)
+  [32mGECTI[0m  develop commit'inin GitLab durumu: jenkins=success
+  [32mGECTI[0m  kapida kalan commit'in GitLab durumu: jenkins=failed
+
+[1mMerge Request'ler[0m
+  [32mGECTI[0m  MR !9: feature/sonar -> develop merge edilmis
+  [32mGECTI[0m  MR !10: feature/siparis-ozeti -> develop merge edilmis
+  [32mGECTI[0m  MR !11: feature/siparis-ozeti-testleri -> develop merge edilmis
+
+47 gecti, 0 kaldi

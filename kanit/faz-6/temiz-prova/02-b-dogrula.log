@@ -1,0 +1,31 @@
+
+[1mLAB 02-B (ekip-99)[0m
+
+[1mTag'ler[0m
+  [32mGECTI[0m  v1.0.0 annotated tag: "release: v1.0.0"
+  [32mGECTI[0m  v1.0.0 main uzerinde: evet
+  [32mGECTI[0m  v1.0.1 annotated tag: "release: v1.0.1"
+  [32mGECTI[0m  v1.0.1 main uzerinde: evet
+  [32mGECTI[0m  v* tag'ini olusturabilen: Maintainers
+
+[1mCHANGELOG (main)[0m
+  [32mGECTI[0m  1.0.0 bolumu
+  [32mGECTI[0m  1.0.1 bolumu
+
+[1mHotfix iki yerde[0m
+  [32mGECTI[0m  main'de: 6905cc1 fix(order): reject empty product id
+  [32mGECTI[0m  develop'ta: 6905cc1 fix(order): reject empty product id
+  [32mGECTI[0m  release geri merge edilmis (v1.0.0 develop gecmisinde): evet
+
+[1mDavranis: bos ekipman kodu[0m
+  [32mGECTI[0m  v1.0.0: bos ekipman kodu kabul ediliyor (hata surumde duruyor): 201
+  [32mGECTI[0m  v1.0.1: bos ekipman kodu reddediliyor: 400
+  [32mGECTI[0m  v1.0.1: gecerli talep: 201
+
+[1mMR gecmisi[0m
+  [32mGECTI[0m  MR !3: release/1.0.0 -> main merge edilmis
+  [32mGECTI[0m  MR !5: hotfix/1.0.1 -> main merge edilmis
+  [32mGECTI[0m  MR !4: release/1.0.0 -> develop merge edilmis
+  [32mGECTI[0m  MR !6: hotfix/1.0.1 -> develop merge edilmis
+
+17 gecti, 0 kaldi

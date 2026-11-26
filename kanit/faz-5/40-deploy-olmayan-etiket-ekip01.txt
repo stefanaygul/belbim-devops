@@ -1,0 +1,23 @@
+$ vm "cat .env; wc -l < deploy-kayit.log"
+IMG=gitlab.kurum.test:5050/egitim/ekip-01/saha-ekipman-portal
+TAG=1.1.0
+WEB_PORT=8081
+6
+$ vm "sh deploy.sh gitlab.kurum.test:5050/egitim/ekip-01/saha-ekipman-portal 9.9.9 8081 - elle"
+ Image gitlab.kurum.test:5050/egitim/ekip-01/saha-ekipman-portal/order-service:9.9.9 Pulling 
+ Image gitlab.kurum.test:5050/egitim/ekip-01/saha-ekipman-portal/web-ui:9.9.9 Pulling 
+ Image gitlab.kurum.test:5050/egitim/ekip-01/saha-ekipman-portal/product-service:9.9.9 Pulling 
+ Image gitlab.kurum.test:5050/egitim/ekip-01/saha-ekipman-portal/order-service:9.9.9 Error failed to resolve reference "gitlab.kurum.test:5050/egitim/ekip-01/saha-ekipman-portal/order-service:9.9.9": gitlab.kurum.test:5050/egitim/ekip-01/saha-ekipman-portal/order-service:9.9.9: not found
+ Image gitlab.kurum.test:5050/egitim/ekip-01/saha-ekipman-portal/product-service:9.9.9 Error failed to resolve reference "gitlab.kurum.test:5050/egitim/ekip-01/saha-ekipman-portal/product-service:9.9.9": gitlab.kurum.test:5050/egitim/ekip-01/saha-ekipman-portal/product-service:9.9.9: not found
+ Image gitlab.kurum.test:5050/egitim/ekip-01/saha-ekipman-portal/web-ui:9.9.9 Interrupted 
+Error response from daemon: failed to resolve reference "gitlab.kurum.test:5050/egitim/ekip-01/saha-ekipman-portal/product-service:9.9.9": gitlab.kurum.test:5050/egitim/ekip-01/saha-ekipman-portal/product-service:9.9.9: not found
+Error response from daemon: failed to resolve reference "gitlab.kurum.test:5050/egitim/ekip-01/saha-ekipman-portal/order-service:9.9.9": gitlab.kurum.test:5050/egitim/ekip-01/saha-ekipman-portal/order-service:9.9.9: not found
+Error response from daemon: failed to resolve reference "gitlab.kurum.test:5050/egitim/ekip-01/saha-ekipman-portal/order-service:9.9.9": gitlab.kurum.test:5050/egitim/ekip-01/saha-ekipman-portal/order-service:9.9.9: not found
+cikis=1
+$ vm "cat .env; wc -l < deploy-kayit.log; docker compose -p ekip01 images | grep order-service"
+IMG=gitlab.kurum.test:5050/egitim/ekip-01/saha-ekipman-portal
+TAG=1.1.0
+WEB_PORT=8081
+6
+ekip01-order-service-1     gitlab.kurum.test:5050/egitim/ekip-01/saha-ekipman-portal/order-service     1.1.0               linux/arm64         aabcedeeb5f1        435MB               8 minutes ago
+GET /api/orders/summary HTTP 200

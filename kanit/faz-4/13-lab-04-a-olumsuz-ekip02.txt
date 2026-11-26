@@ -1,0 +1,58 @@
+
+[1mLAB 04-A (ekip-02)[0m
+
+[1mRepo (develop): Jenkinsfile, .gitlab-ci.yml yok[0m
+  [32mGECTI[0m  .gitlab-ci.yml yok (HTTP 404)
+  [31mKALDI[0m  agent label'i dotnet-docker: 'agent { label 'dotnet-docker' }' bulunamadi. Gelen: // 4. gün eklenecek stage'ler : Restore, Build, Unit Test, web-ui,
+//                              SonarQube analizi, Quality Gate, Docker Build & Push
+// 5. gün eklenecek stage'ler : Deploy (test VM) ve smoke test, Pack & Publish (bonus)
+  [31mKALDI[0m  GitLab connection 'gitlab', ekibin token'i 'gitlab-api': 'gitLabConnection(gitLabConnection: 'gitlab', jobCredentialId: 'gitlab-api'' bulunamadi. Gelen: // 4. gün eklenecek stage'ler : Restore, Build, Unit Test, web-ui,
+//                              SonarQube analizi, Quality Gate, Docker Build & Push
+// 5. gün eklenecek stage'ler : Deploy (test VM) ve smoke test, Pack & Publish (bonus)
+  [31mKALDI[0m  build baslarken durum pending (gitlabBuilds): 'gitlabBuilds(builds: ['jenkins'])' bulunamadi. Gelen: // 4. gün eklenecek stage'ler : Restore, Build, Unit Test, web-ui,
+//                              SonarQube analizi, Quality Gate, Docker Build & Push
+// 5. gün eklenecek stage'ler : Deploy (test VM) ve smoke test, Pack & Publish (bonus)
+  [31mKALDI[0m  stage: Restore: 'stage('Restore')' bulunamadi. Gelen: // 4. gün eklenecek stage'ler : Restore, Build, Unit Test, web-ui,
+//                              SonarQube analizi, Quality Gate, Docker Build & Push
+// 5. gün eklenecek stage'ler : Deploy (test VM) ve smoke test, Pack & Publish (bonus)
+  [31mKALDI[0m  stage: Build: 'stage('Build')' bulunamadi. Gelen: // 4. gün eklenecek stage'ler : Restore, Build, Unit Test, web-ui,
+//                              SonarQube analizi, Quality Gate, Docker Build & Push
+// 5. gün eklenecek stage'ler : Deploy (test VM) ve smoke test, Pack & Publish (bonus)
+  [31mKALDI[0m  stage: Unit Test: 'stage('Unit Test')' bulunamadi. Gelen: // 4. gün eklenecek stage'ler : Restore, Build, Unit Test, web-ui,
+//                              SonarQube analizi, Quality Gate, Docker Build & Push
+// 5. gün eklenecek stage'ler : Deploy (test VM) ve smoke test, Pack & Publish (bonus)
+  [31mKALDI[0m  stage: web-ui: 'stage('web-ui')' bulunamadi. Gelen: // 4. gün eklenecek stage'ler : Restore, Build, Unit Test, web-ui,
+//                              SonarQube analizi, Quality Gate, Docker Build & Push
+// 5. gün eklenecek stage'ler : Deploy (test VM) ve smoke test, Pack & Publish (bonus)
+  [31mKALDI[0m  test sonuclari Jenkins'e (junit): 'junit '**/TestResults/junit.xml'' bulunamadi. Gelen: // 4. gün eklenecek stage'ler : Restore, Build, Unit Test, web-ui,
+//                              SonarQube analizi, Quality Gate, Docker Build & Push
+// 5. gün eklenecek stage'ler : Deploy (test VM) ve smoke test, Pack & Publish (bonus)
+  [31mKALDI[0m  updateGitlabCommitStatus cagrilari tek bir ad kullaniyor (jenkins): beklenen '3/3', gelen '0/0'
+  [32mGECTI[0m  Jenkinsfile: token degeri yok
+
+[1mGitLab: Project Access Token, webhook, merge ayari[0m
+  [31mKALDI[0m  etkin 'jenkins' adli Project Access Token yok
+  [31mKALDI[0m  webhook yok: https://jenkins.kurum.test/project/ekip-02/saha-portal-ekip02 (adresteki klasor ve job adini denetleyin)
+  [31mKALDI[0m  Pipelines must succeed: beklenen 'true', gelen 'false'
+
+[1mHalka 1: push olayi Jenkins'e ulasiyor[0m
+  [31mKALDI[0m  webhook olaylari okunamadi
+
+[1mJenkins: credential'lar ve Multibranch job[0m
+  [31mKALDI[0m  klasor credential'i gitlab-api: beklenen 'GitLab API token', gelen ''
+  [31mKALDI[0m  klasor credential'i gitlab-repo: beklenen 'Username with password', gelen ''
+  [31mKALDI[0m  Multibranch job yok: ekip-02/saha-portal-ekip02 (HTTP 404)
+
+[1mHalka 2: Jenkins dogru commit'i derliyor (develop 1dd25090)[0m
+  [31mKALDI[0m  develop job'i okunamadi (HTTP 404)
+
+[1mHalka 3: sonuc GitLab'e commit status olarak donuyor[0m
+  [31mKALDI[0m  develop commit'indeki durum adlari (tek ad): beklenen 'jenkins', gelen ''
+  [31mKALDI[0m  jenkins durumu: beklenen 'success', gelen 'yok'
+  [31mKALDI[0m  durumun adresi Jenkins build'i: 'https://jenkins.kurum.test/job/ekip-02/job/saha-portal-ekip02/' bulunamadi. Gelen: 
+
+[1mHalka 4-6: MR gecmisi (kirmizi pipeline, sonra duzeltme ve merge)[0m
+  [31mKALDI[0m  feature/pipeline -> develop icin merge edilmis MR yok
+
+2 gecti, 21 kaldi
+

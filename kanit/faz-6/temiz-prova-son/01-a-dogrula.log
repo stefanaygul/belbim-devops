@@ -1,0 +1,27 @@
+
+[1mLAB 01-A (ekip-99)[0m
+  [32mGECTI[0m  repo var: /home/ekip99/saha-ekipman-portal (main@174fe06)
+
+[1mBuild ve testler[0m
+  [32mGECTI[0m  dotnet build (cikis kodu): 0
+  [32mGECTI[0m  dotnet test (cikis kodu): 0
+         Passed!  - Failed:     0, Passed:     5, Skipped:     0, Total:     5, Duration: 124 ms - product-service.tests.dll (net10.0)
+         Passed!  - Failed:     0, Passed:     4, Skipped:     0, Total:     4, Duration: 511 ms - order-service.tests.dll (net10.0)
+  [32mGECTI[0m  npm test (cikis kodu): 0
+         Tests:       14 passed, 14 total
+
+[1mSurum cakismasi (NU1605)[0m
+  [32mGECTI[0m  hazir branch'te hata uretiliyor: origin lab/01a-conflict -> NU1605
+  [32mGECTI[0m  cozulmus branch'te dotnet restore (cikis kodu): 0
+
+[1mCalisan uygulama (gecici portlarda, gecici veritabaniyla)[0m
+  [32mGECTI[0m  product-service /health: Healthy
+  [32mGECTI[0m  order-service /health: Healthy
+  [32mGECTI[0m  katalog listeleniyor (ADP-01 Terminal adaptörü)
+  [32mGECTI[0m  katalogdaki urun sayisi en az 3: evet
+  [32mGECTI[0m  /swagger: 200
+  [32mGECTI[0m  talep olusturma: POST /api/orders: 201
+  [32mGECTI[0m  talep listede: GET /api/orders
+  BILGI  tarayicidaki arayuz bu betikle denetlenmez; kaniti lab-rehberleri/img/lab-01-a-arayuz.png
+
+13 gecti, 0 kaldi

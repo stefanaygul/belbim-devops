@@ -1,0 +1,96 @@
+# Dogrulama kosusu sirasinda bellek (docker stats, yaklasik 7 saniyede bir ornek; 14 ornek)
+# GitLab bu olcumde yaklasik 10 dakikadir aciktir; bellegi zamanla artar.
+gitlab       tepe 3.38 GiB  / sinir 6 GiB
+nexus        tepe 1.63 GiB  / sinir 3 GiB
+workstation  tepe 1.81 GiB  / sinir 4 GiB   (dotnet build + test, npm ci + jest)
+test-vm      tepe 0.42 GiB  / sinir 2 GiB   (SDK container'inda restore)
+proxy        tepe 0.01 GiB  / sinir 128 MiB
+dns          tepe 0.02 GiB  / sinir 128 MiB (ilk kosuda 64 MiB sinirin %74'u goruldu; sinir yukseltildi)
+tepe toplami 7.27 GiB (ust sinir; tepeler ayni anda olmayabilir)
+
+# Ham ornekler
+belbim-lab-dns-1 15.25MiB / 128MiB
+belbim-lab-proxy-1 8.52MiB / 128MiB
+belbim-lab-workstation-1 942.8MiB / 4GiB
+belbim-lab-nexus-1 1.539GiB / 3GiB
+belbim-lab-test-vm-1 231MiB / 2GiB
+belbim-lab-gitlab-1 3.372GiB / 6GiB
+belbim-lab-araclar-run-cf39646d03aa 4.973MiB / 512MiB
+belbim-lab-dns-1 15.25MiB / 128MiB
+belbim-lab-proxy-1 8.594MiB / 128MiB
+belbim-lab-workstation-1 942.8MiB / 4GiB
+belbim-lab-nexus-1 1.554GiB / 3GiB
+belbim-lab-test-vm-1 231MiB / 2GiB
+belbim-lab-gitlab-1 3.361GiB / 6GiB
+belbim-lab-dns-1 15.25MiB / 128MiB
+belbim-lab-proxy-1 9.531MiB / 128MiB
+belbim-lab-workstation-1 1.134GiB / 4GiB
+belbim-lab-nexus-1 1.54GiB / 3GiB
+belbim-lab-test-vm-1 231MiB / 2GiB
+belbim-lab-gitlab-1 3.36GiB / 6GiB
+belbim-lab-dns-1 15.25MiB / 128MiB
+belbim-lab-proxy-1 9.531MiB / 128MiB
+belbim-lab-workstation-1 1.367GiB / 4GiB
+belbim-lab-nexus-1 1.54GiB / 3GiB
+belbim-lab-test-vm-1 231MiB / 2GiB
+belbim-lab-gitlab-1 3.361GiB / 6GiB
+belbim-lab-dns-1 15.25MiB / 128MiB
+belbim-lab-proxy-1 8.52MiB / 128MiB
+belbim-lab-workstation-1 1.541GiB / 4GiB
+belbim-lab-nexus-1 1.54GiB / 3GiB
+belbim-lab-test-vm-1 231MiB / 2GiB
+belbim-lab-gitlab-1 3.36GiB / 6GiB
+belbim-lab-dns-1 15.25MiB / 128MiB
+belbim-lab-proxy-1 8.508MiB / 128MiB
+belbim-lab-workstation-1 1.663GiB / 4GiB
+belbim-lab-nexus-1 1.54GiB / 3GiB
+belbim-lab-test-vm-1 231MiB / 2GiB
+belbim-lab-gitlab-1 3.359GiB / 6GiB
+belbim-lab-dns-1 15.25MiB / 128MiB
+belbim-lab-proxy-1 9.211MiB / 128MiB
+belbim-lab-workstation-1 1.812GiB / 4GiB
+belbim-lab-nexus-1 1.541GiB / 3GiB
+belbim-lab-test-vm-1 231MiB / 2GiB
+belbim-lab-gitlab-1 3.358GiB / 6GiB
+belbim-lab-dns-1 15.25MiB / 128MiB
+belbim-lab-proxy-1 8.52MiB / 128MiB
+belbim-lab-workstation-1 1.016GiB / 4GiB
+belbim-lab-nexus-1 1.541GiB / 3GiB
+belbim-lab-test-vm-1 231.4MiB / 2GiB
+belbim-lab-gitlab-1 3.358GiB / 6GiB
+belbim-lab-dns-1 15.25MiB / 128MiB
+belbim-lab-proxy-1 8.754MiB / 128MiB
+belbim-lab-workstation-1 1.015GiB / 4GiB
+belbim-lab-nexus-1 1.63GiB / 3GiB
+belbim-lab-test-vm-1 283.7MiB / 2GiB
+belbim-lab-gitlab-1 3.372GiB / 6GiB
+belbim-lab-dns-1 15.24MiB / 128MiB
+belbim-lab-proxy-1 8.75MiB / 128MiB
+belbim-lab-workstation-1 1.015GiB / 4GiB
+belbim-lab-nexus-1 1.63GiB / 3GiB
+belbim-lab-test-vm-1 304.5MiB / 2GiB
+belbim-lab-gitlab-1 3.372GiB / 6GiB
+belbim-lab-dns-1 15.38MiB / 128MiB
+belbim-lab-proxy-1 8.766MiB / 128MiB
+belbim-lab-workstation-1 1.015GiB / 4GiB
+belbim-lab-nexus-1 1.63GiB / 3GiB
+belbim-lab-test-vm-1 372.5MiB / 2GiB
+belbim-lab-gitlab-1 3.374GiB / 6GiB
+belbim-lab-dns-1 15.43MiB / 128MiB
+belbim-lab-proxy-1 8.879MiB / 128MiB
+belbim-lab-workstation-1 1.015GiB / 4GiB
+belbim-lab-nexus-1 1.63GiB / 3GiB
+belbim-lab-test-vm-1 430.4MiB / 2GiB
+belbim-lab-gitlab-1 3.376GiB / 6GiB
+belbim-lab-dns-1 15.43MiB / 128MiB
+belbim-lab-proxy-1 8.773MiB / 128MiB
+belbim-lab-workstation-1 1.015GiB / 4GiB
+belbim-lab-nexus-1 1.63GiB / 3GiB
+belbim-lab-test-vm-1 342.8MiB / 2GiB
+belbim-lab-gitlab-1 3.378GiB / 6GiB
+belbim-lab-dns-1 15.43MiB / 128MiB
+belbim-lab-proxy-1 8.754MiB / 128MiB
+belbim-lab-workstation-1 1.016GiB / 4GiB
+belbim-lab-nexus-1 1.63GiB / 3GiB
+belbim-lab-test-vm-1 251.1MiB / 2GiB
+belbim-lab-gitlab-1 3.379GiB / 6GiB

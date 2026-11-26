@@ -1,0 +1,107 @@
+# Faz 1 kanit: .NET restore, build, test (main, temiz klon)
+# tarih: 2026-11-23 15:42 +03 | host: Darwin arm64 | dotnet 10.0.102 | git 2.50.1 | repo: portal-starter main@174fe06
+# Not: Nexus Faz 2'de kurulacak. NuGet.config yalnizca Nexus'u gosterdigi icin bu kosuda --source ile nuget.org verildi.
+
+$ git log --oneline --graph --all
+* 756affb feat(catalog): add fast charger
+| * 59562d2 chore(order): reference ef core directly
+|/  
+* 174fe06 chore: starter project
+[cikis kodu: 0]
+
+$ cat NuGet.config
+<?xml version="1.0" encoding="utf-8"?>
+<configuration>
+  <packageSources>
+    <clear />
+    <add key="nexus" value="https://nexus.kurum.test/repository/nuget-group/index.json" />
+  </packageSources>
+</configuration>
+[cikis kodu: 0]
+
+$ dotnet restore SahaPortal.sln --source https://api.nuget.org/v3/index.json --nologo
+  Determining projects to restore...
+  Restored src/common-contracts/common-contracts.csproj (in 36 ms).
+  Restored src/product-service/product-service.csproj (in 82 ms).
+  Restored src/order-service/order-service.csproj (in 83 ms).
+  Restored tests/product-service.tests/product-service.tests.csproj (in 104 ms).
+  Restored tests/order-service.tests/order-service.tests.csproj (in 104 ms).
+[cikis kodu: 0]
+
+$ dotnet build SahaPortal.sln -c Release --no-restore --nologo
+  common-contracts -> src/common-contracts/bin/Release/net10.0/common-contracts.dll
+  order-service -> src/order-service/bin/Release/net10.0/order-service.dll
+  product-service -> src/product-service/bin/Release/net10.0/product-service.dll
+  order-service.tests -> tests/order-service.tests/bin/Release/net10.0/order-service.tests.dll
+  product-service.tests -> tests/product-service.tests/bin/Release/net10.0/product-service.tests.dll
+
+Build succeeded.
+    0 Warning(s)
+    0 Error(s)
+
+Time Elapsed 00:00:01.11
+[cikis kodu: 0]
+
+$ dotnet test SahaPortal.sln -c Release --no-build --nologo --logger junit;LogFileName=junit.xml --collect:XPlat Code Coverage -- DataCollectionRunSettings.DataCollectors.DataCollector.Configuration.Format=opencover
+Test run for tests/product-service.tests/bin/Release/net10.0/product-service.tests.dll (.NETCoreApp,Version=v10.0)
+Test run for tests/order-service.tests/bin/Release/net10.0/order-service.tests.dll (.NETCoreApp,Version=v10.0)
+A total of 1 test files matched the specified pattern.
+A total of 1 test files matched the specified pattern.
+Results File: tests/product-service.tests/TestResults/junit.xml
+
+Passed!  - Failed:     0, Passed:     5, Skipped:     0, Total:     5, Duration: 233 ms - product-service.tests.dll (net10.0)
+Results File: tests/order-service.tests/TestResults/junit.xml
+
+Passed!  - Failed:     0, Passed:     4, Skipped:     0, Total:     4, Duration: 1 s - order-service.tests.dll (net10.0)
+
+Attachments:
+  tests/product-service.tests/TestResults/d248de32-030d-455e-b837-660e0c395231/coverage.opencover.xml
+  tests/order-service.tests/TestResults/efeab90e-c8e7-406c-b9df-996f8b304437/coverage.opencover.xml
+[cikis kodu: 0]
+
+$ find tests -name junit.xml -o -name coverage.opencover.xml
+tests/order-service.tests/TestResults/efeab90e-c8e7-406c-b9df-996f8b304437/coverage.opencover.xml
+tests/order-service.tests/TestResults/junit.xml
+tests/product-service.tests/TestResults/d248de32-030d-455e-b837-660e0c395231/coverage.opencover.xml
+tests/product-service.tests/TestResults/junit.xml
+
+$ dotnet list src/order-service package --include-transitive --no-restore
+Project 'order-service' has the following package references
+   [net10.0]: 
+   Top-level Package                           Requested   Resolved
+   > Microsoft.AspNetCore.OpenApi              10.0.15     10.0.15 
+   > Microsoft.EntityFrameworkCore.Sqlite      10.0.15     10.0.15 
+   > Swashbuckle.AspNetCore.SwaggerUI          11.0.1      11.0.1  
+
+   Transitive Package                                Resolved
+   > Microsoft.Data.Sqlite.Core                      10.0.15 
+   > Microsoft.EntityFrameworkCore                   10.0.15 
+   > Microsoft.EntityFrameworkCore.Abstractions      10.0.15 
+   > Microsoft.EntityFrameworkCore.Analyzers         10.0.15 
+   > Microsoft.EntityFrameworkCore.Relational        10.0.15 
+   > Microsoft.EntityFrameworkCore.Sqlite.Core       10.0.15 
+   > Microsoft.Extensions.DependencyModel            10.0.15 
+   > Microsoft.OpenApi                               2.13.0  
+   > SQLitePCLRaw.bundle_e_sqlite3                   2.1.13  
+   > SQLitePCLRaw.core                               2.1.13  
+   > SQLitePCLRaw.lib.e_sqlite3                      2.1.13  
+   > SQLitePCLRaw.provider.e_sqlite3                 2.1.13  
+
+[cikis kodu: 0]
+
+$ dotnet list src/product-service package --include-transitive --no-restore
+Project 'product-service' has the following package references
+   [net10.0]: 
+   Top-level Package                       Requested   Resolved
+   > Microsoft.AspNetCore.OpenApi          10.0.15     10.0.15 
+   > Swashbuckle.AspNetCore.SwaggerUI      11.0.1      11.0.1  
+
+   Transitive Package       Resolved
+   > Microsoft.OpenApi      2.13.0  
+
+[cikis kodu: 0]
+
+$ dotnet list src/common-contracts package --include-transitive --no-restore
+Project 'common-contracts' has the following package references
+   [net10.0]: No packages were found for this framework.
+[cikis kodu: 0]

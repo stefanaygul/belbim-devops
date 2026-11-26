@@ -1,0 +1,30 @@
+### 1. Ayni adres (sandbox): SHA degismez
+    sablon hazir: lab/01a-conflict@59562d2 lab/01b-rename@756affb main@174fe06 
+
+### 2. Farkli Nexus adresi: iki kez uret, SHA ayni mi
+    Nexus adresi: nexus.kurum.test -> nexus.ornek.internal
+    sablon hazir: lab/01a-conflict@cfcab4e lab/01b-rename@78571b3 main@009e3f2 
+    Nexus adresi: nexus.kurum.test -> nexus.ornek.internal
+    sablon hazir: lab/01a-conflict@cfcab4e lab/01b-rename@78571b3 main@009e3f2 
+
+### 3. Degisen dosyalar (main, sandbox -> ornek)
+ NuGet.config      | 2 +-
+ src/web-ui/.npmrc | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+-    <add key="nexus" value="https://nexus.kurum.test/repository/nuget-group/index.json" />
++    <add key="nexus" value="https://nexus.ornek.internal/repository/nuget-group/index.json" />
+-registry=https://nexus.kurum.test/repository/npm-group/
++registry=https://nexus.ornek.internal/repository/npm-group/
+
+### 4. Her branch ayni iki dosyada degisiyor, baska fark yok
+main: NuGet.config src/web-ui/.npmrc 
+lab/01a-conflict: NuGet.config src/web-ui/.npmrc 
+lab/01b-rename: NuGet.config src/web-ui/.npmrc 
+
+### 5. Yazar ve tarih korunuyor
+009e3f2 Egitim Ortami <egitim@kurum.test> 2026-11-02T09:00:00+03:00 chore: starter project
+174fe06 Egitim Ortami <egitim@kurum.test> 2026-11-02T09:00:00+03:00 chore: starter project
+59562d2 Egitim Ortami <egitim@kurum.test> 2026-11-02T10:00:00+03:00 chore(order): reference ef core directly
+cfcab4e Egitim Ortami <egitim@kurum.test> 2026-11-02T10:00:00+03:00 chore(order): reference ef core directly
+756affb Egitim Ortami <egitim@kurum.test> 2026-11-02T11:00:00+03:00 feat(catalog): add fast charger
+78571b3 Egitim Ortami <egitim@kurum.test> 2026-11-02T11:00:00+03:00 feat(catalog): add fast charger

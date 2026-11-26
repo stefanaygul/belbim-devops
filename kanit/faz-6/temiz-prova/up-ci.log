@@ -1,0 +1,461 @@
+ Network belbim-lab_lab  Creating
+ Network belbim-lab_lab  Created
+server.crt: OK
+CA parmak izi (SHA-256): 73:AC:BE:40:11:00:D3:59:2E:BE:0B:1E:61:A1:66:2A:83:DB:0B:7B:2F:EA:2E:29:9C:46:C0:64:2A:1D:EE:EA
+Servis sertifikasi bitis: Jan 31 17:57:19 2029 GMT
+Compose can now delegate builds to bake for better performance.
+ To do so, set COMPOSE_BAKE=true.
+#0 building with "desktop-linux" instance using docker driver
+
+#1 [sonarqube internal] load build definition from Dockerfile
+#1 transferring dockerfile: 653B done
+#1 DONE 0.0s
+
+#2 [jenkins internal] load build definition from Dockerfile
+#2 transferring dockerfile: 1.27kB done
+#2 DONE 0.0s
+
+#3 [workstation internal] load build definition from Dockerfile
+#3 transferring dockerfile: 2.81kB done
+#3 DONE 0.0s
+
+#4 [test-vm internal] load build definition from Dockerfile
+#4 transferring dockerfile: 1.75kB done
+#4 DONE 0.0s
+
+#5 [sonarqube context certs] load .dockerignore
+#5 transferring certs: 2B done
+#5 DONE 0.0s
+
+#6 [jenkins context certs] load .dockerignore
+#6 transferring certs: 2B done
+#6 DONE 0.0s
+
+#7 [sonarqube internal] load metadata for docker.io/library/sonarqube:26.11.0.134175-community
+#7 DONE 0.0s
+
+#8 [sonarqube internal] load .dockerignore
+#8 transferring context: 2B done
+#8 DONE 0.0s
+
+#9 [workstation internal] load metadata for docker.io/library/node:24.22.3-bookworm-slim
+#9 DONE 0.0s
+
+#10 [jenkins internal] load metadata for docker.io/jenkins/jenkins:2.580.2-lts-jdk21
+#10 DONE 0.0s
+
+#11 [workstation internal] load metadata for docker.io/library/docker:29.10.0-dind
+#11 DONE 0.0s
+
+#12 [workstation internal] load metadata for docker.io/library/ubuntu:noble-20261110
+#12 DONE 0.0s
+
+#13 [workstation internal] load metadata for mcr.microsoft.com/dotnet/sdk:10.0.404
+#13 DONE 0.0s
+
+#14 [jenkins internal] load .dockerignore
+#14 transferring context: 2B done
+#14 DONE 0.0s
+
+#15 [test-vm internal] load .dockerignore
+#15 transferring context: 2B done
+#15 DONE 0.0s
+
+#16 [workstation internal] load .dockerignore
+#16 transferring context: 2B done
+#16 DONE 0.0s
+
+#17 [sonarqube stage-0 1/3] FROM docker.io/library/sonarqube:26.11.0.134175-community@sha256:7b2296713a92b8ea0dd7a083a25faadc59376c9a1e6daf2744a89711c54ea1ba
+#17 resolve docker.io/library/sonarqube:26.11.0.134175-community@sha256:7b2296713a92b8ea0dd7a083a25faadc59376c9a1e6daf2744a89711c54ea1ba 0.0s done
+#17 DONE 0.0s
+
+#18 [jenkins internal] load build context
+#18 transferring context: 7.67kB done
+#18 DONE 0.0s
+
+#19 [sonarqube context certs] load from client
+#19 transferring certs: 94B done
+#19 DONE 0.0s
+
+#20 [workstation docker 1/1] FROM docker.io/library/docker:29.10.0-dind@sha256:4bbc7223f81db790097c6dea42fb93e05b8fead4f0431fbe6ccaba6e8473201c
+#20 resolve docker.io/library/docker:29.10.0-dind@sha256:4bbc7223f81db790097c6dea42fb93e05b8fead4f0431fbe6ccaba6e8473201c 0.0s done
+#20 DONE 0.0s
+
+#21 [jenkins stage-0 1/7] FROM docker.io/jenkins/jenkins:2.580.2-lts-jdk21@sha256:74401de6a6f92e1afe1b02d1c8e3d0c33f263bfb5275dd8813f9150355f2367b
+#21 resolve docker.io/jenkins/jenkins:2.580.2-lts-jdk21@sha256:74401de6a6f92e1afe1b02d1c8e3d0c33f263bfb5275dd8813f9150355f2367b 0.0s done
+#21 DONE 0.0s
+
+#22 [test-vm stage-1 1/9] FROM docker.io/library/ubuntu:noble-20261110@sha256:73b999393d07f2bf65a40373778a44dc9a6d54ad7718d29247d8ff9413c4d6a8
+#22 resolve docker.io/library/ubuntu:noble-20261110@sha256:73b999393d07f2bf65a40373778a44dc9a6d54ad7718d29247d8ff9413c4d6a8 0.0s done
+#22 DONE 0.0s
+
+#23 [workstation dotnet 1/1] FROM mcr.microsoft.com/dotnet/sdk:10.0.404@sha256:2b1e13a22e46b55117f9cdb4b38e73172de08a30370166c8227d06cdaff82473
+#23 resolve mcr.microsoft.com/dotnet/sdk:10.0.404@sha256:2b1e13a22e46b55117f9cdb4b38e73172de08a30370166c8227d06cdaff82473 0.0s done
+#23 DONE 0.0s
+
+#24 [workstation node 1/1] FROM docker.io/library/node:24.22.3-bookworm-slim@sha256:dc26ae92c9fb15cf6b1d63e20f0944b2efe0f115b20e00be48fb23fceb061c54
+#24 resolve docker.io/library/node:24.22.3-bookworm-slim@sha256:dc26ae92c9fb15cf6b1d63e20f0944b2efe0f115b20e00be48fb23fceb061c54 0.0s done
+#24 DONE 0.0s
+
+#25 [sonarqube stage-0 2/3] COPY --from=certs ca.crt /tmp/kurum-ca.crt
+#25 CACHED
+
+#26 [sonarqube stage-0 3/3] RUN keytool -importcert -noprompt -trustcacerts -alias kurum-ca -file /tmp/kurum-ca.crt       -keystore "/opt/java/openjdk/lib/security/cacerts" -storepass changeit >/dev/null  && rm /tmp/kurum-ca.crt
+#26 CACHED
+
+#27 [workstation internal] load build context
+#27 transferring context: 455B done
+#27 DONE 0.0s
+
+#28 [sonarqube] exporting to image
+#28 exporting layers done
+#28 exporting manifest sha256:fbceecd635350af5ec676004ee298731570f252f0f199b92afdcc677b66c118f done
+#28 exporting config sha256:6692923b986519da3561d1c817fc0c19ba92277855e3da861b35d54657c23c26 done
+#28 exporting attestation manifest sha256:9777ecfd6ebfcbccf76c09f9cfdd79d6c80acd6d90b1b657385a8c70d9aabd10 done
+#28 exporting manifest list sha256:d6c49e5b50cf3d5278d7c1a97c4d715141aa3bb08fede5956eb520dc78e2e20a done
+#28 naming to docker.io/belbim-lab/sonarqube:faz4 done
+#28 unpacking to docker.io/belbim-lab/sonarqube:faz4 done
+#28 DONE 0.1s
+
+#29 [jenkins context certs] load from client
+#29 transferring certs: 94B done
+#29 DONE 0.0s
+
+#30 [workstation stage-3  7/16] RUN ln -s ../lib/node_modules/npm/bin/npm-cli.js /usr/local/bin/npm  && ln -s ../lib/node_modules/npm/bin/npx-cli.js /usr/local/bin/npx
+#30 CACHED
+
+#31 [workstation stage-3 14/16] COPY workstation/lab-users.sh /usr/local/bin/lab-users
+#31 CACHED
+
+#32 [workstation stage-3  5/16] COPY --from=node /usr/local/bin/node /usr/local/bin/node
+#32 CACHED
+
+#33 [workstation stage-3  3/16] COPY --from=dotnet /usr/share/dotnet /usr/share/dotnet
+#33 CACHED
+
+#34 [workstation stage-3  8/16] COPY --from=docker /usr/local/bin/docker /usr/local/bin/dockerd /usr/local/bin/docker-proxy      /usr/local/bin/docker-init /usr/local/bin/runc /usr/local/bin/ctr      /usr/local/bin/containerd-shim-runc-v2 /usr/local/bin/dind /usr/local/bin/
+#34 CACHED
+
+#35 [workstation stage-3  6/16] COPY --from=node /usr/local/lib/node_modules /usr/local/lib/node_modules
+#35 CACHED
+
+#36 [workstation stage-3 13/16] COPY workstation/entrypoint.sh /usr/local/bin/lab-entrypoint
+#36 CACHED
+
+#37 [workstation stage-3  9/16] COPY --from=docker /usr/local/libexec/docker/cli-plugins /usr/local/libexec/docker/cli-plugins
+#37 CACHED
+
+#38 [workstation stage-3 15/16] COPY workstation/profile.sh /etc/profile.d/lab.sh
+#38 CACHED
+
+#39 [workstation stage-3  2/16] RUN apt-get update  && apt-get install -y --no-install-recommends       ca-certificates curl git jq make sudo openssh-client less nano vim-tiny unzip tree       iproute2 iputils-ping dnsutils procps psmisc bash-completion       iptables xz-utils pigz kmod       libicu74 libssl3t64 libstdc++6 tzdata  && rm -rf /var/lib/apt/lists/*
+#39 CACHED
+
+#40 [workstation stage-3 11/16] RUN (userdel --remove ubuntu 2>/dev/null || true)  && groupadd --gid 990 docker  && groupadd --gid 1900 lab  && echo '%lab ALL=(ALL) NOPASSWD:ALL' > /etc/sudoers.d/lab  && chmod 0440 /etc/sudoers.d/lab
+#40 CACHED
+
+#41 [workstation stage-3 12/16] COPY common/dockerd-start.sh /usr/local/bin/lab-dockerd-start
+#41 CACHED
+
+#42 [workstation stage-3 10/16] RUN install -D -m 0644 /etc/ssl/certs/ca-certificates.crt /usr/local/share/lab/public-ca-bundle.crt
+#42 CACHED
+
+#43 [workstation stage-3  4/16] RUN ln -s /usr/share/dotnet/dotnet /usr/local/bin/dotnet
+#43 CACHED
+
+#44 [test-vm internal] load build context
+#44 transferring context: 365B done
+#44 DONE 0.0s
+
+#45 [workstation stage-3 16/16] RUN chmod 0755 /usr/local/bin/lab-dockerd-start /usr/local/bin/lab-entrypoint /usr/local/bin/lab-users  && echo '. /etc/profile.d/lab.sh' >> /etc/bash.bashrc
+#45 CACHED
+
+#46 [jenkins stage-0 4/7] COPY --from=certs ca.crt /usr/local/share/ca-certificates/kurum-ca.crt
+#46 CACHED
+
+#47 [jenkins stage-0 6/7] COPY jenkins/casc/ /usr/share/jenkins/casc/
+#47 CACHED
+
+#48 [jenkins stage-0 5/7] RUN update-ca-certificates >/dev/null  && keytool -importcert -noprompt -trustcacerts -alias kurum-ca       -file /usr/local/share/ca-certificates/kurum-ca.crt       -keystore "/opt/java/openjdk/lib/security/cacerts" -storepass changeit >/dev/null  && install -d -o jenkins -g jenkins /var/jenkins_agent
+#48 CACHED
+
+#49 [jenkins stage-0 3/7] RUN jenkins-plugin-cli --plugin-file /usr/share/jenkins/ref/plugins.txt
+#49 CACHED
+
+#50 [jenkins stage-0 2/7] COPY jenkins/plugins.txt /usr/share/jenkins/ref/plugins.txt
+#50 CACHED
+
+#51 [jenkins stage-0 7/7] COPY jenkins/init.groovy.d/ /usr/share/jenkins/ref/init.groovy.d/
+#51 CACHED
+
+#52 [test-vm stage-1 7/9] COPY common/dockerd-start.sh /usr/local/bin/lab-dockerd-start
+#52 CACHED
+
+#53 [test-vm stage-1 6/9] COPY test-vm/sshd_lab.conf /etc/ssh/sshd_config.d/lab.conf
+#53 CACHED
+
+#54 [test-vm stage-1 3/9] COPY --from=docker /usr/local/bin/docker /usr/local/bin/dockerd /usr/local/bin/docker-proxy      /usr/local/bin/docker-init /usr/local/bin/runc /usr/local/bin/ctr      /usr/local/bin/containerd-shim-runc-v2 /usr/local/bin/dind /usr/local/bin/
+#54 CACHED
+
+#55 [test-vm stage-1 8/9] COPY test-vm/entrypoint.sh /usr/local/bin/lab-entrypoint
+#55 CACHED
+
+#56 [test-vm stage-1 5/9] RUN (userdel --remove ubuntu 2>/dev/null || true)  && groupadd --gid 990 docker  && useradd --uid 1500 --user-group --groups docker --shell /bin/bash --no-create-home             --home-dir /home/deploy deploy  && usermod -p '*' deploy
+#56 CACHED
+
+#57 [test-vm stage-1 2/9] RUN apt-get update  && apt-get install -y --no-install-recommends       ca-certificates curl jq openssh-server less nano       iproute2 iputils-ping dnsutils procps       iptables xz-utils pigz kmod  && rm -rf /var/lib/apt/lists/*  && rm -f /etc/ssh/ssh_host_*_key /etc/ssh/ssh_host_*_key.pub  && mkdir -p /run/sshd
+#57 CACHED
+
+#58 [test-vm stage-1 4/9] COPY --from=docker /usr/local/libexec/docker/cli-plugins /usr/local/libexec/docker/cli-plugins
+#58 CACHED
+
+#59 [test-vm stage-1 9/9] RUN chmod 0755 /usr/local/bin/lab-dockerd-start /usr/local/bin/lab-entrypoint
+#59 CACHED
+
+#60 [test-vm] exporting to image
+#60 exporting layers done
+#60 exporting manifest sha256:e58487d007342f1b2bb8541dbd64b00290d98d3a2564d7447bff23289f661a09 done
+#60 exporting config sha256:2d9bd73f58484745dad4de6bcecf02cd10da1a6765fcaea20af73ebf28179e91 done
+#60 exporting attestation manifest sha256:ed47e0dc035301710596cb821583492815e25757266a8b54bd921327543fbfbe 0.0s done
+#60 exporting manifest list sha256:7d6aa046e425a546b2f94c73159d7242ba76655eb322bdac5e12298e3c269e0b 0.0s done
+#60 naming to docker.io/belbim-lab/test-vm:faz2 done
+#60 unpacking to docker.io/belbim-lab/test-vm:faz2
+#60 unpacking to docker.io/belbim-lab/test-vm:faz2 0.0s done
+#60 DONE 0.1s
+
+#61 [workstation] exporting to image
+#61 exporting layers done
+#61 exporting manifest sha256:8e057127ba5af9fadfe7c0c3e19c5bbfcbfb38ad218a497ec9dcb5d4ddce3dfd done
+#61 exporting config sha256:3c59892b4b83e6633d0406b0cca41d648c8616a4b69ffd12fea92ed2c9025fd8 done
+#61 exporting attestation manifest sha256:ba4df8e0ef4289b64bae83b8b9dfa4306ddd18600e2a92c0af91376e7d324e9b 0.0s done
+#61 exporting manifest list sha256:a4d3db8041253a38e0b471d27d8ded6a0e096e3690ee72f14c12bff1530c9726 0.0s done
+#61 naming to docker.io/belbim-lab/workstation:faz2 done
+#61 unpacking to docker.io/belbim-lab/workstation:faz2 0.0s done
+#61 DONE 0.1s
+
+#62 [sonarqube] resolving provenance for metadata file
+#62 DONE 0.0s
+
+#63 [jenkins] exporting to image
+#63 exporting layers 0.0s done
+#63 exporting manifest sha256:60a2260f7216df12cdaa7c23258a2ffadeed2c7bdb39a5ca86c8f7d18c230934 done
+#63 exporting config sha256:b093da59b94489e9130eb9b35d654674eb5cbc177a8adb8ce6b4f57fd83f374c done
+#63 exporting attestation manifest sha256:701edd1f049e419e2791d9547a9887eb13053f80c5ef251980a8aba418c57f01 0.0s done
+#63 exporting manifest list sha256:a26d7e1807c5b7fcae78492e52ed059062003e1d2041c08ccbdacc1e9e30b47f done
+#63 naming to docker.io/belbim-lab/jenkins:faz5 done
+#63 unpacking to docker.io/belbim-lab/jenkins:faz5 0.0s done
+#63 DONE 0.2s
+
+#64 [test-vm] resolving provenance for metadata file
+#64 DONE 0.0s
+
+#65 [workstation] resolving provenance for metadata file
+#65 DONE 0.0s
+
+#66 [jenkins] resolving provenance for metadata file
+#66 DONE 0.0s
+
+#67 [jenkins-agent internal] load build definition from Dockerfile
+#67 transferring dockerfile: 3.43kB done
+#67 DONE 0.0s
+
+#68 [jenkins-agent context certs] load .dockerignore
+#68 transferring certs: 2B done
+#68 DONE 0.0s
+
+#11 [jenkins-agent internal] load metadata for docker.io/library/docker:29.10.0-dind
+#11 DONE 0.0s
+
+#13 [jenkins-agent internal] load metadata for mcr.microsoft.com/dotnet/sdk:10.0.404
+#13 DONE 0.0s
+
+#9 [jenkins-agent internal] load metadata for docker.io/library/node:24.22.3-bookworm-slim
+#9 DONE 0.0s
+
+#69 [jenkins-agent internal] load metadata for docker.io/jenkins/inbound-agent:3396.ve02b_5cde31b_2-4-jdk21
+#69 DONE 0.0s
+
+#70 [jenkins-agent internal] load .dockerignore
+#70 transferring context: 2B done
+#70 DONE 0.0s
+
+#71 [jenkins-agent context certs] load from client
+#71 DONE 0.0s
+
+#72 [jenkins-agent internal] load build context
+#72 DONE 0.0s
+
+#23 [jenkins-agent dotnet 1/1] FROM mcr.microsoft.com/dotnet/sdk:10.0.404@sha256:2b1e13a22e46b55117f9cdb4b38e73172de08a30370166c8227d06cdaff82473
+#23 resolve mcr.microsoft.com/dotnet/sdk:10.0.404@sha256:2b1e13a22e46b55117f9cdb4b38e73172de08a30370166c8227d06cdaff82473 0.0s done
+#23 DONE 0.0s
+
+#24 [jenkins-agent node 1/1] FROM docker.io/library/node:24.22.3-bookworm-slim@sha256:dc26ae92c9fb15cf6b1d63e20f0944b2efe0f115b20e00be48fb23fceb061c54
+#24 resolve docker.io/library/node:24.22.3-bookworm-slim@sha256:dc26ae92c9fb15cf6b1d63e20f0944b2efe0f115b20e00be48fb23fceb061c54 0.0s done
+#24 DONE 0.0s
+
+#73 [jenkins-agent stage-3  1/15] FROM docker.io/jenkins/inbound-agent:3396.ve02b_5cde31b_2-4-jdk21@sha256:4cdc9b77a15b2e04949bece53129e0f3cb142d4589f38ed5229abaf2d37641dc
+#73 resolve docker.io/jenkins/inbound-agent:3396.ve02b_5cde31b_2-4-jdk21@sha256:4cdc9b77a15b2e04949bece53129e0f3cb142d4589f38ed5229abaf2d37641dc 0.0s done
+#73 DONE 0.0s
+
+#20 [jenkins-agent docker 1/1] FROM docker.io/library/docker:29.10.0-dind@sha256:4bbc7223f81db790097c6dea42fb93e05b8fead4f0431fbe6ccaba6e8473201c
+#20 resolve docker.io/library/docker:29.10.0-dind@sha256:4bbc7223f81db790097c6dea42fb93e05b8fead4f0431fbe6ccaba6e8473201c 0.0s done
+#20 DONE 0.0s
+
+#71 [jenkins-agent context certs] load from client
+#71 transferring certs: 94B done
+#71 DONE 0.0s
+
+#72 [jenkins-agent internal] load build context
+#72 transferring context: 588B done
+#72 DONE 0.0s
+
+#74 [jenkins-agent stage-3  8/15] COPY --from=docker /usr/local/bin/docker /usr/local/bin/docker
+#74 CACHED
+
+#75 [jenkins-agent stage-3  6/15] COPY --from=node /usr/local/lib/node_modules /usr/local/lib/node_modules
+#75 CACHED
+
+#76 [jenkins-agent stage-3  2/15] RUN apt-get update  && apt-get install -y --no-install-recommends ca-certificates curl git jq unzip openssh-client libicu-dev  && rm -rf /var/lib/apt/lists/*
+#76 CACHED
+
+#77 [jenkins-agent stage-3 10/15] RUN dotnet tool install --tool-path /opt/dotnet-tools dotnet-sonarscanner --version "12.1.0"  && curl -fsSL -o /tmp/ss.zip "https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-8.5.0.16571.zip"  && unzip -q /tmp/ss.zip -d /opt && mv "/opt/sonar-scanner-8.5.0.16571" /opt/sonar-scanner && rm /tmp/ss.zip  && rm -rf /root/.nuget /root/.dotnet /tmp/NuGetScratch
+#77 CACHED
+
+#78 [jenkins-agent stage-3  5/15] COPY --from=node /usr/local/bin/node /usr/local/bin/node
+#78 CACHED
+
+#79 [jenkins-agent stage-3 13/15] RUN groupadd --gid 990 docker && usermod -aG docker jenkins
+#79 CACHED
+
+#80 [jenkins-agent stage-3 14/15] COPY jenkins-agent/entrypoint.sh /usr/local/bin/lab-entrypoint
+#80 CACHED
+
+#81 [jenkins-agent stage-3 11/15] COPY --from=certs ca.crt /usr/local/share/ca-certificates/kurum-ca.crt
+#81 CACHED
+
+#82 [jenkins-agent stage-3  9/15] COPY --from=docker /usr/local/libexec/docker/cli-plugins/docker-buildx /usr/local/libexec/docker/cli-plugins/docker-buildx
+#82 CACHED
+
+#83 [jenkins-agent stage-3  4/15] RUN ln -s /usr/share/dotnet/dotnet /usr/local/bin/dotnet
+#83 CACHED
+
+#84 [jenkins-agent stage-3  3/15] COPY --from=dotnet /usr/share/dotnet /usr/share/dotnet
+#84 CACHED
+
+#85 [jenkins-agent stage-3 12/15] RUN update-ca-certificates >/dev/null  && keytool -importcert -noprompt -trustcacerts -alias kurum-ca       -file /usr/local/share/ca-certificates/kurum-ca.crt       -keystore "/opt/java/openjdk/lib/security/cacerts" -storepass changeit >/dev/null
+#85 CACHED
+
+#86 [jenkins-agent stage-3  7/15] RUN ln -s ../lib/node_modules/npm/bin/npm-cli.js /usr/local/bin/npm  && ln -s ../lib/node_modules/npm/bin/npx-cli.js /usr/local/bin/npx
+#86 CACHED
+
+#87 [jenkins-agent stage-3 15/15] RUN chmod 0755 /usr/local/bin/lab-entrypoint
+#87 CACHED
+
+#88 [jenkins-agent] exporting to image
+#88 exporting layers done
+#88 exporting manifest sha256:736652cb4fa7fe04b5907ee880aa3fe345bed985fb79cae5b9ce2d2510be2692 done
+#88 exporting config sha256:79bfffc8e78b8d29e741ec9e6bcf2bb69f57a1e767ff670e4ea2425c1b25a04f done
+#88 exporting attestation manifest sha256:00465bb2e58b754e467143011e84867acce689f8b19b5ed12bc794236f9f4b54 done
+#88 exporting manifest list sha256:c9d824b5e95703077bc6b56aee0a4f2ecae2ba2d058e860c9ad534ad35d37158 done
+#88 naming to docker.io/belbim-lab/jenkins-agent:faz5 done
+#88 unpacking to docker.io/belbim-lab/jenkins-agent:faz5 done
+#88 DONE 0.0s
+
+#89 [jenkins-agent] resolving provenance for metadata file
+#89 DONE 0.0s
+ jenkins  Built
+ jenkins-agent  Built
+ sonarqube  Built
+ test-vm  Built
+ workstation  Built
+ Volume "belbim-lab_workstation-docker-etc"  Creating
+ Volume "belbim-lab_workstation-docker-etc"  Created
+ Volume "belbim-lab_jenkins-agent-work"  Creating
+ Volume "belbim-lab_jenkins-agent-work"  Created
+ Volume "belbim-lab_sonar-db-data"  Creating
+ Volume "belbim-lab_sonar-db-data"  Created
+ Volume "belbim-lab_sonarqube-logs"  Creating
+ Volume "belbim-lab_sonarqube-logs"  Created
+ Volume "belbim-lab_workstation-home"  Creating
+ Volume "belbim-lab_workstation-home"  Created
+ Volume "belbim-lab_gitlab-logs"  Creating
+ Volume "belbim-lab_gitlab-logs"  Created
+ Volume "belbim-lab_agent-docker-sock"  Creating
+ Volume "belbim-lab_agent-docker-sock"  Created
+ Volume "belbim-lab_sonarqube-extensions"  Creating
+ Volume "belbim-lab_sonarqube-extensions"  Created
+ Volume "belbim-lab_jenkins-home"  Creating
+ Volume "belbim-lab_jenkins-home"  Created
+ Volume "belbim-lab_nexus-data"  Creating
+ Volume "belbim-lab_nexus-data"  Created
+ Volume "belbim-lab_sonarqube-data"  Creating
+ Volume "belbim-lab_sonarqube-data"  Created
+ Volume "belbim-lab_workstation-docker"  Creating
+ Volume "belbim-lab_workstation-docker"  Created
+ Volume "belbim-lab_gitlab-data"  Creating
+ Volume "belbim-lab_gitlab-data"  Created
+ Volume "belbim-lab_jenkins-agent-secret"  Creating
+ Volume "belbim-lab_jenkins-agent-secret"  Created
+ Volume "belbim-lab_gitlab-config"  Creating
+ Volume "belbim-lab_gitlab-config"  Created
+ Volume "belbim-lab_testvm-saha"  Creating
+ Volume "belbim-lab_testvm-saha"  Created
+ Volume "belbim-lab_testvm-hostkeys"  Creating
+ Volume "belbim-lab_testvm-hostkeys"  Created
+ Volume "belbim-lab_testvm-docker"  Creating
+ Volume "belbim-lab_testvm-docker"  Created
+ Volume "belbim-lab_testvm-home"  Creating
+ Volume "belbim-lab_testvm-home"  Created
+ Volume "belbim-lab_agent-docker-data"  Creating
+ Volume "belbim-lab_agent-docker-data"  Created
+ Container belbim-lab-proxy-1  Creating
+ Container belbim-lab-workstation-1  Creating
+ Container belbim-lab-gitlab-1  Creating
+ Container belbim-lab-sonar-db-1  Creating
+ Container belbim-lab-agent-docker-1  Creating
+ Container belbim-lab-test-vm-1  Creating
+ Container belbim-lab-dns-1  Creating
+ Container belbim-lab-jenkins-1  Creating
+ Container belbim-lab-nexus-1  Creating
+ Container belbim-lab-gitlab-1  Created
+ Container belbim-lab-test-vm-1  Created
+ Container belbim-lab-nexus-1  Created
+ Container belbim-lab-dns-1  Created
+ Container belbim-lab-workstation-1  Created
+ Container belbim-lab-proxy-1  Created
+ Container belbim-lab-sonar-db-1  Created
+ Container belbim-lab-sonarqube-1  Creating
+ Container belbim-lab-agent-docker-1  Created
+ Container belbim-lab-jenkins-1  Created
+ Container belbim-lab-jenkins-agent-1  Creating
+ Container belbim-lab-sonarqube-1  Created
+ Container belbim-lab-jenkins-agent-1  Created
+ Container belbim-lab-agent-docker-1  Starting
+ Container belbim-lab-proxy-1  Starting
+ Container belbim-lab-test-vm-1  Starting
+ Container belbim-lab-workstation-1  Starting
+ Container belbim-lab-dns-1  Starting
+ Container belbim-lab-sonar-db-1  Starting
+ Container belbim-lab-gitlab-1  Starting
+ Container belbim-lab-nexus-1  Starting
+ Container belbim-lab-jenkins-1  Starting
+ Container belbim-lab-nexus-1  Started
+ Container belbim-lab-jenkins-1  Started
+ Container belbim-lab-dns-1  Started
+ Container belbim-lab-proxy-1  Started
+ Container belbim-lab-sonar-db-1  Started
+ Container belbim-lab-sonarqube-1  Starting
+ Container belbim-lab-gitlab-1  Started
+ Container belbim-lab-agent-docker-1  Started
+ Container belbim-lab-jenkins-agent-1  Starting
+ Container belbim-lab-workstation-1  Started
+ Container belbim-lab-test-vm-1  Started
+ Container belbim-lab-sonarqube-1  Started
+ Container belbim-lab-jenkins-agent-1  Started
+workstation bekleniyor . hazir (5s)
+test-vm    bekleniyor  hazir (0s)
+nexus      bekleniyor . hazir (HTTP 200, 19s)
+gitlab     bekleniyor ........ hazir (HTTP 200, 86s)
+registry   bekleniyor  hazir (HTTP 401, 1s)
+jenkins    bekleniyor  hazir (HTTP 200, 0s)
+sonar      bekleniyor  hazir (HTTP 200, 1s)

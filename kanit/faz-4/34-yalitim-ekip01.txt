@@ -1,0 +1,117 @@
+# Yalitim testi (Faz 4): ekip-02 uzerinde yapilan islemler ekip-01'i etkilemedi.
+# Once/sonra arasinda ekip-02'de: LAB 04-A ve 04-B tek kosu (cozum.sh), checkpoint lab-04a (2 kez), checkpoint lab-04b,
+#   her checkpoint'te Jenkins job/credential ve SonarQube proje silme-yeniden kurma, agent temizligi.
+# Ortak agent yalnizca kuyruk denemesinde (ci-durum.sh agent offline/online) birkac saniye devre disi kaldi.
+SONUC: ekip-01 durumu AYNI (110 satir karsilastirildi)
+
+# ekip-01 durumu (sonra):
+== GitLab (ekip-01)
+uye ekip01-dev 30
+uye ekip01-lead 40
+uye root 50
+ssh-anahtari ekip01-lead b36b9d52ee42 (1)
+ssh-anahtari ekip01-dev ab2734bb77eb (1)
+proje id=4 default=develop olusturma=2026-11-23T21:56:52.429Z
+branch develop 75995c79f68ebef70840706784c14f7d86f9e87c korumali=true
+branch main bc0272270abef45683d121fbf9735ba6b665b244 korumali=true
+tag v1.0.0 b777abab02b6fc6aa3fed8d3da715c14ec6952ad
+tag v1.0.1 6e517131ec9ce9e49b51566c9993d7b974f22a39
+koruma develop push=[0] merge=[40]
+koruma main push=[0] merge=[40]
+tag-koruma v* [40]
+issue #1 closed 2026-11-23T22:07:18.082Z
+issue #2 closed 2026-11-23T22:10:54.456Z
+issue #3 closed 2026-11-23T22:38:40.688Z
+issue #4 closed 2026-11-24T10:34:00.361Z
+issue #5 closed 2026-11-24T10:38:22.334Z
+mr !1 merged 2026-11-23T22:07:18.150Z
+mr !10 merged 2026-11-24T10:39:46.741Z
+mr !11 merged 2026-11-24T10:41:01.963Z
+mr !2 merged 2026-11-23T22:08:19.909Z
+mr !3 merged 2026-11-23T22:09:42.402Z
+mr !4 merged 2026-11-23T22:10:27.282Z
+mr !5 merged 2026-11-23T22:10:44.367Z
+mr !6 merged 2026-11-23T22:10:54.519Z
+mr !7 merged 2026-11-23T22:38:40.734Z
+mr !8 merged 2026-11-24T10:34:00.466Z
+mr !9 merged 2026-11-24T10:38:22.420Z
+deploy-token ekip01-deploy read_registry,write_registry id=1
+deploy-token ekip01-jenkins read_registry,write_registry id=16
+deploy-token ekip01-pull read_registry id=2
+imaj egitim/ekip-01/saha-ekipman-portal/order-service:013b113 sha256:2418d455e00e686fbf8e22321e167f59b8bebf890399726f8579606bad28ccdd
+imaj egitim/ekip-01/saha-ekipman-portal/order-service:1.0.1 sha256:ed8f9301de52a75ab4ca1ec9218f37890cc4abdaf0bfa160990a6be80fa6aca2
+imaj egitim/ekip-01/saha-ekipman-portal/order-service:75995c7 sha256:e6085e002098da643f869251b2f311e4884260a57a6d151eded13ba2cb463973
+imaj egitim/ekip-01/saha-ekipman-portal/order-service:afd5969 sha256:cc6f68d6220e580377ba5e02a986b014d5c4b0f04d51365b71bc6877ef8d495e
+imaj egitim/ekip-01/saha-ekipman-portal/order-service:d99149c sha256:ed8f9301de52a75ab4ca1ec9218f37890cc4abdaf0bfa160990a6be80fa6aca2
+imaj egitim/ekip-01/saha-ekipman-portal/product-service:013b113 sha256:c7b7428f10ad5a3068b470738d6158110709d329a553e51b46fc8a091df7a42c
+imaj egitim/ekip-01/saha-ekipman-portal/product-service:1.0.1 sha256:023c9f67fcc91dd463cdf58697217cee45f2b589589ffe2967b9a18bff472038
+imaj egitim/ekip-01/saha-ekipman-portal/product-service:75995c7 sha256:0ea92a4ec1f8092a21f0e5430633a61c8ecbc38d58c64f55fd61cd0b6b62ca06
+imaj egitim/ekip-01/saha-ekipman-portal/product-service:afd5969 sha256:62d1d1ca3b1d01b0e1629dddacc2cd75ac6da917e409df5a020e836e7a2de50a
+imaj egitim/ekip-01/saha-ekipman-portal/product-service:d99149c sha256:023c9f67fcc91dd463cdf58697217cee45f2b589589ffe2967b9a18bff472038
+imaj egitim/ekip-01/saha-ekipman-portal/web-ui:013b113 sha256:34f6a00883b292124b352889dbe1a3f0f8970fcd663d65c687bd2e1122ea3286
+imaj egitim/ekip-01/saha-ekipman-portal/web-ui:1.0.1 sha256:e957841e345d881d111849848dfcad3d4a5134548ab180267966bc95af34ceff
+imaj egitim/ekip-01/saha-ekipman-portal/web-ui:3ff91fc sha256:f11300510a464f963bfba0053da0a6456508f606c8f9c3dd8622b751c3274f8c
+imaj egitim/ekip-01/saha-ekipman-portal/web-ui:75995c7 sha256:2a77a607f9ffaef4215c226f92e539b4adb942ece177c2475f6631eeab63ff57
+imaj egitim/ekip-01/saha-ekipman-portal/web-ui:afd5969 sha256:4776d345b9897b76143aeea0c60cdbdf7238ee3a0847fbc34be1f9c8a16e22c1
+imaj egitim/ekip-01/saha-ekipman-portal/web-ui:d99149c sha256:e957841e345d881d111849848dfcad3d4a5134548ab180267966bc95af34ceff
+== test VM (/opt/saha/ekip01)
+drwxr-xr-x 4096 1795473483 .
+drwxr-xr-x 4096 1795457790 ..
+drwxr-xr-x 4096 1795473483 .docker
+-rw-r--r-- 86 1795473395 .env
+-rw-r--r-- 704 1795473395 compose.yaml
+container ekip01-order-service-1 6f7805b5eee8 gitlab.kurum.test:5050/egitim/ekip-01/saha-ekipman-portal/order-service:1.0.1 running
+container ekip01-product-service-1 dd2c9dc2cf63 gitlab.kurum.test:5050/egitim/ekip-01/saha-ekipman-portal/product-service:1.0.1 running
+container ekip01-web-ui-1 2b9e422e9cca gitlab.kurum.test:5050/egitim/ekip-01/saha-ekipman-portal/web-ui:1.0.1 running
+volume ekip01_orders-data
+imaj gitlab.kurum.test:5050/egitim/ekip-01/saha-ekipman-portal/order-service:1.0.1 ed8f9301de52
+imaj gitlab.kurum.test:5050/egitim/ekip-01/saha-ekipman-portal/product-service:1.0.1 023c9f67fcc9
+imaj gitlab.kurum.test:5050/egitim/ekip-01/saha-ekipman-portal/web-ui:1.0.1 e957841e345d
+talepler fa42b8f940e2
+== workstation (ekip01)
+ev .docker
+ev .gitconfig
+ev .lab-log
+ev .profile
+ev .ssh
+ev saha-ekipman-portal
+repo HEAD 75995c79f68ebef70840706784c14f7d86f9e87c develop
+ref refs/heads/develop 75995c79f68ebef70840706784c14f7d86f9e87c
+ref refs/heads/feature/katalog-sarj-unitesi 8e9c7533fe81f4f046942fe5d6721b889a87da79
+ref refs/heads/lab/01a-conflict 9504686dede7ed22bbfc8813ee6dfbea16eb0736
+ref refs/heads/main bc0272270abef45683d121fbf9735ba6b665b244
+ref refs/tags/v1.0.0 b777abab02b6fc6aa3fed8d3da715c14ec6952ad
+ref refs/tags/v1.0.1 6e517131ec9ce9e49b51566c9993d7b974f22a39
+calisma-agaci e3b0c44298fc
+docker-giris 6f2b4fce3a50
+gitconfig 8eb62da02d81
+imaj gitlab.kurum.test:5050/egitim/ekip-01/saha-ekipman-portal/order-service:1.0.1 ed8f9301de52
+imaj gitlab.kurum.test:5050/egitim/ekip-01/saha-ekipman-portal/order-service:afd5969 cc6f68d6220e
+imaj gitlab.kurum.test:5050/egitim/ekip-01/saha-ekipman-portal/order-service:d99149c ed8f9301de52
+imaj gitlab.kurum.test:5050/egitim/ekip-01/saha-ekipman-portal/product-service:1.0.1 023c9f67fcc9
+imaj gitlab.kurum.test:5050/egitim/ekip-01/saha-ekipman-portal/product-service:afd5969 62d1d1ca3b1d
+imaj gitlab.kurum.test:5050/egitim/ekip-01/saha-ekipman-portal/product-service:d99149c 023c9f67fcc9
+imaj gitlab.kurum.test:5050/egitim/ekip-01/saha-ekipman-portal/web-ui:1.0.1 e957841e345d
+imaj gitlab.kurum.test:5050/egitim/ekip-01/saha-ekipman-portal/web-ui:3ff91fc f11300510a46
+imaj gitlab.kurum.test:5050/egitim/ekip-01/saha-ekipman-portal/web-ui:afd5969 4776d345b989
+imaj gitlab.kurum.test:5050/egitim/ekip-01/saha-ekipman-portal/web-ui:d99149c e957841e345d
+== CI (ekip-01): GitLab baglantisi, Jenkins, SonarQube
+pipelines-must-succeed true
+webhook 4 https://jenkins.kurum.test/project/ekip-01/saha-portal-ekip01 push=true mr=false
+access-token 28 jenkins api
+jenkins-credential gitlab-api (GitLab API token)
+jenkins-credential gitlab-registry (Username with password)
+jenkins-credential gitlab-repo (Username with password)
+jenkins-credential sonar-token (Secret text)
+jenkins-build saha-portal-ekip01/develop #5=SUCCESS #4=FAILURE #3=SUCCESS #2=SUCCESS #1=SUCCESS
+jenkins-build saha-portal-ekip01/main #1=SUCCESS
+sonar-analiz 2026-11-24T10:41:19+0000 75995c79
+sonar-analiz 2026-11-24T10:40:04+0000 149cd28d
+sonar-analiz 2026-11-24T10:38:39+0000 013b1134
+sonar-token jenkins-saha-portal-ekip01 PROJECT_ANALYSIS_TOKEN 2026-11-24T10:37:29+0000
+agent-imaj gitlab.kurum.test:5050/egitim/ekip-01/saha-ekipman-portal/order-service:013b113 2418d455e00e
+agent-imaj gitlab.kurum.test:5050/egitim/ekip-01/saha-ekipman-portal/order-service:75995c7 e6085e002098
+agent-imaj gitlab.kurum.test:5050/egitim/ekip-01/saha-ekipman-portal/product-service:013b113 c7b7428f10ad
+agent-imaj gitlab.kurum.test:5050/egitim/ekip-01/saha-ekipman-portal/product-service:75995c7 0ea92a4ec1f8
+agent-imaj gitlab.kurum.test:5050/egitim/ekip-01/saha-ekipman-portal/web-ui:013b113 34f6a00883b2
+agent-imaj gitlab.kurum.test:5050/egitim/ekip-01/saha-ekipman-portal/web-ui:75995c7 2a77a607f9ff

@@ -1,0 +1,62 @@
+# make durum, Faz 3 sonunda (2026-11-24 03:20)
+Makefile:90: warning: overriding commands for target `dogrula-lab'
+Makefile:70: warning: ignoring old commands for target `dogrula-lab'
+Makefile:94: warning: overriding commands for target `onkontrol'
+Makefile:74: warning: ignoring old commands for target `onkontrol'
+Makefile:98: warning: overriding commands for target `checkpoint'
+Makefile:78: warning: ignoring old commands for target `checkpoint'
+Makefile:102: warning: overriding commands for target `rol-degistir'
+Makefile:82: warning: ignoring old commands for target `rol-degistir'
+Makefile:106: warning: overriding commands for target `temel-imaj-paketi'
+Makefile:86: warning: ignoring old commands for target `temel-imaj-paketi'
+== Servisler
+SERVICE       STATUS                 PORTS
+dns           Up 6 hours             53/tcp, 53/udp
+gitlab        Up 6 hours (healthy)   22/tcp, 80/tcp, 443/tcp
+nexus         Up 6 hours             8081/tcp
+proxy         Up 6 hours             127.0.0.1:443->443/tcp, 80/tcp, 127.0.0.1:5050->5050/tcp, 127.0.0.1:2222->22/tcp
+test-vm       Up 6 hours             22/tcp, 127.0.0.1:18081->8081/tcp, 127.0.0.1:18082->8082/tcp, 127.0.0.1:18083->8083/tcp, 127.0.0.1:18084->8084/tcp, 127.0.0.1:18085->8085/tcp, 127.0.0.1:18086->8086/tcp, 127.0.0.1:18087->8087/tcp, 127.0.0.1:18088->8088/tcp, 127.0.0.1:18089->8089/tcp, 127.0.0.1:18090->8090/tcp, 127.0.0.1:18099->8099/tcp
+workstation   Up 3 hours             127.0.0.1:5173->5173/tcp, 127.0.0.1:18080->8080/tcp
+
+== Bellek ve CPU (anlik)
+NAME                       MEM USAGE / LIMIT   MEM %     CPU %
+belbim-lab-dns-1           16.21MiB / 128MiB   12.66%    0.06%
+belbim-lab-gitlab-1        3.845GiB / 6GiB     64.08%    3.17%
+belbim-lab-nexus-1         1.566GiB / 3GiB     52.19%    0.31%
+belbim-lab-proxy-1         6.699MiB / 128MiB   5.23%     0.00%
+belbim-lab-test-vm-1       388.7MiB / 2GiB     18.98%    0.22%
+belbim-lab-workstation-1   1.937GiB / 4GiB     48.42%    0.11%
+
+== Volume boyutlari
+belbim-lab_gitlab-config	200.2kB
+belbim-lab_gitlab-data	1.482GB
+belbim-lab_gitlab-logs	120.7MB
+belbim-lab_nexus-data	354.7MB
+belbim-lab_testvm-docker	717.9MB
+belbim-lab_testvm-home	200B
+belbim-lab_testvm-hostkeys	3.661kB
+belbim-lab_testvm-saha	908B
+belbim-lab_workstation-docker	6.586GB
+belbim-lab_workstation-docker-etc	1.994kB
+belbim-lab_workstation-home	1.388GB
+
+== Docker'a ayrilan bellek
+15.4 GiB
+
+# host
+ 3:20  up  6:17, 1 user, load averages: 3.85 5.61 5.85
+Docker Desktop VM bellek: 15.35 GiB
+
+# workstation ic Docker: imaj ve build onbellegi
+TYPE            TOTAL     ACTIVE    SIZE      RECLAIMABLE
+Images          21        0         3.679GB   829.7MB (22%)
+Containers      0         0         0B        0B
+Local Volumes   1         0         12.29kB   12.29kB (100%)
+Build Cache     106       0         4.767GB   1.211GB
+
+# test-vm ic Docker
+TYPE            TOTAL     ACTIVE    SIZE      RECLAIMABLE
+Images          6         6         734.9MB   0B (0%)
+Containers      3         3         49.15kB   0B (0%)
+Local Volumes   1         1         12.29kB   0B (0%)
+Build Cache     0         0         0B        0B

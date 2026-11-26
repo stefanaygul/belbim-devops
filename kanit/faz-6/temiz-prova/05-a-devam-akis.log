@@ -1,0 +1,179 @@
+
+[1m### Arayuz: nexus paket 99 1.0.0 lab-05-a-nexus-paket[0m
+ Container belbim-lab-workstation-1  Running
+  tamam  nuget-hosted: Saha.Common.Contracts.Ekip99 1.0.0
+  goruntu: /lab/cikti/prova-20261124T154746Z/lab-05-a-nexus-paket.png
+
+[1m### Adim 4: ayni surumu yeniden push et (reddedilmeli)[0m
+$ dotnet nuget push out/Saha.Common.Contracts.Ekip99.1.0.0.nupkg --source https://nexus.kurum.test/repository/nuget-hosted/ --api-key "$NEXUS_APIKEY"
+Pushing Saha.Common.Contracts.Ekip99.1.0.0.nupkg to 'https://nexus.kurum.test/repository/nuget-hosted/'...
+  PUT https://nexus.kurum.test/repository/nuget-hosted/
+  Conflict https://nexus.kurum.test/repository/nuget-hosted/ 69ms
+To skip already published packages, use the option --skip-duplicate
+error: Response status code does not indicate success: 409 (nuget-hosted/Saha.Common.Contracts.Ekip99/1.0.0 -  cannot be updated as asset already exists and redeploy is not allowed).
+# beklenen hata olustu: 409, yayinlanmis surum degistirilemez
+
+[1m### Adim 5: ProjectReference yerine PackageReference; Dockerfile'lar paketi Nexus'tan alir[0m
+$ grep -n 'common-contracts' src/order-service/order-service.csproj src/product-service/product-service.csproj src/*/Dockerfile
+src/order-service/order-service.csproj:17:    <ProjectReference Include="..\common-contracts\common-contracts.csproj" />
+src/product-service/product-service.csproj:16:    <ProjectReference Include="..\common-contracts\common-contracts.csproj" />
+src/order-service/Dockerfile:6:COPY src/common-contracts/ src/common-contracts/
+src/product-service/Dockerfile:6:COPY src/common-contracts/ src/common-contracts/
+$ git diff --stat
+ src/common-contracts/common-contracts.csproj | 2 +-
+ src/order-service/order-service.csproj       | 2 +-
+ src/product-service/product-service.csproj   | 2 +-
+ 3 files changed, 3 insertions(+), 3 deletions(-)
+$ grep -n 'Saha.Common.Contracts' src/order-service/order-service.csproj src/product-service/product-service.csproj
+src/order-service/order-service.csproj:17:    <PackageReference Include="Saha.Common.Contracts.Ekip99" Version="1.0.0" />
+src/product-service/product-service.csproj:16:    <PackageReference Include="Saha.Common.Contracts.Ekip99" Version="1.0.0" />
+$ grep -c 'common-contracts' src/order-service/Dockerfile src/product-service/Dockerfile || true
+src/order-service/Dockerfile:0
+src/product-service/Dockerfile:0
+
+[1m### Adim 6: onbellegi temizle; restore'un Nexus'tan geldigini gor[0m
+$ dotnet nuget locals all --clear
+Clearing NuGet HTTP cache: /home/ekip99/.local/share/NuGet/http-cache
+Clearing NuGet global packages folder: /home/ekip99/.nuget/packages/
+Clearing NuGet Temp cache: /tmp/NuGetScratchekip99
+Clearing NuGet plugins cache: /home/ekip99/.local/share/NuGet/plugin-cache
+Local resources cleared.
+$ dotnet restore SahaPortal.sln -v n | grep -i -E 'saha\.common\.contracts|Installed|error' | head -n 8
+           GET https://nexus.kurum.test/repository/nuget-group/v3/content/saha.common.contracts.ekip99/index.json
+           OK https://nexus.kurum.test/repository/nuget-group/v3/content/saha.common.contracts.ekip99/index.json 803ms
+           GET https://nexus.kurum.test/repository/nuget-group/v3/content/saha.common.contracts.ekip99/1.0.0/saha.common.contracts.ekip99.1.0.0.nupkg
+           OK https://nexus.kurum.test/repository/nuget-group/v3/content/saha.common.contracts.ekip99/1.0.0/saha.common.contracts.ekip99.1.0.0.nupkg 4ms
+         Installed Saha.Common.Contracts.Ekip99 1.0.0 from https://nexus.kurum.test/repository/nuget-group/index.json to /home/ekip99/.nuget/packages/saha.common.contracts.ekip99/1.0.0 with content hash fFlJLZrOK3GRSSuadeWTGyXDNwXr1EhqdlqogE6Uf1QbRdj2y57khjabqGeIY3YvuJafdwavWHfZbBeiA37few==.
+         Installed Swashbuckle.AspNetCore.SwaggerUI 11.0.1 from https://nexus.kurum.test/repository/nuget-group/index.json to /home/ekip99/.nuget/packages/swashbuckle.aspnetcore.swaggerui/11.0.1 with content hash Mu0j015xm7W/Axz6J6bXrh+/qEiyUGQUIGrWWvivv732yO1LtnmyV3zRwWB1dOFvlrU/CWUZqIYe1+hIcsCacg==.
+         Installed Microsoft.Extensions.FileSystemGlobbing 10.0.15 from https://nexus.kurum.test/repository/nuget-group/index.json to /home/ekip99/.nuget/packages/microsoft.extensions.filesystemglobbing/10.0.15 with content hash 2Vc8lDEufnkNpp/8Q3mP77Hz2BnPhuKzj9MiMTINiRJ23gCudPewm3yQdxvBbWpZZw68PxQ61CZMo0rS/WwDAg==.
+         Installed Microsoft.OpenApi 2.13.0 from https://nexus.kurum.test/repository/nuget-group/index.json to /home/ekip99/.nuget/packages/microsoft.openapi/2.13.0 with content hash wavlgBYnn7uU/ZGhFHNl0UlDOlwz+6KRduKkqdCCbfxxANaQ1rmBpETVGdwXanAM6twQOxsvI3CBEGF4OScbeQ==.
+$ dotnet build SahaPortal.sln -c Release --no-restore 2>&1 | tail -n 3
+    0 Error(s)
+
+Time Elapsed 00:00:00.91
+$ dotnet test SahaPortal.sln -c Release --no-build 2>&1 | grep -E 'Passed!|Failed!'
+Passed!  - Failed:     0, Passed:     8, Skipped:     0, Total:     8, Duration: 164 ms - product-service.tests.dll (net10.0)
+Passed!  - Failed:     0, Passed:    17, Skipped:     0, Total:    17, Duration: 691 ms - order-service.tests.dll (net10.0)
+# Paket artik kaynaktan degil Nexus'tan: imaj da ayni yoldan
+$ docker build -q -f src/order-service/Dockerfile --build-arg MCR=$MCR -t ekip99-yerel/order-service:paket . && docker rmi -f ekip99-yerel/order-service:paket > /dev/null && echo 'order-service imaji paketle derlendi'
+sha256:2ab1c10313ceb01bb9129495c28dced157df7898be093df8c46d7216b387c405
+order-service imaji paketle derlendi
+
+[1m### Adim 7: commit, push (MR arayuzde)[0m
+rol: ekip99-dev
+$ git add src/common-contracts/common-contracts.csproj src/order-service src/product-service
+$ git status --short
+M  src/common-contracts/common-contracts.csproj
+M  src/order-service/Dockerfile
+M  src/order-service/order-service.csproj
+M  src/product-service/Dockerfile
+M  src/product-service/product-service.csproj
+$ git commit -q -m build(contracts): consume common contracts as a NuGet package
+$ git push -q -u origin feature/ortak-paket
+remote: 
+remote: To create a merge request for feature/ortak-paket, visit:        
+remote:   https://gitlab.kurum.test/egitim/ekip-99/saha-ekipman-portal/-/merge_requests/new?merge_request%5Bsource_branch%5D=feature%2Fortak-paket        
+remote: 
+$ git log --oneline -n 1
+d1f93dc build(contracts): consume common contracts as a NuGet package
+
+[1m### CI durumu: build feature/ortak-paket SUCCESS Passed!|Finished:[0m
+    GitLab  : feature/ortak-paket son commit'i d1f93dcc
+    Jenkins : ekip-99/saha-portal-ekip99/feature/ortak-paket #1 -> SUCCESS (9 sn), derlenen commit d1f93dcc (ayni SHA)
+    GitLab  : commit status jenkins = success (ref feature/ortak-paket) -> https://jenkins.kurum.test/job/ekip-99/job/saha-portal-ekip99/job/feature%252Fortak-paket/1/display/redirect
+    Jenkins konsolu (#1):
+      | Passed!  - Failed:     0, Passed:     8, Skipped:     0, Total:     8, Duration: 136 ms - product-service.tests.dll (net10.0)
+      | Passed!  - Failed:     0, Passed:    17, Skipped:     0, Total:    17, Duration: 532 ms - order-service.tests.dll (net10.0)
+      | Finished: SUCCESS
+    [32mtamam[0m  feature/ortak-paket: build SUCCESS, GitLab commit status jenkins=success
+
+[1m### Arayuz: gitlab mr-ac 99 dev feature/ortak-paket develop build(contracts): consume common contracts as a NuGet package 6 evet evet lab-05-a-mr[0m
+ Container belbim-lab-workstation-1  Running
+  tamam  MR sablonu kendiliginden geldi (.gitlab/merge_request_templates/Default.md)
+  goruntu: /lab/cikti/prova-20261124T154746Z/lab-05-a-mr-sablon.png
+  tamam  reviewer: ekip99-lead
+  goruntu: /lab/cikti/prova-20261124T154746Z/lab-05-a-mr-form.png
+  tamam  MR !12 acildi: feature/ortak-paket -> develop (squash: evet, kaynak branch silinsin: evet)
+  goruntu: /lab/cikti/prova-20261124T154746Z/lab-05-a-mr.png
+
+[1m### CI durumu: mr feature/ortak-paket mergeable[0m
+    MR !12 (feature/ortak-paket): detailed_merge_status=mergeable, head_pipeline=success, sha=d1f93dcc
+    MR'in son commit'i d1f93dcc icin commit status: jenkins=success
+    [32mtamam[0m  MR !12: mergeable
+
+[1m### Arayuz: gitlab mr-merge 99 lead feature/ortak-paket lab-05-a-merge develop[0m
+ Container belbim-lab-workstation-1  Running
+  goruntu: /lab/cikti/prova-20261124T154746Z/lab-05-a-merge-oncesi.png
+  tamam  !12: ekip99-lead merge etti
+  goruntu: /lab/cikti/prova-20261124T154746Z/lab-05-a-merge.png
+
+[1m### CI durumu: build develop SUCCESS Quality gate|digest: |Finished:[0m
+    GitLab  : develop son commit'i f6e62215
+    Jenkins : ekip-99/saha-portal-ekip99/develop #6 -> SUCCESS (33 sn), derlenen commit f6e62215 (ayni SHA)
+    GitLab  : commit status jenkins = success (ref develop) -> https://jenkins.kurum.test/job/ekip-99/job/saha-portal-ekip99/job/develop/6/display/redirect
+    Jenkins konsolu (#6):
+      | SonarQube task 'ec14f652-685d-4480-854f-9e4f23053ff3' completed. Quality gate is 'OK'
+      | f6e6221: digest: sha256:3a62e957974471bcf3ab631b472eb021d5eb3dc594f9aab382af2d62926ce806 size: 856
+      | f6e6221: digest: sha256:ac62989252fefe1da68c8457cb37b51fcc0bcd5d800c41bbfe586876bb8f470d size: 856
+      | f6e6221: digest: sha256:053fa4649ada08749d5892d89b50a8aca7045fb145a1ac5b905c13ab9d5d6d79 size: 856
+      | Finished: SUCCESS
+    [32mtamam[0m  develop: build SUCCESS, GitLab commit status jenkins=success
+
+[1m### CI durumu: sonar OK[0m
+    SonarQube: saha-portal-ekip99 son analiz commit f6e62215 (develop'un son commit'i)
+    Quality Gate: OK
+      kosul new_coverage: OK  deger=97.8  esik=LT 80
+      kosul new_duplicated_lines_density: OK  deger=0.0  esik=GT 3
+      kosul new_violations: OK  deger=0  esik=GT 0
+    olcumler: {"coverage":"72.3","new_lines":"170","new_violations":"0","ncloc":"538","new_coverage":"97.8","new_lines_to_cover":"31"}
+    [32mtamam[0m  Quality Gate OK (beklenen)
+
+[1m### CI durumu: imaj var[0m
+    order-service:f6e6221 var (sha256:ac62989252fe…)
+    product-service:f6e6221 var (sha256:3a62e9579744…)
+    web-ui:f6e6221 var (sha256:053fa4649ada…)
+    [32mtamam[0m  commit f6e6221 icin imaj: var (beklenen)
+
+[1m### Arayuz: gitlab sayfa 99 dev /-/issues/6 Closed lab-05-a-issue-kapandi[0m
+ Container belbim-lab-workstation-1  Running
+  tamam  gorunuyor: Closed
+  goruntu: /lab/cikti/prova-20261124T154746Z/lab-05-a-issue-kapandi.png
+
+[1m### Merge sonrasi[0m
+rol: ekip99-dev
+$ git switch develop
+Switched to branch 'develop'
+Your branch is up to date with 'origin/develop'.
+$ git pull --ff-only
+From gitlab.kurum.test:egitim/ekip-99/saha-ekipman-portal
+   c476ded..f6e6221  develop    -> origin/develop
+Updating c476ded..f6e6221
+Fast-forward
+ src/common-contracts/common-contracts.csproj | 7 +++++++
+ src/order-service/Dockerfile                 | 1 -
+ src/order-service/order-service.csproj       | 2 +-
+ src/product-service/Dockerfile               | 1 -
+ src/product-service/product-service.csproj   | 2 +-
+ 5 files changed, 9 insertions(+), 4 deletions(-)
+$ git fetch --prune
+From gitlab.kurum.test:egitim/ekip-99/saha-ekipman-portal
+ - [deleted]         (none)     -> origin/feature/ortak-paket
+$ git branch -D feature/ortak-paket
+Deleted branch feature/ortak-paket (was d1f93dc).
+$ git log --oneline --graph -n 4 origin/develop
+*   f6e6221 Merge branch 'feature/ortak-paket' into 'develop'
+|\  
+| * d1f93dc build(contracts): consume common contracts as a NuGet package
+|/  
+*   c476ded Merge branch 'feature/siparis-ozeti-testleri' into 'develop'
+|\  
+| * b658ef2 test(order): cover the order summary
+|/  
+
+[1m### Checkpoint karsilastirmasi[0m
+# agac ayni: origin/develop == checkpoint/lab-05a (haric: .gitlab/CODEOWNERS Jenkinsfile ci/analyze.sh src/common-contracts/common-contracts.csproj src/order-service/order-service.csproj src/product-service/product-service.csproj)
+# Jenkinsfile: checkpoint/lab-05a ile ayni (NN yerine 99)
+# ci/analyze.sh: checkpoint/lab-05a ile ayni (NN yerine 99)
+# src/common-contracts/common-contracts.csproj: checkpoint/lab-05a ile ayni (NN yerine 99)
+# src/order-service/order-service.csproj: checkpoint/lab-05a ile ayni (NN yerine 99)
+# src/product-service/product-service.csproj: checkpoint/lab-05a ile ayni (NN yerine 99)

@@ -1,0 +1,188 @@
+
+[1m==> GitLab yonetici token'i[0m
+    token olusturuluyor (gitlab-rails runner, yaklasik 1 dakika)
+DEPRECATION WARNING: `to_time` will always preserve the full timezone rather than offset of the receiver in Rails 8.1. To opt in to the new behavior, set `config.active_support.to_time_preserves_timezone = :zone`. (called from <main> at /opt/gitlab/embedded/service/gitlab-rails/config/environment.rb:7)
+lab-bootstrap token olusturuldu
+
+[1m==> GitLab ayarlari[0m
+    surum: 19.6.1
+    [32mtamam[0m  giden istek izin listesi: ["jenkins.kurum.test"]
+
+[1m==> Gruplar[0m
+    [32mtamam[0m  grup egitim (olusturuldu)
+    [32mtamam[0m  grup egitim/sablonlar (olusturuldu)
+
+[1m==> Ekipler[0m
+    [32mtamam[0m  grup egitim/ekip-01 (olusturuldu)
+    [32mtamam[0m  kullanici ekip01-lead (olusturuldu)
+    [32mtamam[0m  kullanici ekip01-dev (olusturuldu)
+    [32mtamam[0m  grup egitim/ekip-02 (olusturuldu)
+    [32mtamam[0m  kullanici ekip02-lead (olusturuldu)
+    [32mtamam[0m  kullanici ekip02-dev (olusturuldu)
+
+[1m==> Temel imaj projesi[0m
+    [32mtamam[0m  proje egitim/base (olusturuldu)
+
+[1m==> Sablon proje[0m
+    [32mtamam[0m  proje egitim/sablonlar/portal-starter (olusturuldu)
+    sablon hazir: checkpoint/final@c5d2ecd checkpoint/final-main@2fe47e7 checkpoint/gun1@c0e7e82 checkpoint/gun2@8a5349e checkpoint/gun3@9fa7fc9 checkpoint/gun4@61eafaf checkpoint/lab-01a@cc4e219 checkpoint/lab-02a@fd0a349 checkpoint/lab-02a-main@a7af75a checkpoint/lab-02b@8a5349e checkpoint/lab-02b-main@621ce23 checkpoint/lab-03a@11289ab checkpoint/lab-03b@9fa7fc9 checkpoint/lab-04a@b079692 checkpoint/lab-04b@61eafaf checkpoint/lab-05a@2d0cc63 lab/01a-conflict@59562d2 lab/01b-rename@756affb lab/04b-untested@99f9f9d main@174fe06 
+remote: 
+remote: To create a merge request for checkpoint/final, visit:        
+remote:   https://gitlab.kurum.test/egitim/sablonlar/portal-starter/-/merge_requests/new?merge_request%5Bsource_branch%5D=checkpoint%2Ffinal        
+remote: 
+remote: 
+remote: To create a merge request for checkpoint/final-main, visit:        
+remote:   https://gitlab.kurum.test/egitim/sablonlar/portal-starter/-/merge_requests/new?merge_request%5Bsource_branch%5D=checkpoint%2Ffinal-main        
+remote: 
+remote: 
+remote: To create a merge request for checkpoint/gun1, visit:        
+remote:   https://gitlab.kurum.test/egitim/sablonlar/portal-starter/-/merge_requests/new?merge_request%5Bsource_branch%5D=checkpoint%2Fgun1        
+remote: 
+remote: 
+remote: To create a merge request for checkpoint/gun2, visit:        
+remote:   https://gitlab.kurum.test/egitim/sablonlar/portal-starter/-/merge_requests/new?merge_request%5Bsource_branch%5D=checkpoint%2Fgun2        
+remote: 
+remote: 
+remote: To create a merge request for checkpoint/gun3, visit:        
+remote:   https://gitlab.kurum.test/egitim/sablonlar/portal-starter/-/merge_requests/new?merge_request%5Bsource_branch%5D=checkpoint%2Fgun3        
+remote: 
+remote: 
+remote: To create a merge request for checkpoint/gun4, visit:        
+remote:   https://gitlab.kurum.test/egitim/sablonlar/portal-starter/-/merge_requests/new?merge_request%5Bsource_branch%5D=checkpoint%2Fgun4        
+remote: 
+remote: 
+remote: To create a merge request for checkpoint/lab-01a, visit:        
+remote:   https://gitlab.kurum.test/egitim/sablonlar/portal-starter/-/merge_requests/new?merge_request%5Bsource_branch%5D=checkpoint%2Flab-01a        
+remote: 
+remote: 
+remote: To create a merge request for checkpoint/lab-02a, visit:        
+remote:   https://gitlab.kurum.test/egitim/sablonlar/portal-starter/-/merge_requests/new?merge_request%5Bsource_branch%5D=checkpoint%2Flab-02a        
+remote: 
+remote: 
+remote: To create a merge request for checkpoint/lab-02a-main, visit:        
+remote:   https://gitlab.kurum.test/egitim/sablonlar/portal-starter/-/merge_requests/new?merge_request%5Bsource_branch%5D=checkpoint%2Flab-02a-main        
+remote: 
+remote: 
+remote: To create a merge request for checkpoint/lab-02b, visit:        
+remote:   https://gitlab.kurum.test/egitim/sablonlar/portal-starter/-/merge_requests/new?merge_request%5Bsource_branch%5D=checkpoint%2Flab-02b        
+remote: 
+remote: 
+remote: To create a merge request for checkpoint/lab-02b-main, visit:        
+remote:   https://gitlab.kurum.test/egitim/sablonlar/portal-starter/-/merge_requests/new?merge_request%5Bsource_branch%5D=checkpoint%2Flab-02b-main        
+remote: 
+remote: 
+remote: To create a merge request for checkpoint/lab-03a, visit:        
+remote:   https://gitlab.kurum.test/egitim/sablonlar/portal-starter/-/merge_requests/new?merge_request%5Bsource_branch%5D=checkpoint%2Flab-03a        
+remote: 
+remote: 
+remote: To create a merge request for checkpoint/lab-03b, visit:        
+remote:   https://gitlab.kurum.test/egitim/sablonlar/portal-starter/-/merge_requests/new?merge_request%5Bsource_branch%5D=checkpoint%2Flab-03b        
+remote: 
+remote: 
+remote: To create a merge request for checkpoint/lab-04a, visit:        
+remote:   https://gitlab.kurum.test/egitim/sablonlar/portal-starter/-/merge_requests/new?merge_request%5Bsource_branch%5D=checkpoint%2Flab-04a        
+remote: 
+remote: 
+remote: To create a merge request for checkpoint/lab-04b, visit:        
+remote:   https://gitlab.kurum.test/egitim/sablonlar/portal-starter/-/merge_requests/new?merge_request%5Bsource_branch%5D=checkpoint%2Flab-04b        
+remote: 
+remote: 
+remote: To create a merge request for checkpoint/lab-05a, visit:        
+remote:   https://gitlab.kurum.test/egitim/sablonlar/portal-starter/-/merge_requests/new?merge_request%5Bsource_branch%5D=checkpoint%2Flab-05a        
+remote: 
+remote: 
+remote: To create a merge request for lab/01a-conflict, visit:        
+remote:   https://gitlab.kurum.test/egitim/sablonlar/portal-starter/-/merge_requests/new?merge_request%5Bsource_branch%5D=lab%2F01a-conflict        
+remote: 
+remote: 
+remote: To create a merge request for lab/01b-rename, visit:        
+remote:   https://gitlab.kurum.test/egitim/sablonlar/portal-starter/-/merge_requests/new?merge_request%5Bsource_branch%5D=lab%2F01b-rename        
+remote: 
+remote: 
+remote: To create a merge request for lab/04b-untested, visit:        
+remote:   https://gitlab.kurum.test/egitim/sablonlar/portal-starter/-/merge_requests/new?merge_request%5Bsource_branch%5D=lab%2F04b-untested        
+remote: 
+    [32mtamam[0m  sablon branch'leri itildi: checkpoint/final checkpoint/final-main checkpoint/gun1 checkpoint/gun2 checkpoint/gun3 checkpoint/gun4 checkpoint/lab-01a checkpoint/lab-02a checkpoint/lab-02a-main checkpoint/lab-02b checkpoint/lab-02b-main checkpoint/lab-03a checkpoint/lab-03b checkpoint/lab-04a checkpoint/lab-04b checkpoint/lab-05a lab/01a-conflict lab/01b-rename lab/04b-untested main 
+    [32mtamam[0m  sablon proje: main korumali
+
+[1m==> Nexus yonetici parolasi[0m
+    [32mtamam[0m  Nexus yonetici parolasi ayarlandi
+
+[1m==> Nexus Community Edition onaylari[0m
+    [32mtamam[0m  EULA kabul edildi (.env: NEXUS_CE_EULA_KABUL=evet)
+    [32mtamam[0m  telemetri bildirimi onaylandi (.env: NEXUS_CE_TELEMETRI_ONAY=evet)
+
+[1m==> Nexus guvenlik ayarlari[0m
+    [32mtamam[0m  anonim okuma acik
+    [32mtamam[0m  realm'ler: ["NexusAuthenticatingRealm","NpmToken","NuGetApiKey"]
+
+[1m==> Nexus depolari[0m
+    [32mtamam[0m  depo nuget.org-proxy (olusturuldu)
+    [32mtamam[0m  depo nuget-hosted (olusturuldu)
+    [32mtamam[0m  depo nuget-group (olusturuldu)
+    [32mtamam[0m  depo npm-proxy (olusturuldu)
+    [32mtamam[0m  depo npm-hosted (olusturuldu)
+    [32mtamam[0m  depo npm-group (olusturuldu)
+    [32mtamam[0m  hosted depolarda redeploy kapali (ALLOW_ONCE)
+
+[1m==> Nexus rol ve kullanicilari[0m
+    [32mtamam[0m  rol lab-yayinci (olusturuldu)
+    [32mtamam[0m  kullanici ekip01 (olusturuldu)
+    [32mtamam[0m  kullanici ekip02 (olusturuldu)
+
+[1m==> Temel imajlar (egitim/base)[0m
+
+    dotnet/sdk:10.0 <- mcr.microsoft.com/dotnet/sdk:10.0.404
+    [32mtamam[0m  dotnet/sdk:10.0 (gonderildi)
+
+    dotnet/aspnet:10.0 <- mcr.microsoft.com/dotnet/aspnet:10.0.15
+    [32mtamam[0m  dotnet/aspnet:10.0 (gonderildi)
+
+    library/node:24-alpine <- node:24.22.3-alpine3.24
+    [32mtamam[0m  library/node:24-alpine (gonderildi)
+
+    nginxinc/nginx-unprivileged:stable-alpine <- nginxinc/nginx-unprivileged:1.31.7-alpine3.24
+    [32mtamam[0m  nginxinc/nginx-unprivileged:stable-alpine (gonderildi)
+
+[1m==> workstation[0m
+    [32mtamam[0m  kullanici ekip01: SSH anahtarlari ve bilinen sunucular hazir
+    [32mtamam[0m  kullanici ekip02: SSH anahtarlari ve bilinen sunucular hazir
+
+[1m==> Temel imajlar: workstation Docker daemon'i[0m
+    [32mtamam[0m  gitlab.kurum.test:5050/egitim/base/dotnet/sdk:10.0 (yuklendi)
+           kaynak mcr.microsoft.com/dotnet/sdk:10.0.404  registry sha256:827a0dd2d022608da2b0820d7ea05838cab74845c70c95b6f2b97ecb3854351d
+    [32mtamam[0m  gitlab.kurum.test:5050/egitim/base/dotnet/aspnet:10.0 (yuklendi)
+           kaynak mcr.microsoft.com/dotnet/aspnet:10.0.15  registry sha256:2002c8f9b83df8925c6b273c7d39cf48b39898058fe9234d73d36f7b5b978811
+    [32mtamam[0m  gitlab.kurum.test:5050/egitim/base/library/node:24-alpine (yuklendi)
+           kaynak node:24.22.3-alpine3.24  registry sha256:370f0accec6218b969a12095252302b9f11acc393e004c4b530ff262314ded81
+    [32mtamam[0m  gitlab.kurum.test:5050/egitim/base/nginxinc/nginx-unprivileged:stable-alpine (yuklendi)
+           kaynak nginxinc/nginx-unprivileged:1.31.7-alpine3.24  registry sha256:e05a7b295f344531cb861af0efd10dae5907496a275b2e9d206e6efaf540911e
+
+[1m==> test-vm[0m
+    [32mtamam[0m  /opt/saha/ekip01, ekip01 anahtari deploy kullanicisinda yetkili
+    [32mtamam[0m  /opt/saha/ekip02, ekip02 anahtari deploy kullanicisinda yetkili
+
+[1m==> Jenkins[0m
+    surum: 2.580.2
+    [32mtamam[0m  controller executor 0; agent true label=dotnet-docker executor=2
+    [32mtamam[0m  GitLab connection: gitlab; SonarQube sunucusu: sonarqube
+    [32mtamam[0m  kullanici ekip01 (olusturuldu)
+    [32mtamam[0m  klasor ekip-01 (olusturuldu)
+    [32mtamam[0m  kullanici ekip02 (olusturuldu)
+    [32mtamam[0m  klasor ekip-02 (olusturuldu)
+
+[1m==> Jenkins agent: test VM sunucu anahtari[0m
+    [32mtamam[0m  agent known_hosts: test-vm.kurum.test (ed25519)
+
+[1m==> SonarQube[0m
+    [32mtamam[0m  yonetici parolasi .env'deki degerle degistirildi
+    surum: 26.11.0.134175 (UP)
+    [32mtamam[0m  sunucu adresi: https://sonar.kurum.test
+    [32mtamam[0m  yerel aga webhook izni (sonar.validateWebhooks=false)
+    [32mtamam[0m  webhook jenkins -> https://jenkins.kurum.test/sonarqube-webhook/ (olusturuldu)
+    [32mtamam[0m  kullanici ekip01 (olusturuldu)
+    [32mtamam[0m  kullanici ekip02 (olusturuldu)
+    [32mtamam[0m  ekip kullanicilari proje olusturabilir ve analiz gonderebilir
+    varsayilan Quality Gate: Sonar way
+
+[1mBootstrap tamamlandi.[0m Denetim icin: make dogrula

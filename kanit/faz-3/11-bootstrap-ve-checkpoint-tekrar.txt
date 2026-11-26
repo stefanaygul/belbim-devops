@@ -1,0 +1,105 @@
+# make bootstrap, Faz 3 sonunda yeniden (2026-11-24 03:17): yeni adim ws-imajlar dahil, hicbir sey yeniden olusturulmamali
+Makefile:90: warning: overriding commands for target `dogrula-lab'
+Makefile:70: warning: ignoring old commands for target `dogrula-lab'
+Makefile:94: warning: overriding commands for target `onkontrol'
+Makefile:74: warning: ignoring old commands for target `onkontrol'
+Makefile:98: warning: overriding commands for target `checkpoint'
+Makefile:78: warning: ignoring old commands for target `checkpoint'
+Makefile:102: warning: overriding commands for target `rol-degistir'
+Makefile:82: warning: ignoring old commands for target `rol-degistir'
+Makefile:106: warning: overriding commands for target `temel-imaj-paketi'
+Makefile:86: warning: ignoring old commands for target `temel-imaj-paketi'
+
+==> GitLab yonetici token'i
+    tamam  token gecerli
+
+==> GitLab ayarlari
+    surum: 19.6.1
+    tamam  giden istek izin listesi: ["jenkins.kurum.test"]
+
+==> Gruplar
+    tamam  grup egitim (var)
+    tamam  grup egitim/sablonlar (var)
+
+==> Ekipler
+    tamam  grup egitim/ekip-01 (var)
+    tamam  kullanici ekip01-lead (var)
+    tamam  kullanici ekip01-dev (var)
+    tamam  grup egitim/ekip-02 (var)
+    tamam  kullanici ekip02-lead (var)
+    tamam  kullanici ekip02-dev (var)
+
+==> Temel imaj projesi
+    tamam  proje egitim/base (var)
+
+==> Sablon proje
+    tamam  proje egitim/sablonlar/portal-starter (var)
+    sablon hazir: checkpoint/gun1@c0e7e82 checkpoint/gun2@8a5349e checkpoint/gun3@9fa7fc9 checkpoint/lab-01a@cc4e219 checkpoint/lab-02a@fd0a349 checkpoint/lab-02a-main@a7af75a checkpoint/lab-02b@8a5349e checkpoint/lab-02b-main@621ce23 checkpoint/lab-03a@11289ab checkpoint/lab-03b@9fa7fc9 lab/01a-conflict@59562d2 lab/01b-rename@756affb main@174fe06 
+    tamam  sablon branch'leri guncel
+    tamam  sablon proje: main korumali
+
+==> Nexus yonetici parolasi
+    tamam  Nexus yonetici parolasi gecerli
+
+==> Nexus Community Edition onaylari
+    tamam  EULA daha once kabul edilmis
+    tamam  telemetri bildirimi daha once onaylanmis
+
+==> Nexus guvenlik ayarlari
+    tamam  anonim okuma acik
+    tamam  realm'ler: ["NexusAuthenticatingRealm","NpmToken","NuGetApiKey"]
+
+==> Nexus depolari
+    tamam  depo nuget.org-proxy (var, ayarlar esitlendi)
+    tamam  depo nuget-hosted (var, ayarlar esitlendi)
+    tamam  depo nuget-group (var, ayarlar esitlendi)
+    tamam  depo npm-proxy (var, ayarlar esitlendi)
+    tamam  depo npm-hosted (var, ayarlar esitlendi)
+    tamam  depo npm-group (var, ayarlar esitlendi)
+    tamam  hosted depolarda redeploy kapali (ALLOW_ONCE)
+
+==> Nexus rol ve kullanicilari
+    tamam  rol lab-yayinci (var, ayarlar esitlendi)
+    tamam  kullanici ekip01 (var)
+    tamam  kullanici ekip02 (var)
+
+==> Temel imajlar (egitim/base)
+    tamam  dotnet/sdk:10.0 (guncel: mcr.microsoft.com/dotnet/sdk:10.0.404)
+    tamam  dotnet/aspnet:10.0 (guncel: mcr.microsoft.com/dotnet/aspnet:10.0.15)
+    tamam  library/node:24-alpine (guncel: node:24.22.3-alpine3.24)
+    tamam  nginxinc/nginx-unprivileged:stable-alpine (guncel: nginxinc/nginx-unprivileged:1.31.7-alpine3.24)
+
+==> workstation
+    tamam  kullanici ekip01: SSH anahtarlari ve bilinen sunucular hazir
+    tamam  kullanici ekip02: SSH anahtarlari ve bilinen sunucular hazir
+
+==> Temel imajlar: workstation Docker daemon'i
+    tamam  gitlab.kurum.test:5050/egitim/base/dotnet/sdk:10.0 (yuklu, guncel)
+           kaynak mcr.microsoft.com/dotnet/sdk:10.0.404  registry sha256:c761b1d0f1acf5ed598d7a94f5e40ea2398b3eaff6be304832a630dbfa5db770
+    tamam  gitlab.kurum.test:5050/egitim/base/dotnet/aspnet:10.0 (yuklu, guncel)
+           kaynak mcr.microsoft.com/dotnet/aspnet:10.0.15  registry sha256:2002c8f9b83df8925c6b273c7d39cf48b39898058fe9234d73d36f7b5b978811
+    tamam  gitlab.kurum.test:5050/egitim/base/library/node:24-alpine (yuklu, guncel)
+           kaynak node:24.22.3-alpine3.24  registry sha256:1002babad2d4bfa723cedf62ac3f02bc2be59d8d2b5ce6aa0b006d67810b49e0
+    tamam  gitlab.kurum.test:5050/egitim/base/nginxinc/nginx-unprivileged:stable-alpine (yuklu, guncel)
+           kaynak nginxinc/nginx-unprivileged:1.31.7-alpine3.24  registry sha256:e05a7b295f344531cb861af0efd10dae5907496a275b2e9d206e6efaf540911e
+
+==> test-vm
+    tamam  /opt/saha/ekip01, ekip01 anahtari deploy kullanicisinda yetkili
+    tamam  /opt/saha/ekip02, ekip02 anahtari deploy kullanicisinda yetkili
+
+Bootstrap tamamlandi. Denetim icin: make dogrula
+cikis kodu: 0  sure: 37 sn
+
+# checkpoint/uret.sh iki kez: SHA'lar ayni kalmali
+AYNI: 10 checkpoint branch'i, SHA'lar degismedi
+checkpoint/gun1 c0e7e82caf3e104d36d87ab75c4b333b8cc69133
+checkpoint/gun2 8a5349ec6186ab0a1e8284d6df078ef07497bbbb
+checkpoint/gun3 9fa7fc9e3621742e32a58c947acd05c1aec1f959
+checkpoint/lab-01a cc4e2193f71b32305b02c279d5ede6eb48e72d73
+checkpoint/lab-02a fd0a3496ff6de6bdd315ff6ef73f9ab673639ed8
+checkpoint/lab-02a-main a7af75a75b297a5415d16ded09b4cad6808399f5
+checkpoint/lab-02b 8a5349ec6186ab0a1e8284d6df078ef07497bbbb
+checkpoint/lab-02b-main 621ce232455e8e98e88afdc6833739fbcf7178eb
+checkpoint/lab-03a 11289ab1620b783ca8e3d2de06ed6a011dfc9e4a
+checkpoint/lab-03b 9fa7fc9e3621742e32a58c947acd05c1aec1f959
+       0

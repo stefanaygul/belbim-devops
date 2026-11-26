@@ -1,0 +1,88 @@
+
+[1mJenkins: surum, executor, agent, global tanimlar[0m
+  [32mGECTI[0m  Jenkins surumu: 2.580.2
+  [32mGECTI[0m  controller executor sayisi: 0
+  [32mGECTI[0m  agent-1 (bagli, label, executor, baglanti): true dotnet-docker 2 JNLPLauncher
+  [32mGECTI[0m  GitLab connection (global token yok: ekipler kendi token'ini kullanir): gitlab https://gitlab.kurum.test token:yok
+  [32mGECTI[0m  SonarQube sunucu tanimi (global token yok): sonarqube https://sonar.kurum.test token:yok
+  [32mGECTI[0m  ortak ortam degiskenleri: HUB=gitlab.kurum.test:5050/egitim/base MCR=gitlab.kurum.test:5050/egitim/base
+  [32mGECTI[0m  global (sistem) credential sayisi: 0
+  [32mGECTI[0m  kendi kendine kayit: false
+  [32mGECTI[0m  ekip klasorleri: ekip-01,ekip-02
+  [32mGECTI[0m  managed file nuget-config (5. gun): nexus=https://nexus.kurum.test/repository/nuget-group/index.json nexus-hosted=https://nexus.kurum.test/repository/nuget-hosted/
+
+[1mJenkins: plugin surumleri (images/jenkins/plugins.txt)[0m
+  [32mGECTI[0m  plugins.txt'te olup kurulu olmayan ya da surumu farkli plugin: 
+  [32mGECTI[0m  kurulu olup plugins.txt'te olmayan plugin: 
+  [32mGECTI[0m  sabit surumlu plugin sayisi: 89
+
+[1mJenkins: erisim[0m
+  [32mGECTI[0m  anonim erisim (API): 403
+  [32mGECTI[0m  ekip01 kendi klasorunu goruyor: 200
+  [32mGECTI[0m  ekip01 baska ekibin klasorunu gormuyor (ekip-02): 404
+  [32mGECTI[0m  ekip01 baska ekibin credential'larini gormuyor: 404
+  [32mGECTI[0m  ekip01 yonetici degil (script console): 403
+
+[1mSonarQube: surum, webhook, erisim[0m
+  [32mGECTI[0m  durum: UP
+  [32mGECTI[0m  surum: 26.11.0.134175
+  [32mGECTI[0m  surum turu (edition): community
+  [32mGECTI[0m  sunucu adresi: https://sonar.kurum.test
+  [32mGECTI[0m  yerel aga webhook izni (sonar.validateWebhooks): false
+  [32mGECTI[0m  anonim erisim (API): 401
+  [32mGECTI[0m  global webhook (sondaki / zorunlu): https://jenkins.kurum.test/sonarqube-webhook/
+  BILGI  webhook teslimi yok (henuz analiz yapilmamis)
+  [32mGECTI[0m  varsayilan Quality Gate: Sonar way
+  [32mGECTI[0m  SonarQube kullanicisi ekip01
+  [32mGECTI[0m  SonarQube kullanicisi ekip02
+
+[1mGitLab: Jenkins'e giden istek izni[0m
+  [32mGECTI[0m  giden istek izin listesi (yalnizca Jenkins): ["jenkins.kurum.test"]
+  [32mGECTI[0m  yerel aga webhook genel izni: false
+
+30 gecti, 0 kaldi
+
+[1mJenkins agent: araclar[0m
+  [32mGECTI[0m  .NET SDK: 10.0.404
+  [32mGECTI[0m  Node.js: v24.22.3
+  [32mGECTI[0m  SonarScanner for .NET (dotnet tool): 12.1.0
+  [32mGECTI[0m  sonar-scanner CLI
+  [32mGECTI[0m  git
+  [32mGECTI[0m  Docker CLI
+  [32mGECTI[0m  agent kullanicisi root degil: jenkins
+
+[1mJenkins agent: kurum CA'si (TLS dogrulamasi acik)[0m
+  [32mGECTI[0m  curl https://gitlab.kurum.test (isletim sistemi deposu): 200
+  [32mGECTI[0m  curl https://nexus.kurum.test: 200
+  [32mGECTI[0m  git ls-remote (sablon proje, https)
+  [32mGECTI[0m  JVM deposu: https://sonar.kurum.test (scanner bu depoyu kullanir): kurum-ca
+  [32mGECTI[0m  sslVerify kapatilmamis (git): 
+
+[1mJenkins agent: test VM SSH sunucu anahtari (5. gun deploy)[0m
+  [32mGECTI[0m  agent known_hosts icinde test-vm.kurum.test: var
+
+  [32mGECTI[0m  StrictHostKeyChecking kapatilmamis: 
+
+[1mAgent'in Docker daemon'i (agent-docker)[0m
+  [32mGECTI[0m  agent DOCKER_HOST: unix:///run/agent-docker/docker.sock
+  [32mGECTI[0m  daemon: agent-docker|29.10.0
+  [32mGECTI[0m  agent, host'un Docker daemon'ini kullanmiyor (host: docker-desktop)
+  [32mGECTI[0m  insecure registry tanimi (yalnizca Docker'in varsayilan loopback araligi): 127.0.0.0/8,::1/128
+  [32mGECTI[0m  registry CA'si daemon'da (certs.d): var
+  [32mGECTI[0m  agent daemon'i temel imaji registry'den cekiyor (anonim, TLS dogrulamali)
+
+[1mHost: CI container'lari[0m
+  [32mGECTI[0m  kendi Docker daemon'i olan container'lar (tam uc tane): agent-docker test-vm workstation 
+  [32mGECTI[0m  host Docker soketini baglayan container: 0
+  [32mGECTI[0m  yayinlanan portlarin host adresi: 127.0.0.1 
+  [32mGECTI[0m  jenkins bellek siniri: 2048 MiB
+  [32mGECTI[0m  jenkins-agent bellek siniri: 3072 MiB
+  [32mGECTI[0m  agent-docker bellek siniri: 3072 MiB
+  [32mGECTI[0m  sonarqube bellek siniri: 4096 MiB
+  [32mGECTI[0m  sonar-db bellek siniri: 512 MiB
+  [32mGECTI[0m  host -> https://jenkins.kurum.test (lab CA'si ile, 127.0.0.1:443): 200
+  [32mGECTI[0m  host -> https://sonar.kurum.test (lab CA'si ile, 127.0.0.1:443): 200
+
+30 gecti, 0 kaldi
+
+[32mCI PROFILI: GECTI[0m

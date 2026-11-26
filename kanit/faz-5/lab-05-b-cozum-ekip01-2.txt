@@ -1,0 +1,120 @@
+
+[1m### Adim 3: dogrulama; testler yesil[0m
+rol: ekip01-dev
+$ git switch feature/12-miktar-dogrulama
+Already on 'feature/12-miktar-dogrulama'
+M	src/order-service/Endpoints/OrderEndpoints.cs
+M	tests/order-service.tests/OrdersApiTests.cs
+$ git diff HEAD -- src/order-service | grep -E '^\+' | grep -v '^+++'
++    public const int MinQuantity = 1;
++
++        if (request.Quantity < MinQuantity)
++        {
++            return Results.BadRequest(new { error = $"Miktar en az {MinQuantity} olmalı." });
++        }
++
+$ dotnet test tests/order-service.tests --nologo -v q 2>&1 | grep -E 'Passed!|Failed!'
+Passed!  - Failed:     0, Passed:    21, Skipped:     0, Total:    21, Duration: 514 ms - order-service.tests.dll (net10.0)
+$ cd src/web-ui && npx jest src/api.test.js 2>&1 | grep -E 'Tests:|failed'
+  ✓ a failed request reports the message sent by the API
+  ✓ a failed request without a body reports the HTTP status (1 ms)
+Tests:       5 passed, 5 total
+$ git add src/order-service tests/order-service.tests
+$ git commit -q -m fix(order): reject quantities below one
+$ git push -q -u origin feature/12-miktar-dogrulama
+remote: 
+remote: To create a merge request for feature/12-miktar-dogrulama, visit:        
+remote:   https://gitlab.kurum.test/egitim/ekip-01/saha-ekipman-portal/-/merge_requests/new?merge_request%5Bsource_branch%5D=feature%2F12-miktar-dogrulama        
+remote: 
+
+[1m### CI durumu: build feature/12-miktar-dogrulama SUCCESS Passed!|Finished:[0m
+    GitLab  : feature/12-miktar-dogrulama son commit'i 677f6c05
+    Jenkins : ekip-01/saha-portal-ekip01/feature/12-miktar-dogrulama #1 -> SUCCESS (8 sn), derlenen commit 677f6c05 (ayni SHA)
+    GitLab  : commit status jenkins = success (ref feature/12-miktar-dogrulama) -> https://jenkins.kurum.test/job/ekip-01/job/saha-portal-ekip01/job/feature%252F12-miktar-dogrulama/1/display/redirect
+    Jenkins konsolu (#1):
+      | Passed!  - Failed:     0, Passed:     8, Skipped:     0, Total:     8, Duration: 124 ms - product-service.tests.dll (net10.0)
+      | Passed!  - Failed:     0, Passed:    21, Skipped:     0, Total:    21, Duration: 513 ms - order-service.tests.dll (net10.0)
+      | Finished: SUCCESS
+    [32mtamam[0m  feature/12-miktar-dogrulama: build SUCCESS, GitLab commit status jenkins=success
+
+[1m### Arayuz: gitlab mr-ac 01 dev feature/12-miktar-dogrulama develop fix(order): reject quantities below one 7 evet evet lab-05-b-mr-miktar[0m
+  tamam  MR sablonu kendiliginden geldi (.gitlab/merge_request_templates/Default.md)
+  goruntu: lab-rehberleri/img/lab-05-b-mr-miktar-sablon.png
+  tamam  reviewer: ekip01-lead
+  goruntu: lab-rehberleri/img/lab-05-b-mr-miktar-form.png
+  tamam  MR !14 acildi: feature/12-miktar-dogrulama -> develop (squash: evet, kaynak branch silinsin: evet)
+  goruntu: lab-rehberleri/img/lab-05-b-mr-miktar.png
+
+[1m### CI durumu: mr feature/12-miktar-dogrulama mergeable[0m
+    MR !14 (feature/12-miktar-dogrulama): detailed_merge_status=mergeable, head_pipeline=success, sha=677f6c05
+    MR'in son commit'i 677f6c05 icin commit status: jenkins=success
+    [32mtamam[0m  MR !14: mergeable
+
+[1m### Arayuz: gitlab mr-onayla 01 lead feature/12-miktar-dogrulama lab-05-b-mr-onay[0m
+  tamam  !14: ekip01-lead onayladi
+  goruntu: lab-rehberleri/img/lab-05-b-mr-onay.png
+
+[1m### Arayuz: gitlab mr-merge 01 lead feature/12-miktar-dogrulama lab-05-b-merge-miktar develop[0m
+  goruntu: lab-rehberleri/img/lab-05-b-merge-miktar-oncesi.png
+  tamam  !14: ekip01-lead merge etti
+  goruntu: lab-rehberleri/img/lab-05-b-merge-miktar.png
+
+[1m### CI durumu: build develop SUCCESS Quality gate|KAYIT|smoke test:|Finished:[0m
+    GitLab  : develop son commit'i e0c3bbc0
+    Jenkins : ekip-01/saha-portal-ekip01/develop #8 -> SUCCESS (25 sn), derlenen commit e0c3bbc0 (ayni SHA)
+    GitLab  : commit status jenkins = success (ref develop) -> https://jenkins.kurum.test/job/ekip-01/job/saha-portal-ekip01/job/develop/8/display/redirect
+    Jenkins konsolu (#8):
+      | SonarQube task 'e95f510b-b6df-4875-aba6-8fb98bfe8a1c' completed. Quality gate is 'OK'
+      | KAYIT 2026-11-24T14:23:06Z tag=e0c3bbc commit=e0c3bbc0f2893923f9c086c777394d31acef940d kaynak=https://jenkins.kurum.test/job/ekip-01/job/saha-portal-ekip01/job/develop/8/ product-service@sha256:61c117ee3d01480d11324c81000d80b1a9816bf8d1f92d0d29d1b643d9795bf8 order-service@sha256:fb296f19f3f293017517b0edf9f6ebdc054789919ff130df913cf99b19bf8f6b web-ui@sha256:6765f5326a6a54d97a72fb1ac9889cee6c79af098d5b21d0a6266cf182fc2062
+      | + echo smoke test: http://test-vm.kurum.test:8081 yanıt veriyor (TAG=e0c3bbc)
+      | smoke test: http://test-vm.kurum.test:8081 yanıt veriyor (TAG=e0c3bbc)
+      | Finished: SUCCESS
+    [32mtamam[0m  develop: build SUCCESS, GitLab commit status jenkins=success
+
+[1m### CI durumu: sonar OK[0m
+    SonarQube: saha-portal-ekip01 son analiz commit e0c3bbc0 (develop'un son commit'i)
+    Quality Gate: OK
+      kosul new_coverage: OK  deger=98.0  esik=LT 80
+      kosul new_duplicated_lines_density: OK  deger=0.0  esik=GT 3
+      kosul new_violations: OK  deger=0  esik=GT 0
+    olcumler: {"coverage":"72.9","new_lines":"200","new_violations":"0","ncloc":"543","new_coverage":"98.0","new_lines_to_cover":"35"}
+    [32mtamam[0m  Quality Gate OK (beklenen)
+
+[1m### Adim 5: develop'a merge; test VM'e otomatik deploy[0m
+rol: ekip01-dev
+$ git switch develop
+Switched to branch 'develop'
+Your branch is up to date with 'origin/develop'.
+$ git pull --ff-only
+From gitlab.kurum.test:egitim/ekip-01/saha-ekipman-portal
+   78ca4d7..e0c3bbc  develop    -> origin/develop
+Updating 78ca4d7..e0c3bbc
+Fast-forward
+ src/order-service/Endpoints/OrderEndpoints.cs |  7 +++++++
+ tests/order-service.tests/OrdersApiTests.cs   | 23 +++++++++++++++++++++++
+ 2 files changed, 30 insertions(+)
+$ git fetch --prune
+From gitlab.kurum.test:egitim/ekip-01/saha-ekipman-portal
+ - [deleted]         (none)     -> origin/feature/12-miktar-dogrulama
+$ git branch -D feature/12-miktar-dogrulama
+Deleted branch feature/12-miktar-dogrulama (was 677f6c0).
+$ vm "cat .env; tail -n 1 deploy-kayit.log"
+IMG=gitlab.kurum.test:5050/egitim/ekip-01/saha-ekipman-portal
+TAG=e0c3bbc
+WEB_PORT=8081
+2026-11-24T14:23:06Z tag=e0c3bbc commit=e0c3bbc0f2893923f9c086c777394d31acef940d kaynak=https://jenkins.kurum.test/job/ekip-01/job/saha-portal-ekip01/job/develop/8/ product-service@sha256:61c117ee3d01480d11324c81000d80b1a9816bf8d1f92d0d29d1b643d9795bf8 order-service@sha256:fb296f19f3f293017517b0edf9f6ebdc054789919ff130df913cf99b19bf8f6b web-ui@sha256:6765f5326a6a54d97a72fb1ac9889cee6c79af098d5b21d0a6266cf182fc2062
+$ curl -s -w " HTTP %{http_code}\n" -X POST $TEST_URL/api/orders -d {"productId":"ADP-01","quantity":0}
+{"error":"Miktar en az 1 olmalı."} HTTP 400
+$ curl -s -w " HTTP %{http_code}\n" -X POST $TEST_URL/api/orders -d {"productId":"ADP-01","quantity":2}
+{"id":3,"productId":"ADP-01","quantity":2,"createdAt":"2026-11-24T14:23:09.9252735Z"} HTTP 201
+
+[1m### Arayuz: uygulama red http://test-vm.kurum.test:8081 lab-05-b-arayuz-red ADP-01 0 Miktar en az 1 olmalı.[0m
+HATA   red: expect(locator).toBeVisible() failed
+       
+       Locator: getByRole('cell', { name: 'ADP-01', exact: true })
+       Expected: visible
+       Error: strict mode violation: getByRole('cell', { name: 'ADP-01', exact: true }) resolved to 3 elements:
+           1) <td>ADP-01</td> aka getByRole('cell', { name: 'ADP-' }).first()
+       sayfa: http://test-vm.kurum.test:8081/
+       goruntu: lab-ortami/.cache/ui/hata-red-1795530190618.png
+

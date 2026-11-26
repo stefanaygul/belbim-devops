@@ -1,0 +1,87 @@
+
+[1m### Adim 1: starter projeyi klonla, klasorleri incele[0m
+$ git clone https://gitlab.kurum.test/egitim/sablonlar/portal-starter.git saha-ekipman-portal
+Cloning into 'saha-ekipman-portal'...
+$ git config --global user.name Ekip 99
+$ git config --global user.email ekip99@kurum.test
+$ git branch -a
+* main
+  remotes/origin/HEAD -> origin/main
+  remotes/origin/checkpoint/final
+  remotes/origin/checkpoint/final-main
+  remotes/origin/checkpoint/gun1
+  remotes/origin/checkpoint/gun2
+  remotes/origin/checkpoint/gun3
+  remotes/origin/checkpoint/gun4
+  remotes/origin/checkpoint/lab-01a
+  remotes/origin/checkpoint/lab-02a
+  remotes/origin/checkpoint/lab-02a-main
+  remotes/origin/checkpoint/lab-02b
+  remotes/origin/checkpoint/lab-02b-main
+  remotes/origin/checkpoint/lab-03a
+  remotes/origin/checkpoint/lab-03b
+  remotes/origin/checkpoint/lab-04a
+  remotes/origin/checkpoint/lab-04b
+  remotes/origin/checkpoint/lab-05a
+  remotes/origin/lab/01a-conflict
+  remotes/origin/lab/01b-rename
+  remotes/origin/lab/04b-untested
+  remotes/origin/main
+$ tree -L 2 -I node_modules|bin|obj --dirsfirst
+.
+├── deploy
+│   ├── compose.yaml
+│   └── nginx.conf
+├── src
+│   ├── common-contracts
+│   ├── order-service
+│   ├── product-service
+│   └── web-ui
+├── tests
+│   ├── order-service.tests
+│   └── product-service.tests
+├── CHANGELOG.md
+├── Jenkinsfile
+├── NuGet.config
+├── README.md
+└── SahaPortal.sln
+
+10 directories, 7 files
+
+[1m### Adim 2: dotnet restore, build, test[0m
+$ dotnet restore SahaPortal.sln
+An issue was encountered verifying workloads. For more information, run "dotnet workload update".
+  Determining projects to restore...
+  Restored /home/ekip99/saha-ekipman-portal/src/common-contracts/common-contracts.csproj (in 36 ms).
+  Restored /home/ekip99/saha-ekipman-portal/src/product-service/product-service.csproj (in 3.64 sec).
+  Restored /home/ekip99/saha-ekipman-portal/src/order-service/order-service.csproj (in 3.65 sec).
+  Restored /home/ekip99/saha-ekipman-portal/tests/product-service.tests/product-service.tests.csproj (in 3.66 sec).
+  Restored /home/ekip99/saha-ekipman-portal/tests/order-service.tests/order-service.tests.csproj (in 3.66 sec).
+$ dotnet build SahaPortal.sln -c Release --no-restore
+  common-contracts -> /home/ekip99/saha-ekipman-portal/src/common-contracts/bin/Release/net10.0/common-contracts.dll
+  order-service -> /home/ekip99/saha-ekipman-portal/src/order-service/bin/Release/net10.0/order-service.dll
+  product-service -> /home/ekip99/saha-ekipman-portal/src/product-service/bin/Release/net10.0/product-service.dll
+  order-service.tests -> /home/ekip99/saha-ekipman-portal/tests/order-service.tests/bin/Release/net10.0/order-service.tests.dll
+  product-service.tests -> /home/ekip99/saha-ekipman-portal/tests/product-service.tests/bin/Release/net10.0/product-service.tests.dll
+
+Build succeeded.
+    0 Warning(s)
+    0 Error(s)
+
+Time Elapsed 00:00:02.38
+$ dotnet test SahaPortal.sln -c Release --no-build
+Test run for /home/ekip99/saha-ekipman-portal/tests/product-service.tests/bin/Release/net10.0/product-service.tests.dll (.NETCoreApp,Version=v10.0)
+Test run for /home/ekip99/saha-ekipman-portal/tests/order-service.tests/bin/Release/net10.0/order-service.tests.dll (.NETCoreApp,Version=v10.0)
+A total of 1 test files matched the specified pattern.
+A total of 1 test files matched the specified pattern.
+
+Passed!  - Failed:     0, Passed:     5, Skipped:     0, Total:     5, Duration: 122 ms - product-service.tests.dll (net10.0)
+VSTEST_ARTIFACTS_DIRECTORY environment variable was not found, falling back to a user-private temporary directory. This is most likely caused by an outdated Microsoft.NET.Test.Sdk package reference in the test project.
+
+Passed!  - Failed:     0, Passed:     4, Skipped:     0, Total:     4, Duration: 491 ms - order-service.tests.dll (net10.0)
+VSTEST_ARTIFACTS_DIRECTORY environment variable was not found, falling back to a user-private temporary directory. This is most likely caused by an outdated Microsoft.NET.Test.Sdk package reference in the test project.
+
+[1m### Adim 3: web-ui icinde npm ci ve npm test[0m
+$ npm ci
+npm warn deprecated whatwg-encoding@3.1.1: Use @exodus/bytes instead for a more spec-conformant and faster implementation
+

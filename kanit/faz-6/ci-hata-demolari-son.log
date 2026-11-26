@@ -1,0 +1,44 @@
+
+HTTP 422: {"error":"Invalid url given"}
+GECTI izin listesi disi URL reddedildi; izinli Jenkins URL kabul edildi ve gecici hook silindi.
+
+[1m==> Sonar webhook yanlis hedef: waitForQualityGate timeout[0m
+ > git init /home/jenkins/agent/workspace/ekip-99/qg-hata-demose # timeout=10
+ > git --version # timeout=10
+ > git fetch --tags --force --progress -- https://gitlab.kurum.test/egitim/ekip-99/saha-ekipman-portal.git +refs/heads/*:refs/remotes/origin/* # timeout=10
+ > git config remote.origin.url https://gitlab.kurum.test/egitim/ekip-99/saha-ekipman-portal.git # timeout=10
+ > git config --add remote.origin.fetch +refs/heads/*:refs/remotes/origin/* # timeout=10
+ > git rev-parse refs/remotes/origin/develop^{commit} # timeout=10
+ > git config core.sparsecheckout # timeout=10
+ > git checkout -f 591162bddbc6a770719f13032858dbd16a421d37 # timeout=10
+ > git branch -a -v --no-abbrev # timeout=10
+ > git checkout -b develop 591162bddbc6a770719f13032858dbd16a421d37 # timeout=10
+[Pipeline] timeout
+Checking status of SonarQube task 'd3312129-2f9c-4498-870c-b25811a45a51' on server 'sonarqube'
+SonarQube task 'd3312129-2f9c-4498-870c-b25811a45a51' status is 'PENDING'
+Cancelling nested steps due to timeout
+[Pipeline] // timeout
+Finished: ABORTED
+    [32mtamam[0m  Yanlis webhook hedefiyle Quality Gate bekleyisi timeout oldu
+
+[1m==> Dogru webhook: ayni analiz ve Quality Gate basarili[0m
+ > git init /home/jenkins/agent/workspace/ekip-99/qg-hata-demose # timeout=10
+ > git --version # timeout=10
+ > git fetch --tags --force --progress -- https://gitlab.kurum.test/egitim/ekip-99/saha-ekipman-portal.git +refs/heads/*:refs/remotes/origin/* # timeout=10
+ > git config remote.origin.url https://gitlab.kurum.test/egitim/ekip-99/saha-ekipman-portal.git # timeout=10
+ > git config --add remote.origin.fetch +refs/heads/*:refs/remotes/origin/* # timeout=10
+ > git rev-parse refs/remotes/origin/develop^{commit} # timeout=10
+ > git config core.sparsecheckout # timeout=10
+ > git checkout -f 591162bddbc6a770719f13032858dbd16a421d37 # timeout=10
+ > git branch -a -v --no-abbrev # timeout=10
+ > git checkout -b develop 591162bddbc6a770719f13032858dbd16a421d37 # timeout=10
+ > git rev-list --no-walk 591162bddbc6a770719f13032858dbd16a421d37 # timeout=10
+[Pipeline] timeout
+Checking status of SonarQube task 'e1e88d65-3e3b-4909-b3a9-436d1fc95654' on server 'sonarqube'
+SonarQube task 'e1e88d65-3e3b-4909-b3a9-436d1fc95654' status is 'PENDING'
+SonarQube task 'e1e88d65-3e3b-4909-b3a9-436d1fc95654' status is 'SUCCESS'
+SonarQube task 'e1e88d65-3e3b-4909-b3a9-436d1fc95654' completed. Quality gate is 'OK'
+[Pipeline] // timeout
+Finished: SUCCESS
+    [32mtamam[0m  Webhook geri yuklendi; ayni job Quality Gate ile SUCCESS
+

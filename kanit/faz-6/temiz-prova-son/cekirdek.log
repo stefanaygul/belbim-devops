@@ -1,0 +1,150 @@
+
+[1mAd cozumleme[0m
+  [32mGECTI[0m  gitlab.kurum.test (ag takma adi): 172.30.99.10
+  [32mGECTI[0m  gitlab.kurum.test (lab DNS): 172.30.99.10
+  [32mGECTI[0m  jenkins.kurum.test (ag takma adi): 172.30.99.10
+  [32mGECTI[0m  jenkins.kurum.test (lab DNS): 172.30.99.10
+  [32mGECTI[0m  sonar.kurum.test (ag takma adi): 172.30.99.10
+  [32mGECTI[0m  sonar.kurum.test (lab DNS): 172.30.99.10
+  [32mGECTI[0m  nexus.kurum.test (ag takma adi): 172.30.99.10
+  [32mGECTI[0m  nexus.kurum.test (lab DNS): 172.30.99.10
+  [32mGECTI[0m  test-vm.kurum.test (ag takma adi): 172.30.99.20
+  [32mGECTI[0m  test-vm.kurum.test (lab DNS): 172.30.99.20
+  [32mGECTI[0m  lab DNS dis adlari da cozuyor (api.nuget.org)
+
+[1mTLS (dogrulama acik)[0m
+  [32mGECTI[0m  https://gitlab.kurum.test/users/sign_in: 200
+  [32mGECTI[0m  https://nexus.kurum.test/service/rest/v1/status: 200
+  [32mGECTI[0m  https://gitlab.kurum.test:5050/v2/: 401
+  [32mGECTI[0m  lab CA'si olmadan baglanti reddediliyor
+  [32mGECTI[0m  sertifikayi veren: Egitim Lab Root CA
+
+[1mGitLab SSH[0m
+  [32mGECTI[0m  gitlab.kurum.test:22 SSH host anahtari sunuyor: ssh-ed25519
+  [32mGECTI[0m  anahtarsiz SSH girisi GitLab tarafindan reddediliyor
+
+[1mGitLab[0m
+  [32mGECTI[0m  surum: 19.6.1
+  [32mGECTI[0m  surum turu (enterprise): false
+  [32mGECTI[0m  giden istek izin listesi: ["jenkins.kurum.test"]
+  [32mGECTI[0m  webhook'lardan yerel aga istek: false
+  [32mGECTI[0m  kayit olma kapali: false
+  [32mGECTI[0m  grup egitim gorunurluk: public
+  [32mGECTI[0m  grup sablonlar gorunurluk: public
+  [32mGECTI[0m  grup egitim/ekip-01 gorunurluk: private
+  [32mGECTI[0m  ekip01-lead rolu (40 = Maintainer): 40
+  [32mGECTI[0m  ekip01-dev rolu (30 = Developer): 30
+  [32mGECTI[0m  ekip-01 altinda proje yok (katilimci olusturur)
+  [32mGECTI[0m  ekip01-lead parolasiyla giris: 200
+  [32mGECTI[0m  ekip01-dev parolasiyla giris: 200
+  [32mGECTI[0m  grup egitim/ekip-02 gorunurluk: private
+  [32mGECTI[0m  ekip02-lead rolu (40 = Maintainer): 40
+  [32mGECTI[0m  ekip02-dev rolu (30 = Developer): 30
+  [32mGECTI[0m  ekip-02 altinda proje yok (katilimci olusturur)
+  [32mGECTI[0m  ekip02-lead parolasiyla giris: 200
+  [32mGECTI[0m  ekip02-dev parolasiyla giris: 200
+  [32mGECTI[0m  grup egitim/ekip-99 gorunurluk: private
+  [32mGECTI[0m  ekip99-lead rolu (40 = Maintainer): 40
+  [32mGECTI[0m  ekip99-dev rolu (30 = Developer): 30
+  [32mGECTI[0m  ekip-99 altinda proje yok (katilimci olusturur)
+  [32mGECTI[0m  ekip99-lead parolasiyla giris: 200
+  [32mGECTI[0m  ekip99-dev parolasiyla giris: 200
+  [32mGECTI[0m  yanlis parola reddediliyor (HTTP 401)
+  [32mGECTI[0m  sablon proje gorunurluk: public
+  [32mGECTI[0m  sablon varsayilan branch: main
+  [32mGECTI[0m  sablon branch'leri (anonim git ls-remote) starter ile ayni: 02313fa checkpoint/gun4 02313fa checkpoint/lab-04b 11289ab checkpoint/lab-03a 174fe06 main 4ed80af checkpoint/lab-05a 59562d2 lab/01a-conflict 621ce23 checkpoint/lab-02b-main 756affb lab/01b-rename 8a5349e checkpoint/gun2 8a5349e checkpoint/lab-02b 99f9f9d lab/04b-untested 9fa7fc9 checkpoint/gun3 9fa7fc9 checkpoint/lab-03b a7af75a checkpoint/lab-02a-main b079692 checkpoint/lab-04a c0e7e82 checkpoint/gun1 c3b3bb4 checkpoint/final cc4e219 checkpoint/lab-01a f034c49 checkpoint/final-main fd0a349 checkpoint/lab-02a 
+  [32mGECTI[0m  sablonda .gitlab-ci.yml yok: 404
+
+[1mContainer Registry (egitim/base, anonim okuma)[0m
+  [32mGECTI[0m  dotnet/sdk:10.0: mcr.microsoft.com/dotnet/sdk:10.0.404
+  [32mGECTI[0m  dotnet/aspnet:10.0: mcr.microsoft.com/dotnet/aspnet:10.0.15
+  [32mGECTI[0m  library/node:24-alpine: node:24.22.3-alpine3.24
+  [32mGECTI[0m  nginxinc/nginx-unprivileged:stable-alpine: nginxinc/nginx-unprivileged:1.31.7-alpine3.24
+
+[1mNexus[0m
+  [32mGECTI[0m  depolar: npm-group:npm:group npm-hosted:npm:hosted npm-proxy:npm:proxy nuget-group:nuget:group nuget-hosted:nuget:hosted nuget.org-proxy:nuget:proxy
+  [32mGECTI[0m  nuget-hosted redeploy kapali: ALLOW_ONCE
+  [32mGECTI[0m  npm-hosted redeploy kapali: ALLOW_ONCE
+  [32mGECTI[0m  etkin realm'ler: ["NexusAuthenticatingRealm","NpmToken","NuGetApiKey"]
+  [32mGECTI[0m  anonim okuma: true
+  [32mGECTI[0m  nuget-group anonim okunuyor: 200
+  [32mGECTI[0m  nuget-group servis adresleri HTTPS: https://nexus.kurum.test/repository/nuget-group/v3/content/
+  [32mGECTI[0m  npm-group anonim okunuyor: 200
+  [32mGECTI[0m  Nexus ekip01 parolasiyla giris (yonetici ucunda 403 beklenir): 403
+  [32mGECTI[0m  Nexus ekip02 parolasiyla giris (yonetici ucunda 403 beklenir): 403
+  [32mGECTI[0m  Nexus ekip99 parolasiyla giris (yonetici ucunda 403 beklenir): 403
+    Community Edition EULA kabul durumu: true
+
+63 gecti, 0 kaldi
+
+[1mworkstation (ekip01)[0m
+  [32mGECTI[0m  EKIP: 01
+  [32mGECTI[0m  IMG: gitlab.kurum.test:5050/egitim/ekip-01/saha-ekipman-portal
+  [32mGECTI[0m  TEST_URL: http://test-vm.kurum.test:8081
+  [32mGECTI[0m  .NET SDK: 10.0.404
+  [32mGECTI[0m  Node.js: v24.22.3
+  [32mGECTI[0m  sudo yetkisi var
+  [32mGECTI[0m  Docker daemon'a erisim var (docker grubu)
+
+[1mStarter proje: klonla (HTTPS, lab CA'si isletim sisteminde)[0m
+  [32mGECTI[0m  git clone https://gitlab.kurum.test/egitim/sablonlar/portal-starter.git
+  [32mGECTI[0m  NuGet kaynagi yalnizca Nexus: 1
+  [32mGECTI[0m  NuGet kaynagi adresi
+  [32mGECTI[0m  .npmrc registry: registry=https://nexus.kurum.test/repository/npm-group/
+
+[1mdotnet restore / build / test (onbellek bos, paketler Nexus'tan)[0m
+  [32mGECTI[0m  dotnet restore cikis kodu: 0
+  [32mGECTI[0m  restore uyarilari (NU1900 dahil): 0
+  [32mGECTI[0m  dotnet build cikis kodu: 0
+  [32mGECTI[0m  build: 0 uyari
+  [32mGECTI[0m  build: 0 hata
+  [32mGECTI[0m  dotnet test cikis kodu: 0
+  [32mGECTI[0m  gecen test projesi sayisi: 2
+
+[1mnpm ci / npm test (onbellek bos, paketler Nexus'tan)[0m
+  [32mGECTI[0m  npm ci cikis kodu: 0
+  [32mGECTI[0m  npm paketleri Nexus'tan indirildi (476 istek)
+  [32mGECTI[0m  Nexus disina giden npm istegi: 0
+  [32mGECTI[0m  npm test cikis kodu: 0
+  [32mGECTI[0m  Jest: 14 test gecti
+
+[1mDocker daemon'i ve lab CA'si (katilimci LAB 03-B'de tanitir)[0m
+  [32mGECTI[0m  daemon lab CA'sina guvenmiyor: docker pull x509 hatasi veriyor
+  [32mGECTI[0m  certs.d/gitlab.kurum.test:5050 yok
+  [32mGECTI[0m  temel imaj makinede yuklu: dotnet/sdk:10.0
+  [32mGECTI[0m  temel imaj makinede yuklu: dotnet/aspnet:10.0
+  [32mGECTI[0m  temel imaj makinede yuklu: library/node:24-alpine
+  [32mGECTI[0m  temel imaj makinede yuklu: nginxinc/nginx-unprivileged:stable-alpine
+  [32mGECTI[0m  insecure-registries kullanilmamis
+
+[1mTest VM'e SSH (ekip anahtari)[0m
+  [32mGECTI[0m  deploy kullanicisiyla baglanti
+  [32mGECTI[0m  test VM'de Docker calisiyor
+  [32mGECTI[0m  ekip dizini var
+  [32mGECTI[0m  deploy kullanicisinin sudo yetkisi yok
+
+34 gecti, 0 kaldi
+
+[1mtest-vm: ic ice container'da ad cozumleme, CA ve Nexus[0m
+  [32mGECTI[0m  Node temel imaji: anonim pull, lab DNS, lab CA (fetch nexus -> 200)
+  [32mGECTI[0m  SDK temel imaji: container icinde git clone + dotnet restore (Nexus)
+  [32mGECTI[0m  test VM'deki imaj sayisi denetimden once ve sonra ayni (ekiplerin imajlarina dokunulmadi): 0
+
+[1mNexus proxy onbellegi[0m
+  [32mGECTI[0m  nuget.org-proxy onbelleginde paket var (ilk sayfa: 61)
+  [32mGECTI[0m  npm-proxy onbelleginde paket var (ilk sayfa: 100)
+
+2 gecti, 0 kaldi
+
+[1mHost[0m
+  [32mGECTI[0m  host -> https://gitlab.kurum.test (lab CA'si ile, 127.0.0.1:443): 200
+  [32mGECTI[0m  host -> https://nexus.kurum.test (lab CA'si ile, 127.0.0.1:443): 200
+  [32mGECTI[0m  host -> registry (127.0.0.1:5050): 401
+  [32mGECTI[0m  yayinlanan portlarin host adresi: 127.0.0.1 
+  [32mGECTI[0m  host Docker soketini baglayan container: 0
+  [32mGECTI[0m  kendi Docker daemon'i olan container'lar: agent-docker test-vm workstation 
+  [33mBILGI[0m  /etc/hosts icinde gitlab.kurum.test kaydi yok; tarayicidan erisim icin lab-ortami/README.md "Host hazirligi" adimlari gerekir
+
+9 gecti, 0 kaldi
+
+[32mCEKIRDEK ORTAM: GECTI[0m

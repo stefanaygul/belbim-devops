@@ -1,0 +1,49 @@
+
+[1mLAB 03-A (ekip-99)[0m
+  [32mGECTI[0m  repo: feature/9-docker@18f8d52
+
+[1mDosyalar ve kurallar[0m
+  [32mGECTI[0m  src/order-service/Dockerfile var
+  [32mGECTI[0m  src/product-service/Dockerfile var
+  [32mGECTI[0m  src/web-ui/Dockerfile var
+  [32mGECTI[0m  .dockerignore var
+  [32mGECTI[0m  order-service: ARG MCR
+  [32mGECTI[0m  order-service: temel imajlar ${MCR} uzerinden
+  [32mGECTI[0m  order-service: multi-stage (SDK ile build)
+  [32mGECTI[0m  order-service: COPY NuGet.config
+  [32mGECTI[0m  order-service: USER $APP_UID
+  [32mGECTI[0m  product-service: ARG MCR
+  [32mGECTI[0m  product-service: temel imajlar ${MCR} uzerinden
+  [32mGECTI[0m  product-service: multi-stage (SDK ile build)
+  [32mGECTI[0m  product-service: COPY NuGet.config
+  [32mGECTI[0m  product-service: USER $APP_UID
+  [32mGECTI[0m  web-ui: ARG HUB
+  [32mGECTI[0m  web-ui: Node ile build
+  [32mGECTI[0m  web-ui: nginx-unprivileged
+  [32mGECTI[0m  web-ui: .npmrc kopyalaniyor (npm ci Nexus'tan)
+  [32mGECTI[0m  Dockerfile'larda :latest ve '# syntax=' yok
+  [32mGECTI[0m  .dockerignore: node_modules
+  [32mGECTI[0m  .dockerignore: bin
+  [32mGECTI[0m  .dockerignore: obj
+  [32mGECTI[0m  .dockerignore: .git
+
+[1mBuild (context: repo koku)[0m
+  [32mGECTI[0m  docker build order-service (cikis kodu): 0
+  [32mGECTI[0m  docker build product-service (cikis kodu): 0
+  [32mGECTI[0m  docker build web-ui (cikis kodu): 0
+
+[1mIkinci build: onbellek[0m
+  [32mGECTI[0m  order-service: restore CACHED
+  [32mGECTI[0m  web-ui: npm ci CACHED
+
+[1mImajlar root olmayan kullaniciyla calisiyor[0m
+  [32mGECTI[0m  product-service: /health -> 200
+  [32mGECTI[0m  product-service: surec kullanicisi uid=1654 (root degil)
+  [32mGECTI[0m  product-service /health: Healthy
+  [32mGECTI[0m  order-service: /health -> 200
+  [32mGECTI[0m  order-service: surec kullanicisi uid=1654 (root degil)
+  [32mGECTI[0m  web-ui: / -> 200
+  [32mGECTI[0m  web-ui: surec kullanicisi uid=101 (root degil)
+  BILGI  boyutlar: web-ui 127MB;product-service 545MB;order-service 604MB;
+
+36 gecti, 0 kaldi

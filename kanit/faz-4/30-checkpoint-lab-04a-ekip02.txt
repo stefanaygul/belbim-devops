@@ -1,0 +1,34 @@
+[1mcheckpoint/lab-04a -> ekip-02[0m
+
+[1m==> GitLab: ekip-02 icin checkpoint/lab-04a[0m
+    [32mtamam[0m  roller asil durumda; workstation SSH anahtarlari hesaplarda kayitli
+    [32mtamam[0m  proje var: egitim/ekip-02/saha-ekipman-portal
+    [32mtamam[0m  main@e89ef08 develop@05adc4c v1.0.0 v1.0.1
+    [32mtamam[0m  varsayilan branch develop; main ve develop korumali (push: No one, merge: Maintainers); v* tag korumali
+    [32mtamam[0m  issue kayitlari hazir (MR gecmisi checkpoint ile geri kurulmaz)
+    [32mtamam[0m  "Pipelines must succeed" acik (Jenkins baglantisi ekip-ci.sh ile kurulur)
+    [32mtamam[0m  deploy token'lar: ekip02-deploy (read+write), ekip02-pull (read)
+
+[1m==> workstation (ekip02)[0m
+    [32mtamam[0m  onceki calisma kopyasi tasindi: /home/ekip02/yedek/saha-ekipman-portal-20261124-110455
+    [32mtamam[0m  repo: /home/ekip02/saha-ekipman-portal (develop@05adc4c), origin = ekip projesi, sablon = starter
+    [32mtamam[0m  paketler kuruldu: dotnet restore, npm ci
+    [32mtamam[0m  imajlar registry'de: order-service, product-service, web-ui (1.0.1 ve 1dd2509)
+    [32mtamam[0m  deploy token'lar: ~/.lab/deploy-tokens (yalnizca bu kullanici okuyabilir)
+
+[1m==> test-vm[0m
+    [32mtamam[0m  test VM: ekip02 projesi ve verisi kaldirildi
+    [32mtamam[0m  test VM: ekip02 calisiyor (TAG=1.0.1, port 8082), ornek talep kaydedildi
+
+[1m==> CI: ekip-02 icin checkpoint/lab-04a[0m
+    [32mtamam[0m  Jenkins ekip-02: silinen job: 1, silinen credential: 2
+    [32mtamam[0m  SonarQube: 0 proje silindi; ekip02 kullanicisinin token'lari iptal edildi
+    [32mtamam[0m  Project Access Token: jenkins (api, Maintainer)
+    [32mtamam[0m  webhook: https://jenkins.kurum.test/project/ekip-02/saha-portal-ekip02 (Push events, SSL dogrulamasi acik)
+    [32mtamam[0m  Jenkins ekip-02 credential: gitlab-api, gitlab-repo
+    [32mtamam[0m  Multibranch job: ekip-02/saha-portal-ekip02 (Git, HTTPS, credential gitlab-repo)
+    [32mtamam[0m  webhook testi: Push events Jenkins'e ulasti (HTTP 201); branch taramasi basladi
+    [32mtamam[0m  develop build #1: SUCCESS (commit 05adc4ce)
+    [32mtamam[0m  GitLab commit status: jenkins = success
+
+[32mcheckpoint/lab-04a ekip-02 icin uygulandi.[0m Denetim: bash dogrula/lab.sh lab-04-a 02 KAYNAK=checkpoint

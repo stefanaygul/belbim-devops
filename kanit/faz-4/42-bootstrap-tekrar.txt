@@ -1,0 +1,101 @@
+# make bootstrap: ci profili calisirken ikinci calistirma (idempotent olmali)
+
+[1m==> GitLab yonetici token'i[0m
+    tamam  token gecerli
+
+[1m==> GitLab ayarlari[0m
+    surum: 19.6.1
+    [32mtamam[0m  giden istek izin listesi: ["jenkins.kurum.test"]
+
+[1m==> Gruplar[0m
+    [32mtamam[0m  grup egitim (var)
+    [32mtamam[0m  grup egitim/sablonlar (var)
+
+[1m==> Ekipler[0m
+    [32mtamam[0m  grup egitim/ekip-01 (var)
+    [32mtamam[0m  kullanici ekip01-lead (var)
+    [32mtamam[0m  kullanici ekip01-dev (var)
+    [32mtamam[0m  grup egitim/ekip-02 (var)
+    [32mtamam[0m  kullanici ekip02-lead (var)
+    [32mtamam[0m  kullanici ekip02-dev (var)
+
+[1m==> Temel imaj projesi[0m
+    [32mtamam[0m  proje egitim/base (var)
+
+[1m==> Sablon proje[0m
+    [32mtamam[0m  proje egitim/sablonlar/portal-starter (var)
+    sablon hazir: checkpoint/gun1@c0e7e82 checkpoint/gun2@8a5349e checkpoint/gun3@9fa7fc9 checkpoint/gun4@61eafaf checkpoint/lab-01a@cc4e219 checkpoint/lab-02a@fd0a349 checkpoint/lab-02a-main@a7af75a checkpoint/lab-02b@8a5349e checkpoint/lab-02b-main@621ce23 checkpoint/lab-03a@11289ab checkpoint/lab-03b@9fa7fc9 checkpoint/lab-04a@b079692 checkpoint/lab-04b@61eafaf lab/01a-conflict@59562d2 lab/01b-rename@756affb lab/04b-untested@99f9f9d main@174fe06 
+    [32mtamam[0m  sablon branch'leri guncel
+    [32mtamam[0m  sablon proje: main korumali
+
+[1m==> Nexus yonetici parolasi[0m
+    [32mtamam[0m  Nexus yonetici parolasi gecerli
+
+[1m==> Nexus Community Edition onaylari[0m
+    [32mtamam[0m  EULA daha once kabul edilmis
+    [32mtamam[0m  telemetri bildirimi daha once onaylanmis
+
+[1m==> Nexus guvenlik ayarlari[0m
+    [32mtamam[0m  anonim okuma acik
+    [32mtamam[0m  realm'ler: ["NexusAuthenticatingRealm","NpmToken","NuGetApiKey"]
+
+[1m==> Nexus depolari[0m
+    [32mtamam[0m  depo nuget.org-proxy (var, ayarlar esitlendi)
+    [32mtamam[0m  depo nuget-hosted (var, ayarlar esitlendi)
+    [32mtamam[0m  depo nuget-group (var, ayarlar esitlendi)
+    [32mtamam[0m  depo npm-proxy (var, ayarlar esitlendi)
+    [32mtamam[0m  depo npm-hosted (var, ayarlar esitlendi)
+    [32mtamam[0m  depo npm-group (var, ayarlar esitlendi)
+    [32mtamam[0m  hosted depolarda redeploy kapali (ALLOW_ONCE)
+
+[1m==> Nexus rol ve kullanicilari[0m
+    [32mtamam[0m  rol lab-yayinci (var, ayarlar esitlendi)
+    [32mtamam[0m  kullanici ekip01 (var)
+    [32mtamam[0m  kullanici ekip02 (var)
+
+[1m==> Temel imajlar (egitim/base)[0m
+    [32mtamam[0m  dotnet/sdk:10.0 (guncel: mcr.microsoft.com/dotnet/sdk:10.0.404)
+    [32mtamam[0m  dotnet/aspnet:10.0 (guncel: mcr.microsoft.com/dotnet/aspnet:10.0.15)
+    [32mtamam[0m  library/node:24-alpine (guncel: node:24.22.3-alpine3.24)
+    [32mtamam[0m  nginxinc/nginx-unprivileged:stable-alpine (guncel: nginxinc/nginx-unprivileged:1.31.7-alpine3.24)
+
+[1m==> workstation[0m
+    [32mtamam[0m  kullanici ekip01: SSH anahtarlari ve bilinen sunucular hazir
+    [32mtamam[0m  kullanici ekip02: SSH anahtarlari ve bilinen sunucular hazir
+
+[1m==> Temel imajlar: workstation Docker daemon'i[0m
+    [32mtamam[0m  gitlab.kurum.test:5050/egitim/base/dotnet/sdk:10.0 (yuklu, guncel)
+           kaynak mcr.microsoft.com/dotnet/sdk:10.0.404  registry sha256:c761b1d0f1acf5ed598d7a94f5e40ea2398b3eaff6be304832a630dbfa5db770
+    [32mtamam[0m  gitlab.kurum.test:5050/egitim/base/dotnet/aspnet:10.0 (yuklu, guncel)
+           kaynak mcr.microsoft.com/dotnet/aspnet:10.0.15  registry sha256:2002c8f9b83df8925c6b273c7d39cf48b39898058fe9234d73d36f7b5b978811
+    [32mtamam[0m  gitlab.kurum.test:5050/egitim/base/library/node:24-alpine (yuklu, guncel)
+           kaynak node:24.22.3-alpine3.24  registry sha256:1002babad2d4bfa723cedf62ac3f02bc2be59d8d2b5ce6aa0b006d67810b49e0
+    [32mtamam[0m  gitlab.kurum.test:5050/egitim/base/nginxinc/nginx-unprivileged:stable-alpine (yuklu, guncel)
+           kaynak nginxinc/nginx-unprivileged:1.31.7-alpine3.24  registry sha256:e05a7b295f344531cb861af0efd10dae5907496a275b2e9d206e6efaf540911e
+
+[1m==> test-vm[0m
+    [32mtamam[0m  /opt/saha/ekip01, ekip01 anahtari deploy kullanicisinda yetkili
+    [32mtamam[0m  /opt/saha/ekip02, ekip02 anahtari deploy kullanicisinda yetkili
+
+[1m==> Jenkins[0m
+    surum: 2.580.2
+    [32mtamam[0m  controller executor 0; agent true label=dotnet-docker executor=2
+    [32mtamam[0m  GitLab connection: gitlab; SonarQube sunucusu: sonarqube
+    [32mtamam[0m  kullanici ekip01 (var)
+    [32mtamam[0m  klasor ekip-01 (var)
+    [32mtamam[0m  kullanici ekip02 (var)
+    [32mtamam[0m  klasor ekip-02 (var)
+
+[1m==> SonarQube[0m
+    [32mtamam[0m  yonetici parolasi gecerli
+    surum: 26.11.0.134175 (UP)
+    [32mtamam[0m  sunucu adresi: https://sonar.kurum.test
+    [32mtamam[0m  yerel aga webhook izni (sonar.validateWebhooks=false)
+    [32mtamam[0m  webhook jenkins -> https://jenkins.kurum.test/sonarqube-webhook/ (var)
+    [32mtamam[0m  kullanici ekip01 (var)
+    [32mtamam[0m  kullanici ekip02 (var)
+    [32mtamam[0m  ekip kullanicilari proje olusturabilir ve analiz gonderebilir
+    varsayilan Quality Gate: Sonar way
+
+[1mBootstrap tamamlandi.[0m Denetim icin: make dogrula
+cikis=0

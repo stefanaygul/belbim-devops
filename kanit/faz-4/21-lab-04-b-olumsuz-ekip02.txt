@@ -1,0 +1,63 @@
+
+[1mLAB 04-B (ekip-02)[0m
+
+[1mRepo (develop): ci/analyze.sh ve Jenkinsfile[0m
+  [31mKALDI[0m  ci/analyze.sh develop'ta yok
+  [31mKALDI[0m  proje anahtari: 'SONAR_PROJECT_KEY = 'saha-portal-ekip02'' bulunamadi. Gelen:     aborted { updateGitlabCommitStatus name: 'jenkins', state: 'canceled' }
+  }
+}
+  [31mKALDI[0m  analiz withSonarQubeEnv icinde, ekibin token'iyla: 'withSonarQubeEnv(installationName: 'sonarqube', credentialsId: 'sonar-token')' bulunamadi. Gelen:     aborted { updateGitlabCommitStatus name: 'jenkins', state: 'canceled' }
+  }
+}
+  [31mKALDI[0m  Quality Gate pipeline'i durduruyor: 'waitForQualityGate abortPipeline: true' bulunamadi. Gelen:     aborted { updateGitlabCommitStatus name: 'jenkins', state: 'canceled' }
+  }
+}
+  [31mKALDI[0m  analiz ve kapi yalnizca develop'ta (when { branch 'develop' }): beklenen '2', gelen '0'
+  [31mKALDI[0m  imaj yalnizca develop ve main'de: 'when { anyOf { branch 'develop'; branch 'main' } }' bulunamadi. Gelen:     aborted { updateGitlabCommitStatus name: 'jenkins', state: 'canceled' }
+  }
+}
+  [31mKALDI[0m  imaj etiketi commit SHA: 'SHA=$(git rev-parse --short HEAD)' bulunamadi. Gelen:     aborted { updateGitlabCommitStatus name: 'jenkins', state: 'canceled' }
+  }
+}
+  [31mKALDI[0m  registry girisi credential ile, parola standart giristen: '--password-stdin' bulunamadi. Gelen:     aborted { updateGitlabCommitStatus name: 'jenkins', state: 'canceled' }
+  }
+}
+  [32mGECTI[0m  latest etiketi yok
+  [32mGECTI[0m  tek durum adi (jenkins): 3/3
+  [32mGECTI[0m  Jenkinsfile: token degeri yok
+  [32mGECTI[0m  .gitlab-ci.yml yok
+
+[1mJenkins: credential'lar[0m
+  [31mKALDI[0m  klasor credential'i sonar-token: beklenen 'Secret text', gelen ''
+  [31mKALDI[0m  klasor credential'i gitlab-registry: beklenen 'Username with password', gelen ''
+  [31mKALDI[0m  Jenkins'in deploy token'i ekip02-jenkins: beklenen '["read_registry","write_registry"]', gelen '[]'
+
+[1mSonarQube: proje, yeni kod tanimi, Quality Gate[0m
+  [31mKALDI[0m  SonarQube projesi yok: saha-portal-ekip02 (HTTP 404)
+
+[1mJenkins: develop build'leri[0m
+  [32mGECTI[0m  develop #2 (commit f3d61e2) sonucu: SUCCESS
+  [31mKALDI[0m  analiz gonderildi: 'ANALYSIS SUCCESSFUL' bulunamadi. Gelen: [Pipeline] // node
+[Pipeline] End of Pipeline
+Finished: SUCCESS
+  [31mKALDI[0m  kapi sonucu Jenkins'e geldi: 'Quality gate is 'OK'' bulunamadi. Gelen: [Pipeline] // node
+[Pipeline] End of Pipeline
+Finished: SUCCESS
+  [31mKALDI[0m  imaj gonderildi: 'f3d61e2: digest: sha256:' bulunamadi. Gelen: [Pipeline] // node
+[Pipeline] End of Pipeline
+Finished: SUCCESS
+  [31mKALDI[0m  Quality Gate'te kalan develop build'i yok (testsiz kod develop'a girmemis)
+
+[1mRegistry: commit SHA etiketli imajlar[0m
+  [31mKALDI[0m  order-service:f3d61e2 registry'de yok
+  [31mKALDI[0m  product-service:f3d61e2 registry'de yok
+  [31mKALDI[0m  web-ui:f3d61e2 registry'de yok
+  [32mGECTI[0m  develop commit'inin GitLab durumu: jenkins=success
+
+[1mMerge Request'ler[0m
+  [31mKALDI[0m  feature/sonar -> develop icin merge edilmis MR yok
+  [31mKALDI[0m  feature/siparis-ozeti -> develop icin merge edilmis MR yok
+  [31mKALDI[0m  feature/siparis-ozeti-testleri -> develop icin merge edilmis MR yok
+
+6 gecti, 22 kaldi
+

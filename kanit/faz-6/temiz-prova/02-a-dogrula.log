@@ -1,0 +1,37 @@
+
+[1mLAB 02-A (ekip-99)[0m
+  [32mGECTI[0m  proje var: egitim/ekip-99/saha-ekipman-portal
+  [32mGECTI[0m  gorunurluk: private
+  [32mGECTI[0m  varsayilan branch: develop
+
+[1mKorumali branch'ler[0m
+  [32mGECTI[0m  main: Allowed to push and merge: No one
+  [32mGECTI[0m  main: Allowed to merge: Maintainers
+  [32mGECTI[0m  main: force push: false
+  [32mGECTI[0m  develop: Allowed to push and merge: No one
+  [32mGECTI[0m  develop: Allowed to merge: Maintainers
+  [32mGECTI[0m  develop: force push: false
+  [32mGECTI[0m  merge yontemi: merge
+  [32mGECTI[0m  cozulmemis thread varken merge kapali: true
+
+[1mRepo icerigi (develop)[0m
+  [32mGECTI[0m  .gitlab/merge_request_templates/Default.md var
+  [32mGECTI[0m  .gitlab/CODEOWNERS var
+  [32mGECTI[0m  katalogdaki her kayitta inStock (true/false): true
+  [32mGECTI[0m  SRJ-04 develop'ta: Şarj ünitesi
+
+[1mMerge Request sureci[0m
+  [32mGECTI[0m  MR !1 merge edilmis: feat(catalog): add stock status
+  [32mGECTI[0m  yazar (ekip99-dev) ve merge eden (ekip99-lead) farkli kisiler
+  [32mGECTI[0m  yazar disinda birinin actigi, cozulmus thread (en az 1): evet
+  [32mGECTI[0m  cozulmemis thread: 0
+  [32mGECTI[0m  kaynak branch silinmis
+  [32mGECTI[0m  MR'in kapattigi issue #1: closed
+  [32mGECTI[0m  MR aciklamasi sablondan gelmis
+
+[1mTestler (develop)[0m
+  [32mGECTI[0m  dotnet test (cikis kodu): 0
+         Passed!  - Failed:     0, Passed:     8, Skipped:     0, Total:     8, Duration: 120 ms - product-service.tests.dll (net10.0)
+         Passed!  - Failed:     0, Passed:     4, Skipped:     0, Total:     4, Duration: 501 ms - order-service.tests.dll (net10.0)
+
+23 gecti, 0 kaldi

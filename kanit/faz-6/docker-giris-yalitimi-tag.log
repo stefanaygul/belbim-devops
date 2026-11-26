@@ -1,0 +1,299 @@
+Started by user admin
+ > git rev-parse --resolve-git-dir /var/jenkins_home/caches/git-0182d987c44312a9dea2b8cc83c8f654/.git # timeout=10
+Setting origin to https://gitlab.kurum.test/egitim/ekip-99/saha-ekipman-portal.git
+ > git config remote.origin.url https://gitlab.kurum.test/egitim/ekip-99/saha-ekipman-portal.git # timeout=10
+Fetching origin...
+Fetching upstream changes from origin
+ > git --version # timeout=10
+ > git --version # 'git version 2.47.3'
+ > git config --get remote.origin.url # timeout=10
+using GIT_ASKPASS to set credentials GitLab Project Access Token (repo okuma)
+ > git fetch --tags --force --progress -- origin +refs/heads/*:refs/remotes/origin/* # timeout=10
+ > git rev-parse refs/tags/v1.1.0^{commit} # timeout=10
+Obtained Jenkinsfile from b3b77b66467c70d2a2b1371e5b82f5954b83c507
+[Pipeline] Start of Pipeline
+[Pipeline] node
+Running on agent-1 in /home/jenkins/agent/workspace/kip-99_saha-portal-ekip99_v1.1.0
+[Pipeline] {
+[Pipeline] stage
+[Pipeline] { (Declarative: Checkout SCM)
+[Pipeline] checkout
+Selected Git installation does not exist. Using Default
+The recommended git tool is: NONE
+using credential gitlab-repo
+Fetching changes from the remote Git repository
+Fetching with tags
+Checking out Revision b3b77b66467c70d2a2b1371e5b82f5954b83c507 (v1.1.0)
+Commit message: "Merge branch 'release/1.1.0' into 'main'"
+ > git rev-parse --resolve-git-dir /home/jenkins/agent/workspace/kip-99_saha-portal-ekip99_v1.1.0/.git # timeout=10
+ > git config remote.origin.url https://gitlab.kurum.test/egitim/ekip-99/saha-ekipman-portal.git # timeout=10
+Fetching upstream changes from https://gitlab.kurum.test/egitim/ekip-99/saha-ekipman-portal.git
+ > git --version # timeout=10
+ > git --version # 'git version 2.47.3'
+using GIT_ASKPASS to set credentials GitLab Project Access Token (repo okuma)
+ > git fetch --tags --force --progress -- https://gitlab.kurum.test/egitim/ekip-99/saha-ekipman-portal.git +refs/heads/*:refs/remotes/origin/* # timeout=10
+ > git config core.sparsecheckout # timeout=10
+ > git checkout -f b3b77b66467c70d2a2b1371e5b82f5954b83c507 # timeout=10
+ > git rev-list --no-walk b3b77b66467c70d2a2b1371e5b82f5954b83c507 # timeout=10
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] withEnv
+[Pipeline] {
+[Pipeline] withEnv
+[Pipeline] {
+[Pipeline] gitlabBuilds
+[Pipeline] {
+[Pipeline] timeout
+Timeout set to expire in 30 min
+[Pipeline] {
+[Pipeline] stage
+[Pipeline] { (Restore)
+[Pipeline] sh
++ dotnet restore SahaPortal.sln
+  Determining projects to restore...
+  All projects are up-to-date for restore.
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] stage
+[Pipeline] { (Build)
+[Pipeline] sh
++ dotnet build SahaPortal.sln -c Release --no-restore
+  common-contracts -> /home/jenkins/agent/workspace/kip-99_saha-portal-ekip99_v1.1.0/src/common-contracts/bin/Release/net10.0/common-contracts.dll
+  order-service -> /home/jenkins/agent/workspace/kip-99_saha-portal-ekip99_v1.1.0/src/order-service/bin/Release/net10.0/order-service.dll
+  product-service -> /home/jenkins/agent/workspace/kip-99_saha-portal-ekip99_v1.1.0/src/product-service/bin/Release/net10.0/product-service.dll
+  order-service.tests -> /home/jenkins/agent/workspace/kip-99_saha-portal-ekip99_v1.1.0/tests/order-service.tests/bin/Release/net10.0/order-service.tests.dll
+  product-service.tests -> /home/jenkins/agent/workspace/kip-99_saha-portal-ekip99_v1.1.0/tests/product-service.tests/bin/Release/net10.0/product-service.tests.dll
+
+Build succeeded.
+    0 Warning(s)
+    0 Error(s)
+
+Time Elapsed 00:00:00.83
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] stage
+[Pipeline] { (Unit Test)
+[Pipeline] sh
++ dotnet test SahaPortal.sln -c Release --no-build --logger junit;LogFileName=junit.xml
+Test run for /home/jenkins/agent/workspace/kip-99_saha-portal-ekip99_v1.1.0/tests/order-service.tests/bin/Release/net10.0/order-service.tests.dll (.NETCoreApp,Version=v10.0)
+Test run for /home/jenkins/agent/workspace/kip-99_saha-portal-ekip99_v1.1.0/tests/product-service.tests/bin/Release/net10.0/product-service.tests.dll (.NETCoreApp,Version=v10.0)
+A total of 1 test files matched the specified pattern.A total of 1 test files matched the specified pattern.
+
+Results File: /home/jenkins/agent/workspace/kip-99_saha-portal-ekip99_v1.1.0/tests/product-service.tests/TestResults/junit.xml
+
+Passed!  - Failed:     0, Passed:     8, Skipped:     0, Total:     8, Duration: 130 ms - product-service.tests.dll (net10.0)
+VSTEST_ARTIFACTS_DIRECTORY environment variable was not found, falling back to a user-private temporary directory. This is most likely caused by an outdated Microsoft.NET.Test.Sdk package reference in the test project.
+Results File: /home/jenkins/agent/workspace/kip-99_saha-portal-ekip99_v1.1.0/tests/order-service.tests/TestResults/junit.xml
+
+Passed!  - Failed:     0, Passed:    21, Skipped:     0, Total:    21, Duration: 540 ms - order-service.tests.dll (net10.0)
+VSTEST_ARTIFACTS_DIRECTORY environment variable was not found, falling back to a user-private temporary directory. This is most likely caused by an outdated Microsoft.NET.Test.Sdk package reference in the test project.
+Post stage
+[Pipeline] junit
+Recording test results
+[Checks API] No suitable checks publisher found.
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] stage
+[Pipeline] { (Build + Test + SonarQube)
+Stage "Build + Test + SonarQube" skipped due to when conditional
+[Pipeline] getContext
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] stage
+[Pipeline] { (Quality Gate)
+Stage "Quality Gate" skipped due to when conditional
+[Pipeline] getContext
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] stage
+[Pipeline] { (web-ui)
+[Pipeline] dir
+Running in /home/jenkins/agent/workspace/kip-99_saha-portal-ekip99_v1.1.0/src/web-ui
+[Pipeline] {
+[Pipeline] sh
++ npm ci
+npm warn deprecated whatwg-encoding@3.1.1: Use @exodus/bytes instead for a more spec-conformant and faster implementation
+npm warn deprecated glob@10.5.0: Old versions of glob are not supported, and contain widely publicized security vulnerabilities, which have been fixed in the current version. Please update. Support for old versions may be purchased (at exorbitant rates) by contacting i@izs.me
+
+added 475 packages in 2s
+
+68 packages are looking for funding
+  run `npm fund` for details
+npm warn install-scripts 1 package has install scripts not yet covered by allowScripts:
+npm warn install-scripts   @parcel/watcher@2.6.0 (install: node scripts/build-from-source.js)
+npm warn install-scripts
+npm warn install-scripts Run `npm install-scripts ls` to review, or `npm install-scripts approve <pkg>` to allow.
+[Pipeline] sh
++ npm test -- --coverage --ci
+
+> web-ui@1.0.0 test
+> jest --coverage --ci
+
+PASS src/components/OrderForm.test.jsx
+PASS src/App.test.jsx
+PASS src/components/OrderList.test.jsx
+PASS src/components/CatalogList.test.jsx
+PASS src/api.test.js
+------------------|---------|----------|---------|---------|-------------------
+File              | % Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s 
+------------------|---------|----------|---------|---------|-------------------
+All files         |   97.67 |    95.45 |     100 |   97.61 |                   
+ src              |   95.83 |      100 |     100 |   95.83 |                   
+  App.jsx         |     100 |      100 |     100 |     100 |                   
+  api.js          |    92.3 |      100 |     100 |    92.3 | 22                
+ src/components   |     100 |    91.66 |     100 |     100 |                   
+  CatalogList.jsx |     100 |      100 |     100 |     100 |                   
+  OrderForm.jsx   |     100 |      100 |     100 |     100 |                   
+  OrderList.jsx   |     100 |       75 |     100 |     100 | 25                
+------------------|---------|----------|---------|---------|-------------------
+
+Test Suites: 5 passed, 5 total
+Tests:       15 passed, 15 total
+Snapshots:   0 total
+Time:        0.759 s, estimated 1 s
+Ran all test suites.
+[Pipeline] sh
++ npm run build
+
+> web-ui@1.0.0 build
+> vite build
+
+[36mvite v8.3.8 [32mbuilding client environment for production...[36m[39m
+transforming...
+✓ 20 modules transformed.
+rendering chunks...
+computing gzip size...
+dist/index.html                   0.41 kB │ gzip:  0.28 kB
+dist/assets/index-DpRJsg-p.css    0.87 kB │ gzip:  0.48 kB
+dist/assets/index-Cda3tHxO.js   223.04 kB │ gzip: 69.68 kB
+
+[32m✓ built in 104ms[39m
+[Pipeline] }
+[Pipeline] // dir
+Post stage
+[Pipeline] junit
+Recording test results
+[Checks API] No suitable checks publisher found.
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] stage
+[Pipeline] { (Docker Build & Push)
+Stage "Docker Build & Push" skipped due to when conditional
+[Pipeline] getContext
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] stage
+[Pipeline] { (Docker: SemVer etiketi)
+[Pipeline] withCredentials
+Masking supported pattern matches of $P
+[Pipeline] {
+[Pipeline] sh
++ echo ****
++ docker login gitlab.kurum.test:5050 -u ekip99-jenkins --password-stdin
+
+WARNING! Your credentials are stored unencrypted in '/home/jenkins/agent/workspace/kip-99_saha-portal-ekip99_v1.1.0@tmp/docker-config/config.json'.
+Configure a credential helper to remove this warning. See
+https://docs.docker.com/go/credential-store/
+
+Login Succeeded
++ git rev-parse --short HEAD
++ SHA=b3b77b6
++ SURUM=1.1.0
++ i=0
++ docker manifest inspect gitlab.kurum.test:5050/egitim/ekip-99/saha-ekipman-portal/product-service:b3b77b6
++ docker pull -q gitlab.kurum.test:5050/egitim/ekip-99/saha-ekipman-portal/product-service:b3b77b6
+gitlab.kurum.test:5050/egitim/ekip-99/saha-ekipman-portal/product-service:b3b77b6
++ docker tag gitlab.kurum.test:5050/egitim/ekip-99/saha-ekipman-portal/product-service:b3b77b6 gitlab.kurum.test:5050/egitim/ekip-99/saha-ekipman-portal/product-service:1.1.0
++ docker push -q gitlab.kurum.test:5050/egitim/ekip-99/saha-ekipman-portal/product-service:1.1.0
+gitlab.kurum.test:5050/egitim/ekip-99/saha-ekipman-portal/product-service:1.1.0
++ i=0
++ docker manifest inspect gitlab.kurum.test:5050/egitim/ekip-99/saha-ekipman-portal/order-service:b3b77b6
++ docker pull -q gitlab.kurum.test:5050/egitim/ekip-99/saha-ekipman-portal/order-service:b3b77b6
+gitlab.kurum.test:5050/egitim/ekip-99/saha-ekipman-portal/order-service:b3b77b6
++ docker tag gitlab.kurum.test:5050/egitim/ekip-99/saha-ekipman-portal/order-service:b3b77b6 gitlab.kurum.test:5050/egitim/ekip-99/saha-ekipman-portal/order-service:1.1.0
++ docker push -q gitlab.kurum.test:5050/egitim/ekip-99/saha-ekipman-portal/order-service:1.1.0
+gitlab.kurum.test:5050/egitim/ekip-99/saha-ekipman-portal/order-service:1.1.0
++ i=0
++ docker manifest inspect gitlab.kurum.test:5050/egitim/ekip-99/saha-ekipman-portal/web-ui:b3b77b6
++ docker pull -q gitlab.kurum.test:5050/egitim/ekip-99/saha-ekipman-portal/web-ui:b3b77b6
+gitlab.kurum.test:5050/egitim/ekip-99/saha-ekipman-portal/web-ui:b3b77b6
++ docker tag gitlab.kurum.test:5050/egitim/ekip-99/saha-ekipman-portal/web-ui:b3b77b6 gitlab.kurum.test:5050/egitim/ekip-99/saha-ekipman-portal/web-ui:1.1.0
++ docker push -q gitlab.kurum.test:5050/egitim/ekip-99/saha-ekipman-portal/web-ui:1.1.0
+gitlab.kurum.test:5050/egitim/ekip-99/saha-ekipman-portal/web-ui:1.1.0
+[Pipeline] }
+[Pipeline] // withCredentials
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] stage
+[Pipeline] { (Deploy: test)
+[Pipeline] script
+[Pipeline] {
+[Pipeline] sh
++ git rev-parse HEAD
+[Pipeline] }
+[Pipeline] // script
+[Pipeline] sshagent
+[ssh-agent] Using credentials deploy (Test VM deploy anahtari (Jenkins))
+$ ssh-agent
+SSH_AUTH_SOCK=/tmp/ssh-8NbuD1lsI94Y/agent.32664
+SSH_AGENT_PID=32667
+Running ssh-add (command line suppressed)
+[ssh-agent] Started.
+[Pipeline] {
+[Pipeline] sh
++ scp deploy/compose.yaml deploy/deploy.sh deploy@test-vm.kurum.test:/opt/saha/ekip99/
+[Pipeline] script
+[Pipeline] {
+[Pipeline] sh
++ ssh deploy@test-vm.kurum.test sh /opt/saha/ekip99/deploy.sh gitlab.kurum.test:5050/egitim/ekip-99/saha-ekipman-portal 1.1.0 8099 b3b77b66467c70d2a2b1371e5b82f5954b83c507 https://jenkins.kurum.test/job/ekip-99/job/saha-portal-ekip99/job/v1.1.0/3/
+ Image gitlab.kurum.test:5050/egitim/ekip-99/saha-ekipman-portal/web-ui:1.1.0 Pulling 
+ Image gitlab.kurum.test:5050/egitim/ekip-99/saha-ekipman-portal/product-service:1.1.0 Pulling 
+ Image gitlab.kurum.test:5050/egitim/ekip-99/saha-ekipman-portal/order-service:1.1.0 Pulling 
+ Image gitlab.kurum.test:5050/egitim/ekip-99/saha-ekipman-portal/product-service:1.1.0 Pulled 
+ Image gitlab.kurum.test:5050/egitim/ekip-99/saha-ekipman-portal/order-service:1.1.0 Pulled 
+ Image gitlab.kurum.test:5050/egitim/ekip-99/saha-ekipman-portal/web-ui:1.1.0 Pulled 
+ Container ekip99-product-service-1 Running 
+ Container ekip99-order-service-1 Running 
+ Container ekip99-web-ui-1 Running 
+[Pipeline] echo
+KAYIT 2026-11-24T16:49:13Z tag=1.1.0 commit=b3b77b66467c70d2a2b1371e5b82f5954b83c507 kaynak=https://jenkins.kurum.test/job/ekip-99/job/saha-portal-ekip99/job/v1.1.0/3/ product-service@sha256:07ef4cffe328467fe234a0f35b1774b13ef3e9390d846471de82625e9430c213 order-service@sha256:fa18f041338fc7c4af57018c0ac9f445930c9efd02a656db84c12400cd10ab1c web-ui@sha256:809cd059e7f9fabef1eb17d0efad857f64e01c7e5d25e290ba320581e63da29c
+[Pipeline] }
+[Pipeline] // script
+[Pipeline] }
+$ ssh-agent -k
+unset SSH_AUTH_SOCK;
+unset SSH_AGENT_PID;
+echo Agent pid 32667 killed;
+[ssh-agent] Stopped.
+[Pipeline] // sshagent
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] stage
+[Pipeline] { (Smoke test)
+[Pipeline] sh
++ curl -fsS --retry+  10 --retry-connrefused --retry-delay 3 http://test-vm.kurum.test:8099/api/products
+grep -q "code"
++ curl -fsS --retry 10 --retry-connrefused --retry-delay 3 -o /dev/null http://test-vm.kurum.test:8099/api/orders
++ echo smoke test: http://test-vm.kurum.test:8099 yanıt veriyor (TAG=1.1.0)
+smoke test: http://test-vm.kurum.test:8099 yanıt veriyor (TAG=1.1.0)
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] stage
+[Pipeline] { (Declarative: Post Actions)
+[Pipeline] sh
++ rm -f /home/jenkins/agent/workspace/kip-99_saha-portal-ekip99_v1.1.0@tmp/docker-config/config.json
+[Pipeline] updateGitlabCommitStatus
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] }
+[Pipeline] // timeout
+[Pipeline] }
+[Pipeline] // gitlabBuilds
+[Pipeline] }
+[Pipeline] // withEnv
+[Pipeline] }
+[Pipeline] // withEnv
+[Pipeline] }
+[Pipeline] // node
+[Pipeline] End of Pipeline
+Finished: SUCCESS

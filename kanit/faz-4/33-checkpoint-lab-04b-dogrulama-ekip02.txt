@@ -1,0 +1,52 @@
+
+[1mLAB 04-B (ekip-02)[0m
+
+[1mRepo (develop): ci/analyze.sh ve Jenkinsfile[0m
+  [32mGECTI[0m  analyze.sh sirasi: begin build test end 
+  [32mGECTI[0m  proje anahtari degiskenden
+  [32mGECTI[0m  coverage raporu opencover biciminde
+  [32mGECTI[0m  sonar.branch.name gonderilmiyor
+  [32mGECTI[0m  token betikte degil (withSonarQubeEnv ortamdan verir)
+  [32mGECTI[0m  ci/analyze.sh: token degeri yok
+  [32mGECTI[0m  ci/analyze.sh calistirilabilir (git modu 100755): true
+  [32mGECTI[0m  proje anahtari
+  [32mGECTI[0m  analiz withSonarQubeEnv icinde, ekibin token'iyla
+  [32mGECTI[0m  Quality Gate pipeline'i durduruyor
+  [32mGECTI[0m  analiz ve kapi yalnizca develop'ta (when { branch 'develop' }): 2
+  [32mGECTI[0m  imaj yalnizca develop ve main'de
+  [32mGECTI[0m  imaj etiketi commit SHA
+  [32mGECTI[0m  registry girisi credential ile, parola standart giristen
+  [32mGECTI[0m  latest etiketi yok
+  [32mGECTI[0m  tek durum adi (jenkins): 3/3
+  [32mGECTI[0m  Jenkinsfile: token degeri yok
+  [32mGECTI[0m  .gitlab-ci.yml yok
+
+[1mJenkins: credential'lar[0m
+  [32mGECTI[0m  klasor credential'i sonar-token: Secret text
+  [32mGECTI[0m  klasor credential'i gitlab-registry: Username with password
+  [32mGECTI[0m  Jenkins'in deploy token'i ekip02-jenkins: ["read_registry","write_registry"]
+
+[1mSonarQube: proje, yeni kod tanimi, Quality Gate[0m
+  [32mGECTI[0m  proje var: saha-portal-ekip02
+  [32mGECTI[0m  analiz edilen tek branch (ana branch): develop
+  [32mGECTI[0m  son analiz develop'un son commit'i: 65da2951f4e33a1a1ba9414fdf45ea1a164edc34
+  [32mGECTI[0m  Quality Gate: OK
+  ATLANDI yeni kod kosullari ve kapi gecmisi (checkpoint tek analizle kurulur: taban cizgisi)
+
+[1mJenkins: develop build'leri[0m
+  [32mGECTI[0m  develop #1 (commit 65da295) sonucu: SUCCESS
+  [32mGECTI[0m  analiz gonderildi
+  [32mGECTI[0m  kapi sonucu Jenkins'e geldi
+  [32mGECTI[0m  imaj gonderildi
+  ATLANDI kalan kapinin build'i (checkpoint bunu geri kurmaz)
+
+[1mRegistry: commit SHA etiketli imajlar[0m
+  [32mGECTI[0m  order-service:65da295 var (develop'un son commit'i)
+  [32mGECTI[0m  product-service:65da295 var (develop'un son commit'i)
+  [32mGECTI[0m  web-ui:65da295 var (develop'un son commit'i)
+  [32mGECTI[0m  develop commit'inin GitLab durumu: jenkins=success
+
+[1mMerge Request'ler[0m
+  ATLANDI MR gecmisi (checkpoint bunu geri kurmaz)
+
+33 gecti, 0 kaldi

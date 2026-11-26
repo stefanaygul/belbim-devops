@@ -1,0 +1,61 @@
+== 0) credential nexus-nuget-key (ekip-02 klasoru; ekibin Nexus API anahtari)
+credential nexus-nuget-key hazir
+== 1) Pack & Publish stage'i ve Version 1.0.1 -> main
+1
+37:    NEXUS             = 'https://nexus.kurum.test'
+13:    <Version>1.0.1</Version>
+b1f7e14 ci(contracts): publish the package from main (bonus)
+    GitLab  : deneme/paket-yayini son commit'i b1f7e14d
+    Jenkins : ekip-02/saha-portal-ekip02/deneme/paket-yayini #1 -> SUCCESS (8 sn), derlenen commit b1f7e14d (ayni SHA)
+    GitLab  : commit status jenkins = success (ref deneme/paket-yayini) -> https://jenkins.kurum.test/job/ekip-02/job/saha-portal-ekip02/job/deneme%252Fpaket-yayini/1/display/redirect
+    Jenkins konsolu (#1):
+      | Stage "Build + Test + SonarQube" skipped due to when conditional
+      | Stage "Quality Gate" skipped due to when conditional
+      | Stage "Docker Build & Push" skipped due to when conditional
+      | Stage "Pack & Publish" skipped due to when conditional
+      | Stage "Docker: SemVer etiketi" skipped due to when conditional
+      | Stage "Deploy: test" skipped due to when conditional
+      | Stage "Smoke test" skipped due to when conditional
+      | Finished: SUCCESS
+    [32mtamam[0m  deneme/paket-yayini: build SUCCESS, GitLab commit status jenkins=success
+MR !11 acildi: deneme/paket-yayini -> main
+MR !11 durumu: mergeable
+MR !11 merge edildi (main: 5578964d)
+    GitLab  : main son commit'i 5578964d
+    Jenkins : ekip-02/saha-portal-ekip02/main #3 -> SUCCESS (16 sn), derlenen commit 5578964d (ayni SHA)
+    GitLab  : commit status jenkins = success (ref main) -> https://jenkins.kurum.test/job/ekip-02/job/saha-portal-ekip02/job/main/3/display/redirect
+    Jenkins konsolu (#3):
+      | [Pipeline] { (Pack & Publish)
+      | Pushing Saha.Common.Contracts.Ekip02.1.0.1.nupkg to 'https://nexus.kurum.test/repository/nuget-hosted/'...
+      |   Created https://nexus.kurum.test/repository/nuget-hosted/ 49ms
+      | Your package was pushed.
+      | Finished: SUCCESS
+    [32mtamam[0m  main: build SUCCESS, GitLab commit status jenkins=success
+["1.0.0","1.0.1"]
+== 2) paket klasoru degisti, Version artirilmadi -> main
+17b4193 docs(contracts): update package description
+    GitLab  : deneme/paket-surumsuz son commit'i 17b4193c
+    Jenkins : ekip-02/saha-portal-ekip02/deneme/paket-surumsuz #1 -> SUCCESS (8 sn), derlenen commit 17b4193c (ayni SHA)
+    GitLab  : commit status jenkins = success (ref deneme/paket-surumsuz) -> https://jenkins.kurum.test/job/ekip-02/job/saha-portal-ekip02/job/deneme%252Fpaket-surumsuz/1/display/redirect
+    Jenkins konsolu (#1):
+      | Finished: SUCCESS
+    [32mtamam[0m  deneme/paket-surumsuz: build SUCCESS, GitLab commit status jenkins=success
+MR !12 acildi: deneme/paket-surumsuz -> main
+MR !12 durumu: mergeable
+MR !12 merge edildi (main: deee0326)
+    GitLab  : main son commit'i deee0326
+    Jenkins : ekip-02/saha-portal-ekip02/main #4 -> FAILURE (11 sn), derlenen commit deee0326 (ayni SHA)
+    GitLab  : commit status jenkins = failed (ref main) -> https://jenkins.kurum.test/job/ekip-02/job/saha-portal-ekip02/job/main/4/display/redirect
+    Jenkins konsolu (#4):
+      | Stage "Build + Test + SonarQube" skipped due to when conditional
+      | Stage "Quality Gate" skipped due to when conditional
+      | [Pipeline] { (Pack & Publish)
+      | + echo HATA: Saha.Common.Contracts.Ekip02 1.0.1 Nexus'ta zaten var. src/common-contracts değişti ama Version artırılmadı; yayınlanmış sürüm değiştirilemez.
+      | HATA: Saha.Common.Contracts.Ekip02 1.0.1 Nexus'ta zaten var. src/common-contracts değişti ama Version artırılmadı; yayınlanmış sürüm değiştirilemez.
+      | Stage "Docker: SemVer etiketi" skipped due to earlier failure(s)
+      | Stage "Deploy: test" skipped due to earlier failure(s)
+      | Stage "Smoke test" skipped due to earlier failure(s)
+      | Finished: FAILURE
+    [32mtamam[0m  main: build FAILURE, GitLab commit status jenkins=failed
+["1.0.0","1.0.1"]
+== BITTI

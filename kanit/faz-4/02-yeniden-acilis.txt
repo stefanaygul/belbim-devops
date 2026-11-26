@@ -1,0 +1,17 @@
+# Docker 24 GB'a cikarildiktan sonra ortamin acilmasi (2026-11-24 12:13)
+Docker VM: 23.93 GiB
+ Container belbim-lab-test-vm-1  Started
+ Container belbim-lab-workstation-1  Started
+ Container belbim-lab-nexus-1  Started
+workstation bekleniyor . hazir (5s)
+test-vm    bekleniyor  hazir (0s)
+nexus      bekleniyor . hazir (HTTP 200, 17s)
+gitlab     bekleniyor . hazir (HTTP 200, 11s)
+registry   bekleniyor  hazir (HTTP 401, 1s)
+make up cikis kodu: 0  sure: 40 sn
+
+# test VM: ekip uygulamalari (yeniden baslatma kurali yok; elle acilir)
+ Container ekip01-web-ui-1 Started 
+ekip01 /api/orders -> 200, talep sayisi: 2
+ Container ekip02-web-ui-1 Started 
+ekip02 /api/orders -> 200, talep sayisi: 2

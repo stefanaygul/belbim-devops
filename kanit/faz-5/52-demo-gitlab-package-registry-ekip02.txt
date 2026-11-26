@@ -1,0 +1,10 @@
+proje kimligi: 6; deploy token: ekip02-paket (read/write_package_registry, 1 gun)
+$ dotnet nuget add source "https://gitlab.kurum.test/api/v4/projects/6/packages/nuget/index.json" --name gitlab --username ekip02-paket --password "$TOKEN" --store-password-in-clear-text --configfile <gecici>
+$ dotnet nuget push Saha.Common.Contracts.Ekip02.1.0.1.nupkg --source gitlab
+warn : No API Key was provided and no API Key could be found for 'https://gitlab.kurum.test/api/v4/projects/6/packages/nuget'. To save an API Key for a source use the 'setApiKey' command.
+Pushing Saha.Common.Contracts.Ekip02.1.0.1.nupkg to 'https://gitlab.kurum.test/api/v4/projects/6/packages/nuget'...
+  PUT https://gitlab.kurum.test/api/v4/projects/6/packages/nuget/
+  Created https://gitlab.kurum.test/api/v4/projects/6/packages/nuget/ 126ms
+Your package was pushed.
+GitLab Package Registry: Saha.Common.Contracts.Ekip02 1.0.1 (nuget)
+demo token iptal edildi

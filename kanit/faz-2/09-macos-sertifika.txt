@@ -1,0 +1,17 @@
+$ security verify-cert -c certs/server.crt -r certs/ca.crt -p ssl -s gitlab.kurum.test
+...certificate verification successful.
+---
+No extended validation result found
+Certificate Transparency (CT) status: not verified
+Unable to find at least 2 signed certificate timestamps (SCTs) from approved logs
+[cikis kodu: 0]
+
+$ security verify-cert ... -s ornek.com   (yanlis ad; reddedilmeli)
+Cert Verify Result: Host name mismatch
+---
+No extended validation result found
+Certificate Transparency (CT) status: not verified
+Unable to find at least 2 signed certificate timestamps (SCTs) from approved logs
+[cikis kodu: 0]
+
+# Not: CA anahtarliga EKLENMEDI; -r ile yalnizca bu denetim icin kok olarak verildi.

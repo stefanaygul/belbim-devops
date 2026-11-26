@@ -1,0 +1,81 @@
+$ make bootstrap
+
+==> GitLab yonetici token'i
+    token olusturuluyor (gitlab-rails runner, yaklasik 1 dakika)
+DEPRECATION WARNING: `to_time` will always preserve the full timezone rather than offset of the receiver in Rails 8.1. To opt in to the new behavior, set `config.active_support.to_time_preserves_timezone = :zone`. (called from <main> at /opt/gitlab/embedded/service/gitlab-rails/config/environment.rb:7)
+lab-bootstrap token olusturuldu
+
+==> GitLab ayarlari
+    surum: 19.6.1
+    tamam  giden istek izin listesi: ["jenkins.kurum.test"]
+
+==> Gruplar
+    tamam  grup egitim (olusturuldu)
+    tamam  grup egitim/sablonlar (olusturuldu)
+
+==> Ekipler
+    tamam  grup egitim/ekip-01 (olusturuldu)
+    tamam  kullanici ekip01-lead (olusturuldu)
+    tamam  kullanici ekip01-dev (olusturuldu)
+    tamam  grup egitim/ekip-02 (olusturuldu)
+    tamam  kullanici ekip02-lead (olusturuldu)
+    tamam  kullanici ekip02-dev (olusturuldu)
+
+==> Temel imaj projesi
+    tamam  proje egitim/base (olusturuldu)
+
+==> Sablon proje
+    tamam  proje egitim/sablonlar/portal-starter (olusturuldu)
+    sablon hazir: lab/01a-conflict@59562d2 lab/01b-rename@756affb main@174fe06 
+    tamam  sablon branch'leri itildi: lab/01a-conflict lab/01b-rename main 
+    tamam  sablon proje: main korumali
+
+==> Nexus yonetici parolasi
+    tamam  Nexus yonetici parolasi ayarlandi
+
+==> Nexus Community Edition onaylari
+    tamam  EULA kabul edildi (.env: NEXUS_CE_EULA_KABUL=evet)
+    tamam  telemetri bildirimi onaylandi (.env: NEXUS_CE_TELEMETRI_ONAY=evet)
+
+==> Nexus guvenlik ayarlari
+    tamam  anonim okuma acik
+    tamam  realm'ler: ["NexusAuthenticatingRealm","NpmToken","NuGetApiKey"]
+
+==> Nexus depolari
+    tamam  depo nuget.org-proxy (olusturuldu)
+    tamam  depo nuget-hosted (olusturuldu)
+    tamam  depo nuget-group (olusturuldu)
+    tamam  depo npm-proxy (olusturuldu)
+    tamam  depo npm-hosted (olusturuldu)
+    tamam  depo npm-group (olusturuldu)
+    tamam  hosted depolarda redeploy kapali (ALLOW_ONCE)
+
+==> Nexus rol ve kullanicilari
+    tamam  rol lab-yayinci (olusturuldu)
+    tamam  kullanici ekip01 (olusturuldu)
+    tamam  kullanici ekip02 (olusturuldu)
+
+==> Temel imajlar (egitim/base)
+
+    dotnet/sdk:10.0 <- mcr.microsoft.com/dotnet/sdk:10.0.404
+    tamam  dotnet/sdk:10.0 (gonderildi)
+
+    dotnet/aspnet:10.0 <- mcr.microsoft.com/dotnet/aspnet:10.0.15
+    tamam  dotnet/aspnet:10.0 (gonderildi)
+
+    library/node:24-alpine <- node:24.22.3-alpine3.24
+    tamam  library/node:24-alpine (gonderildi)
+
+    nginxinc/nginx-unprivileged:stable-alpine <- nginxinc/nginx-unprivileged:1.31.7-alpine3.24
+    tamam  nginxinc/nginx-unprivileged:stable-alpine (gonderildi)
+
+==> workstation
+    tamam  kullanici ekip01, SSH anahtari hazir
+    tamam  kullanici ekip02, SSH anahtari hazir
+
+==> test-vm
+    tamam  /opt/saha/ekip01, ekip01 anahtari deploy kullanicisinda yetkili
+    tamam  /opt/saha/ekip02, ekip02 anahtari deploy kullanicisinda yetkili
+
+Bootstrap tamamlandi. Denetim icin: make dogrula
+[sure: 52 sn, cikis kodu: 0]

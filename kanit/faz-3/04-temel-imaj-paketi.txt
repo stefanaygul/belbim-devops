@@ -1,0 +1,25 @@
+# make temel-imaj-paketi DIZIN=<gecici> (2026-11-24 03:21): BELBIM'e tasima yolu
+
+==> Temel imaj paketi: <gecici>/temel-imaj-paketi
+    tamam  dotnet-sdk-10.0.tar  (gitlab.kurum.test:5050/egitim/base/dotnet/sdk:10.0, kaynak mcr.microsoft.com/dotnet/sdk:10.0.404)
+    tamam  dotnet-aspnet-10.0.tar  (gitlab.kurum.test:5050/egitim/base/dotnet/aspnet:10.0, kaynak mcr.microsoft.com/dotnet/aspnet:10.0.15)
+    tamam  library-node-24-alpine.tar  (gitlab.kurum.test:5050/egitim/base/library/node:24-alpine, kaynak node:24.22.3-alpine3.24)
+    tamam  nginxinc-nginx-unprivileged-stable-alpine.tar  (gitlab.kurum.test:5050/egitim/base/nginxinc/nginx-unprivileged:stable-alpine, kaynak nginxinc/nginx-unprivileged:1.31.7-alpine3.24)
+    Yukleme (her katilimci makinesinde): for f in *.tar; do docker load -i "$f"; done
+cikis kodu: 0  sure: 18 sn
+
+224 .
+192 ..
+388 SHA256SUMS
+266053632 dotnet-aspnet-10.0.tar
+978240512 dotnet-sdk-10.0.tar
+169717248 library-node-24-alpine.tar
+62104064 nginxinc-nginx-unprivileged-stable-alpine.tar
+
+./dotnet-aspnet-10.0.tar: OK
+./dotnet-sdk-10.0.tar: OK
+./library-node-24-alpine.tar: OK
+./nginxinc-nginx-unprivileged-stable-alpine.tar: OK
+
+# Paketteki bir arsiv gecerli bir docker-archive mi (adi ve etiketi tasiyor mu)
+[{"Config":"62008961a283373a901403c9fad9dd9fb60ac4e11fb9a739133922d57f09b890.json","RepoTags":["gitlab.kurum.test:5050/egitim/base/dotnet/aspnet:10.0"],"Layers":["b36fd2f8685339f2e948335d6a25fd6fed0b7

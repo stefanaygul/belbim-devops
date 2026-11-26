@@ -1,0 +1,305 @@
+# sifirla-ekip yalitim testi (2026-11-24 01:41): ekip-02 sifirlanir, ekip-01 degismemeli
+
+## ekip-02, sifirlamadan once (ozet)
+62
+proje id=3 default=develop olusturma=2026-11-23T21:49:09.571Z
+branch develop 1dd25090dc6d32e5ce6ea9904658cd400b0df289 korumali=true
+branch main e89ef08d9fffb736d46ed850c1948a02c658c915 korumali=true
+tag v1.0.0 1cded4dc345b0c0c59595774a9311071a5b5146c
+tag v1.0.1 3b0ece5cee9ad7ab36e1acb6ccbbf2a4afbcd8d4
+deploy-token ekip02-deploy read_registry,write_registry id=5
+deploy-token ekip02-pull read_registry id=6
+imaj egitim/ekip-02/saha-ekipman-portal/order-service:1.0.1 sha256:5f2fddfca1df6e20498b8a3405b5df6f5facf735f1384edd5c6f7e544e9a22c8
+imaj egitim/ekip-02/saha-ekipman-portal/order-service:1dd2509 sha256:5f2fddfca1df6e20498b8a3405b5df6f5facf735f1384edd5c6f7e544e9a22c8
+imaj egitim/ekip-02/saha-ekipman-portal/product-service:1.0.1 sha256:74d6cb804b7ac1b12e04338b46309513a4ace5699c04903a8b6d6da724734ad9
+imaj egitim/ekip-02/saha-ekipman-portal/product-service:1dd2509 sha256:74d6cb804b7ac1b12e04338b46309513a4ace5699c04903a8b6d6da724734ad9
+imaj egitim/ekip-02/saha-ekipman-portal/web-ui:1.0.1 sha256:ede6d3784b626337e9c2822e8368ae9f4a975e4cf2c9fb3d6644579bd619b365
+imaj egitim/ekip-02/saha-ekipman-portal/web-ui:1dd2509 sha256:ede6d3784b626337e9c2822e8368ae9f4a975e4cf2c9fb3d6644579bd619b365
+container ekip02-order-service-1 8b5f81764d96 gitlab.kurum.test:5050/egitim/ekip-02/saha-ekipman-portal/order-service:1.0.1 running
+container ekip02-product-service-1 fbdd24498e2e gitlab.kurum.test:5050/egitim/ekip-02/saha-ekipman-portal/product-service:1.0.1 running
+container ekip02-web-ui-1 8ed1d6bcb417 gitlab.kurum.test:5050/egitim/ekip-02/saha-ekipman-portal/web-ui:1.0.1 running
+volume ekip02_orders-data
+imaj gitlab.kurum.test:5050/egitim/ekip-02/saha-ekipman-portal/order-service:1.0.1 5f2fddfca1df
+imaj gitlab.kurum.test:5050/egitim/ekip-02/saha-ekipman-portal/product-service:1.0.1 74d6cb804b7a
+imaj gitlab.kurum.test:5050/egitim/ekip-02/saha-ekipman-portal/web-ui:1.0.1 ede6d3784b62
+repo HEAD 1dd25090dc6d32e5ce6ea9904658cd400b0df289 develop
+imaj gitlab.kurum.test:5050/egitim/ekip-02/saha-ekipman-portal/order-service:1.0.1 5f2fddfca1df
+imaj gitlab.kurum.test:5050/egitim/ekip-02/saha-ekipman-portal/order-service:1dd2509 5f2fddfca1df
+imaj gitlab.kurum.test:5050/egitim/ekip-02/saha-ekipman-portal/product-service:1.0.1 74d6cb804b7a
+imaj gitlab.kurum.test:5050/egitim/ekip-02/saha-ekipman-portal/product-service:1dd2509 74d6cb804b7a
+imaj gitlab.kurum.test:5050/egitim/ekip-02/saha-ekipman-portal/web-ui:1.0.1 ede6d3784b62
+imaj gitlab.kurum.test:5050/egitim/ekip-02/saha-ekipman-portal/web-ui:1dd2509 ede6d3784b62
+
+## EVET=1 bash bootstrap/sifirla-ekip.sh 02
+
+==> GitLab: ekip-02 sifirlaniyor
+HATA   proje silme egitim/ekip-02/saha-ekipman-portal basarisiz (HTTP 400): {"message":"Cannot rename or delete project because it contains container registry tags. Delete all container registry tags first. https://docs.gitlab.com/user/packages/container_registry/#move-or-rename-container-registry-repositories"}
+
+cikis kodu: 1
+
+## ekip-02, sifirlamadan sonra (tam durum)
+== GitLab (ekip-02)
+uye ekip02-dev 30
+uye ekip02-lead 40
+uye root 50
+ssh-anahtari ekip02-lead ad6611db7ad9 (1)
+ssh-anahtari ekip02-dev 7d742fc9d079 (1)
+proje id=3 default=develop olusturma=2026-11-23T21:49:09.571Z
+branch develop 1dd25090dc6d32e5ce6ea9904658cd400b0df289 korumali=true
+branch main e89ef08d9fffb736d46ed850c1948a02c658c915 korumali=true
+tag v1.0.0 1cded4dc345b0c0c59595774a9311071a5b5146c
+tag v1.0.1 3b0ece5cee9ad7ab36e1acb6ccbbf2a4afbcd8d4
+koruma develop push=[0] merge=[40]
+koruma main push=[0] merge=[40]
+tag-koruma v* [40]
+issue #1 closed 2026-11-23T21:49:31.025Z
+issue #2 closed 2026-11-23T21:49:47.833Z
+issue #3 closed 2026-11-23T22:40:51.268Z
+deploy-token ekip02-deploy read_registry,write_registry id=5
+deploy-token ekip02-pull read_registry id=6
+imaj egitim/ekip-02/saha-ekipman-portal/order-service:1.0.1 sha256:5f2fddfca1df6e20498b8a3405b5df6f5facf735f1384edd5c6f7e544e9a22c8
+imaj egitim/ekip-02/saha-ekipman-portal/order-service:1dd2509 sha256:5f2fddfca1df6e20498b8a3405b5df6f5facf735f1384edd5c6f7e544e9a22c8
+imaj egitim/ekip-02/saha-ekipman-portal/product-service:1.0.1 sha256:74d6cb804b7ac1b12e04338b46309513a4ace5699c04903a8b6d6da724734ad9
+imaj egitim/ekip-02/saha-ekipman-portal/product-service:1dd2509 sha256:74d6cb804b7ac1b12e04338b46309513a4ace5699c04903a8b6d6da724734ad9
+imaj egitim/ekip-02/saha-ekipman-portal/web-ui:1.0.1 sha256:ede6d3784b626337e9c2822e8368ae9f4a975e4cf2c9fb3d6644579bd619b365
+imaj egitim/ekip-02/saha-ekipman-portal/web-ui:1dd2509 sha256:ede6d3784b626337e9c2822e8368ae9f4a975e4cf2c9fb3d6644579bd619b365
+== test VM (/opt/saha/ekip02)
+drwxr-xr-x 4096 1795473658 .
+drwxr-xr-x 4096 1795457790 ..
+drwx------ 4096 1795473680 .docker
+-rw------- 86 1795473680 .env
+-rw-r--r-- 704 1795473680 compose.yaml
+container ekip02-order-service-1 8b5f81764d96 gitlab.kurum.test:5050/egitim/ekip-02/saha-ekipman-portal/order-service:1.0.1 running
+container ekip02-product-service-1 fbdd24498e2e gitlab.kurum.test:5050/egitim/ekip-02/saha-ekipman-portal/product-service:1.0.1 running
+container ekip02-web-ui-1 8ed1d6bcb417 gitlab.kurum.test:5050/egitim/ekip-02/saha-ekipman-portal/web-ui:1.0.1 running
+volume ekip02_orders-data
+imaj gitlab.kurum.test:5050/egitim/ekip-02/saha-ekipman-portal/order-service:1.0.1 5f2fddfca1df
+imaj gitlab.kurum.test:5050/egitim/ekip-02/saha-ekipman-portal/product-service:1.0.1 74d6cb804b7a
+imaj gitlab.kurum.test:5050/egitim/ekip-02/saha-ekipman-portal/web-ui:1.0.1 ede6d3784b62
+talepler 13505961a6d6
+== workstation (ekip02)
+ev .docker
+ev .gitconfig
+ev .lab
+ev .lab-log
+ev .profile
+ev .ssh
+ev saha-ekipman-portal
+ev yedek
+repo HEAD 1dd25090dc6d32e5ce6ea9904658cd400b0df289 develop
+ref refs/heads/develop 1dd25090dc6d32e5ce6ea9904658cd400b0df289
+ref refs/heads/main e89ef08d9fffb736d46ed850c1948a02c658c915
+ref refs/tags/v1.0.0 1cded4dc345b0c0c59595774a9311071a5b5146c
+ref refs/tags/v1.0.1 3b0ece5cee9ad7ab36e1acb6ccbbf2a4afbcd8d4
+calisma-agaci e3b0c44298fc
+docker-giris e08f655ee1c6
+gitconfig f2eea5d614b8
+imaj gitlab.kurum.test:5050/egitim/ekip-02/saha-ekipman-portal/order-service:1.0.1 5f2fddfca1df
+imaj gitlab.kurum.test:5050/egitim/ekip-02/saha-ekipman-portal/order-service:1dd2509 5f2fddfca1df
+imaj gitlab.kurum.test:5050/egitim/ekip-02/saha-ekipman-portal/product-service:1.0.1 74d6cb804b7a
+imaj gitlab.kurum.test:5050/egitim/ekip-02/saha-ekipman-portal/product-service:1dd2509 74d6cb804b7a
+imaj gitlab.kurum.test:5050/egitim/ekip-02/saha-ekipman-portal/web-ui:1.0.1 ede6d3784b62
+imaj gitlab.kurum.test:5050/egitim/ekip-02/saha-ekipman-portal/web-ui:1dd2509 ede6d3784b62
+
+## ekip-01: once/sonra farki (bos olmali)
+(eval):1: diff: function definition file not found
+FARK VAR
+
+## ekip-01 uygulamasi hala calisiyor mu
+200 http://test-vm.kurum.test:8081/api/orders
+
+## Dogrulama betiginin olumsuz yonu: sifirlanan ekipte lab-02-a KALDI vermeli
+
+LAB 02-A (ekip-02)
+  GECTI  proje var: egitim/ekip-02/saha-ekipman-portal
+  GECTI  gorunurluk: private
+  GECTI  varsayilan branch: develop
+
+Korumali branch'ler
+  GECTI  main: Allowed to push and merge: No one
+  GECTI  main: Allowed to merge: Maintainers
+  GECTI  main: force push: false
+  GECTI  develop: Allowed to push and merge: No one
+  GECTI  develop: Allowed to merge: Maintainers
+  GECTI  develop: force push: false
+  GECTI  merge yontemi: merge
+  GECTI  cozulmemis thread varken merge kapali: true
+
+Repo icerigi (develop)
+  GECTI  .gitlab/merge_request_templates/Default.md var
+  GECTI  .gitlab/CODEOWNERS var
+  GECTI  katalogdaki her kayitta inStock (true/false): true
+  GECTI  SRJ-04 develop'ta: Şarj ünitesi
+
+Merge Request sureci
+  KALDI  feature/3-stok-durumu -> develop icin merge edilmis MR yok
+
+Testler (develop)
+  GECTI  dotnet test (cikis kodu): 0
+         Passed!  - Failed:     0, Passed:     8, Skipped:     0, Total:     8, Duration: 140 ms - product-service.tests.dll (net10.0)
+         Passed!  - Failed:     0, Passed:     6, Skipped:     0, Total:     6, Duration: 545 ms - order-service.tests.dll (net10.0)
+
+16 gecti, 1 kaldi
+
+cikis kodu: 1
+
+## Ikinci kez sifirlama (yapacak is yokken de calismali)
+
+==> GitLab: ekip-02 sifirlaniyor
+HATA   proje silme egitim/ekip-02/saha-ekipman-portal basarisiz (HTTP 400): {"message":"Cannot rename or delete project because it contains container registry tags. Delete all container registry tags first. https://docs.gitlab.com/user/packages/container_registry/#move-or-rename-container-registry-repositories"}
+
+cikis kodu: 1
+
+# Yukaridaki HATA gercek bir betik hatasiydi: GitLab, registry'sinde imaj etiketi olan projeyi silmiyor.
+# Duzeltme: sifirla-ekip once ekibin registry etiketlerini siliyor. (Ilk denemede betik GitLab adiminda durdugu icin
+# test VM ve workstation'a dokunmadi; 'FARK VAR' satiri da kabuktaki diff komutunun bozuk olmasindandi: /usr/bin/diff ile fark yok.)
+
+# sifirla-ekip yalitim testi, ikinci kosu (2026-11-24 01:58)
+(eval):27: file exists: .cache/ekip01-once.txt
+(eval):28: file exists: .cache/ekip02-once.txt
+
+## ekip-02, sifirlamadan once (ozet: 62 satir)
+proje id=3 default=develop olusturma=2026-11-23T21:49:09.571Z
+branch develop 1dd25090dc6d32e5ce6ea9904658cd400b0df289 korumali=true
+branch main e89ef08d9fffb736d46ed850c1948a02c658c915 korumali=true
+tag v1.0.0 1cded4dc345b0c0c59595774a9311071a5b5146c
+tag v1.0.1 3b0ece5cee9ad7ab36e1acb6ccbbf2a4afbcd8d4
+deploy-token ekip02-deploy read_registry,write_registry id=5
+deploy-token ekip02-pull read_registry id=6
+imaj egitim/ekip-02/saha-ekipman-portal/order-service:1.0.1 sha256:5f2fddfca1df6e20498b8a3405b5df6f5facf735f1384edd5c6f7e544e9a22c8
+imaj egitim/ekip-02/saha-ekipman-portal/order-service:1dd2509 sha256:5f2fddfca1df6e20498b8a3405b5df6f5facf735f1384edd5c6f7e544e9a22c8
+imaj egitim/ekip-02/saha-ekipman-portal/product-service:1.0.1 sha256:74d6cb804b7ac1b12e04338b46309513a4ace5699c04903a8b6d6da724734ad9
+imaj egitim/ekip-02/saha-ekipman-portal/product-service:1dd2509 sha256:74d6cb804b7ac1b12e04338b46309513a4ace5699c04903a8b6d6da724734ad9
+imaj egitim/ekip-02/saha-ekipman-portal/web-ui:1.0.1 sha256:ede6d3784b626337e9c2822e8368ae9f4a975e4cf2c9fb3d6644579bd619b365
+imaj egitim/ekip-02/saha-ekipman-portal/web-ui:1dd2509 sha256:ede6d3784b626337e9c2822e8368ae9f4a975e4cf2c9fb3d6644579bd619b365
+container ekip02-order-service-1 8b5f81764d96 gitlab.kurum.test:5050/egitim/ekip-02/saha-ekipman-portal/order-service:1.0.1 running
+container ekip02-product-service-1 fbdd24498e2e gitlab.kurum.test:5050/egitim/ekip-02/saha-ekipman-portal/product-service:1.0.1 running
+container ekip02-web-ui-1 8ed1d6bcb417 gitlab.kurum.test:5050/egitim/ekip-02/saha-ekipman-portal/web-ui:1.0.1 running
+volume ekip02_orders-data
+imaj gitlab.kurum.test:5050/egitim/ekip-02/saha-ekipman-portal/order-service:1.0.1 5f2fddfca1df
+imaj gitlab.kurum.test:5050/egitim/ekip-02/saha-ekipman-portal/product-service:1.0.1 74d6cb804b7a
+imaj gitlab.kurum.test:5050/egitim/ekip-02/saha-ekipman-portal/web-ui:1.0.1 ede6d3784b62
+repo HEAD 1dd25090dc6d32e5ce6ea9904658cd400b0df289 develop
+imaj gitlab.kurum.test:5050/egitim/ekip-02/saha-ekipman-portal/order-service:1.0.1 5f2fddfca1df
+imaj gitlab.kurum.test:5050/egitim/ekip-02/saha-ekipman-portal/order-service:1dd2509 5f2fddfca1df
+imaj gitlab.kurum.test:5050/egitim/ekip-02/saha-ekipman-portal/product-service:1.0.1 74d6cb804b7a
+imaj gitlab.kurum.test:5050/egitim/ekip-02/saha-ekipman-portal/product-service:1dd2509 74d6cb804b7a
+imaj gitlab.kurum.test:5050/egitim/ekip-02/saha-ekipman-portal/web-ui:1.0.1 ede6d3784b62
+imaj gitlab.kurum.test:5050/egitim/ekip-02/saha-ekipman-portal/web-ui:1dd2509 ede6d3784b62
+
+## EVET=1 bash bootstrap/sifirla-ekip.sh 02
+
+==> GitLab: ekip-02 sifirlaniyor
+    tamam  registry: 6 imaj etiketi silindi
+    tamam  proje silindi: egitim/ekip-02/saha-ekipman-portal-deletion_scheduled-3
+    tamam  ekip hesaplarinin SSH anahtarlari ve token'lari kaldirildi
+    ekip02-lead: Maintainer   ekip02-dev: Developer   (egitim/ekip-02)
+
+==> test-vm
+    tamam  test VM: ekip02 projesi ve verisi kaldirildi
+    tamam  test VM: /opt/saha/ekip02 bosaltildi, ekibin imajlari silindi
+    tamam  test VM temiz
+
+==> workstation (ekip02)
+    tamam  repo, yedekler, registry girisi ve git kimligi silindi; SSH anahtarlari ve paket onbellekleri duruyor
+
+ekip-02 baslangic durumunda.
+cikis kodu: 0
+(eval):31: file exists: .cache/ekip01-sonra.txt
+(eval):32: file exists: .cache/ekip02-sonra.txt
+
+## ekip-02, sifirlamadan sonra (tam durum)
+== GitLab (ekip-02)
+uye ekip02-dev 30
+uye ekip02-lead 40
+uye root 50
+ssh-anahtari ekip02-lead ad6611db7ad9 (1)
+ssh-anahtari ekip02-dev 7d742fc9d079 (1)
+proje id=3 default=develop olusturma=2026-11-23T21:49:09.571Z
+branch develop 1dd25090dc6d32e5ce6ea9904658cd400b0df289 korumali=true
+branch main e89ef08d9fffb736d46ed850c1948a02c658c915 korumali=true
+tag v1.0.0 1cded4dc345b0c0c59595774a9311071a5b5146c
+tag v1.0.1 3b0ece5cee9ad7ab36e1acb6ccbbf2a4afbcd8d4
+koruma develop push=[0] merge=[40]
+koruma main push=[0] merge=[40]
+tag-koruma v* [40]
+issue #1 closed 2026-11-23T21:49:31.025Z
+issue #2 closed 2026-11-23T21:49:47.833Z
+issue #3 closed 2026-11-23T22:40:51.268Z
+deploy-token ekip02-deploy read_registry,write_registry id=5
+deploy-token ekip02-pull read_registry id=6
+imaj egitim/ekip-02/saha-ekipman-portal/order-service:1.0.1 sha256:5f2fddfca1df6e20498b8a3405b5df6f5facf735f1384edd5c6f7e544e9a22c8
+imaj egitim/ekip-02/saha-ekipman-portal/order-service:1dd2509 sha256:5f2fddfca1df6e20498b8a3405b5df6f5facf735f1384edd5c6f7e544e9a22c8
+imaj egitim/ekip-02/saha-ekipman-portal/product-service:1.0.1 sha256:74d6cb804b7ac1b12e04338b46309513a4ace5699c04903a8b6d6da724734ad9
+imaj egitim/ekip-02/saha-ekipman-portal/product-service:1dd2509 sha256:74d6cb804b7ac1b12e04338b46309513a4ace5699c04903a8b6d6da724734ad9
+imaj egitim/ekip-02/saha-ekipman-portal/web-ui:1.0.1 sha256:ede6d3784b626337e9c2822e8368ae9f4a975e4cf2c9fb3d6644579bd619b365
+imaj egitim/ekip-02/saha-ekipman-portal/web-ui:1dd2509 sha256:ede6d3784b626337e9c2822e8368ae9f4a975e4cf2c9fb3d6644579bd619b365
+== test VM (/opt/saha/ekip02)
+drwxr-xr-x 4096 1795473658 .
+drwxr-xr-x 4096 1795457790 ..
+drwx------ 4096 1795473680 .docker
+-rw------- 86 1795473680 .env
+-rw-r--r-- 704 1795473680 compose.yaml
+container ekip02-order-service-1 8b5f81764d96 gitlab.kurum.test:5050/egitim/ekip-02/saha-ekipman-portal/order-service:1.0.1 running
+container ekip02-product-service-1 fbdd24498e2e gitlab.kurum.test:5050/egitim/ekip-02/saha-ekipman-portal/product-service:1.0.1 running
+container ekip02-web-ui-1 8ed1d6bcb417 gitlab.kurum.test:5050/egitim/ekip-02/saha-ekipman-portal/web-ui:1.0.1 running
+volume ekip02_orders-data
+imaj gitlab.kurum.test:5050/egitim/ekip-02/saha-ekipman-portal/order-service:1.0.1 5f2fddfca1df
+imaj gitlab.kurum.test:5050/egitim/ekip-02/saha-ekipman-portal/product-service:1.0.1 74d6cb804b7a
+imaj gitlab.kurum.test:5050/egitim/ekip-02/saha-ekipman-portal/web-ui:1.0.1 ede6d3784b62
+talepler 13505961a6d6
+== workstation (ekip02)
+ev .docker
+ev .gitconfig
+ev .lab
+ev .lab-log
+ev .profile
+ev .ssh
+ev saha-ekipman-portal
+ev yedek
+repo HEAD 1dd25090dc6d32e5ce6ea9904658cd400b0df289 develop
+ref refs/heads/develop 1dd25090dc6d32e5ce6ea9904658cd400b0df289
+ref refs/heads/main e89ef08d9fffb736d46ed850c1948a02c658c915
+ref refs/tags/v1.0.0 1cded4dc345b0c0c59595774a9311071a5b5146c
+ref refs/tags/v1.0.1 3b0ece5cee9ad7ab36e1acb6ccbbf2a4afbcd8d4
+calisma-agaci e3b0c44298fc
+docker-giris e08f655ee1c6
+gitconfig f2eea5d614b8
+imaj gitlab.kurum.test:5050/egitim/ekip-02/saha-ekipman-portal/order-service:1.0.1 5f2fddfca1df
+imaj gitlab.kurum.test:5050/egitim/ekip-02/saha-ekipman-portal/order-service:1dd2509 5f2fddfca1df
+imaj gitlab.kurum.test:5050/egitim/ekip-02/saha-ekipman-portal/product-service:1.0.1 74d6cb804b7a
+imaj gitlab.kurum.test:5050/egitim/ekip-02/saha-ekipman-portal/product-service:1dd2509 74d6cb804b7a
+imaj gitlab.kurum.test:5050/egitim/ekip-02/saha-ekipman-portal/web-ui:1.0.1 ede6d3784b62
+imaj gitlab.kurum.test:5050/egitim/ekip-02/saha-ekipman-portal/web-ui:1dd2509 ede6d3784b62
+
+## ekip-01: once/sonra farki (bos olmali)
+FARK YOK: ekip-01 etkilenmedi (77 satir karsilastirildi)
+
+## ekip-01 uygulamasi hala calisiyor mu
+200 http://test-vm.kurum.test:8081/api/orders
+
+## Dogrulama betiginin olumsuz yonu: sifirlanan ekipte lab-02-a KALDI vermeli
+
+LAB 02-A (ekip-02)
+  KALDI  ekip projesi yok: egitim/ekip-02/saha-ekipman-portal (HTTP 404)
+
+0 gecti, 1 kaldi
+
+cikis kodu: 1
+
+## Ikinci kez sifirlama (yapacak is yokken de calismali)
+
+==> GitLab: ekip-02 sifirlaniyor
+    tamam  silinecek proje yok
+    tamam  ekip hesaplarinin SSH anahtarlari ve token'lari kaldirildi
+    ekip02-lead: Maintainer   ekip02-dev: Developer   (egitim/ekip-02)
+
+==> test-vm
+    tamam  test VM: /opt/saha/ekip02 bosaltildi, ekibin imajlari silindi
+    tamam  test VM temiz
+
+==> workstation (ekip02)
+    tamam  repo, yedekler, registry girisi ve git kimligi silindi; SSH anahtarlari ve paket onbellekleri duruyor
+
+ekip-02 baslangic durumunda.
+cikis kodu: 0

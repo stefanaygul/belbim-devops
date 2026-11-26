@@ -1,0 +1,8 @@
+# .NET SDK imaji + lab CA'si: docker build icindeki `dotnet restore` Nexus'a HTTPS ile gider.
+ARG KAYNAK
+FROM ${KAYNAK}
+ARG KAYNAK
+ARG CA_PARMAK_IZI=
+COPY ca.crt /usr/local/share/ca-certificates/kurum-ca.crt
+RUN update-ca-certificates
+LABEL lab.kaynak="${KAYNAK}" lab.ca="${CA_PARMAK_IZI}"

@@ -1,0 +1,409 @@
+
+[1m### Arayuz: gitlab ssh-anahtari 99 lead[0m
+ Container belbim-lab-workstation-1  Running
+  goruntu: /lab/cikti/prova-20261124T154746Z/lab-02-a-ssh-anahtari-lead.png
+  tamam  ekip99-lead: SSH anahtari profile eklendi
+
+[1m### Arayuz: gitlab ssh-anahtari 99 dev[0m
+ Container belbim-lab-workstation-1  Running
+  goruntu: /lab/cikti/prova-20261124T154746Z/lab-02-a-ssh-anahtari-dev.png
+  tamam  ekip99-dev: SSH anahtari profile eklendi
+
+[1m### On kosul: SSH anahtari GitLab profilinde[0m
+rol: ekip99-lead
+$ ssh -T git@gitlab.kurum.test
+Welcome to GitLab, @ekip99-lead!
+rol: ekip99-dev
+$ ssh -T git@gitlab.kurum.test
+Welcome to GitLab, @ekip99-dev!
+
+[1m### Adim 1 (hazirlik): dunku isi main'e al, MR sablonu ve CODEOWNERS ekle[0m
+rol: ekip99-lead
+$ git switch main
+Switched to branch 'main'
+Your branch is up to date with 'origin/main'.
+$ git merge --no-ff feature/katalog-sarj-unitesi -m Merge branch 'feature/katalog-sarj-unitesi'
+Merge made by the 'ort' strategy.
+ src/product-service/Data/catalog.json            | 3 ++-
+ tests/product-service.tests/CatalogStoreTests.cs | 2 +-
+ 2 files changed, 3 insertions(+), 2 deletions(-)
+$ cat .gitlab/merge_request_templates/Default.md
+## Ne değişti, neden?
+
+## Nasıl test edildi?
+
+- [ ] Unit testler eklendi ya da güncellendi
+
+Closes #
+$ cat .gitlab/CODEOWNERS
+# .gitlab/CODEOWNERS
+# Dosya yoluna göre sahibi belirler. Code Owners, GitLab Premium/Ultimate özelliğidir;
+# Free katmanında dosya repoda durur ama GitLab onu değerlendirmez.
+
+[Backend]
+/src/product-service/   @egitim/ekip-99
+/src/order-service/     @egitim/ekip-99
+
+[Frontend]
+/src/web-ui/            @egitim/ekip-99
+
+[Pipeline]
+Jenkinsfile             @ekip99-lead
+$ git add .gitlab
+$ git commit -m chore: add merge request template and CODEOWNERS
+[main d4e28d5] chore: add merge request template and CODEOWNERS
+ 2 files changed, 20 insertions(+)
+ create mode 100644 .gitlab/CODEOWNERS
+ create mode 100644 .gitlab/merge_request_templates/Default.md
+
+[1m### Arayuz: gitlab proje-olustur 99[0m
+ Container belbim-lab-workstation-1  Running
+  goruntu: /lab/cikti/prova-20261124T154746Z/lab-02-a-proje-olustur.png
+  tamam  proje olusturuldu: egitim/ekip-99/saha-ekipman-portal (bos, private)
+  goruntu: /lab/cikti/prova-20261124T154746Z/lab-02-a-bos-proje.png
+
+[1m### Adim 1: lokal repoyu ekip projesine push et[0m
+rol: ekip99-lead
+$ git remote rename origin sablon
+$ git remote add origin git@gitlab.kurum.test:egitim/ekip-99/saha-ekipman-portal.git
+$ git push -u origin main
+To gitlab.kurum.test:egitim/ekip-99/saha-ekipman-portal.git
+ * [new branch]      main -> main
+branch 'main' set up to track 'origin/main'.
+$ git remote -v
+origin	git@gitlab.kurum.test:egitim/ekip-99/saha-ekipman-portal.git (fetch)
+origin	git@gitlab.kurum.test:egitim/ekip-99/saha-ekipman-portal.git (push)
+sablon	https://gitlab.kurum.test/egitim/sablonlar/portal-starter.git (fetch)
+sablon	https://gitlab.kurum.test/egitim/sablonlar/portal-starter.git (push)
+
+[1m### Adim 2: develop'u olustur[0m
+rol: ekip99-lead
+$ git switch -c develop
+Switched to a new branch 'develop'
+$ git push -u origin develop
+remote: 
+remote: To create a merge request for develop, visit:        
+remote:   https://gitlab.kurum.test/egitim/ekip-99/saha-ekipman-portal/-/merge_requests/new?merge_request%5Bsource_branch%5D=develop        
+remote: 
+To gitlab.kurum.test:egitim/ekip-99/saha-ekipman-portal.git
+ * [new branch]      develop -> develop
+branch 'develop' set up to track 'origin/develop'.
+
+[1m### Arayuz: gitlab varsayilan-branch 99 develop[0m
+ Container belbim-lab-workstation-1  Running
+  goruntu: /lab/cikti/prova-20261124T154746Z/lab-02-a-varsayilan-branch.png
+  tamam  varsayilan branch: develop
+
+[1m### Arayuz: gitlab branch-koru 99 main develop[0m
+ Container belbim-lab-workstation-1  Running
+  goruntu: /lab/cikti/prova-20261124T154746Z/lab-02-a-koruma-form-develop.png
+  tamam  main korumali: merge Maintainers, push No one
+  tamam  develop korumali: merge Maintainers, push No one
+  goruntu: /lab/cikti/prova-20261124T154746Z/lab-02-a-korumali-branchler.png
+
+[1m### Arayuz: gitlab mr-ayarlari 99[0m
+ Container belbim-lab-workstation-1  Running
+  goruntu: /lab/cikti/prova-20261124T154746Z/lab-02-a-mr-ayarlari.png
+  tamam  MR ayarlari: Merge commit; cozulmemis thread varken merge kapali
+
+[1m### Adim 2 (kontrol): korumali branch'e dogrudan push reddedilir[0m
+rol: ekip99-dev
+$ git switch --quiet develop
+$ git commit --quiet --allow-empty -m test: direct push to develop
+$ git push origin develop
+remote: GitLab: You are not allowed to push code to protected branches on this project.
+To gitlab.kurum.test:egitim/ekip-99/saha-ekipman-portal.git
+ ! [remote rejected] develop -> develop (pre-receive hook declined)
+error: failed to push some refs to 'gitlab.kurum.test:egitim/ekip-99/saha-ekipman-portal.git'
+# beklenen hata olustu (cikis kodu 1): You are not allowed to push code to protected branches on this project
+$ git reset --quiet --hard origin/develop
+rol: ekip99-dev
+$ git switch --quiet main
+$ git commit --quiet --allow-empty -m test: direct push to main
+$ git push origin main
+remote: GitLab: You are not allowed to push code to protected branches on this project.
+To gitlab.kurum.test:egitim/ekip-99/saha-ekipman-portal.git
+ ! [remote rejected] main -> main (pre-receive hook declined)
+error: failed to push some refs to 'gitlab.kurum.test:egitim/ekip-99/saha-ekipman-portal.git'
+# beklenen hata olustu (cikis kodu 1): You are not allowed to push code to protected branches on this project
+$ git reset --quiet --hard origin/main
+rol: ekip99-lead
+$ git switch --quiet develop
+$ git commit --quiet --allow-empty -m test: direct push to develop
+$ git push origin develop
+remote: GitLab: You are not allowed to push code to protected branches on this project.
+To gitlab.kurum.test:egitim/ekip-99/saha-ekipman-portal.git
+ ! [remote rejected] develop -> develop (pre-receive hook declined)
+error: failed to push some refs to 'gitlab.kurum.test:egitim/ekip-99/saha-ekipman-portal.git'
+# beklenen hata olustu (cikis kodu 1): You are not allowed to push code to protected branches on this project
+$ git reset --quiet --hard origin/develop
+rol: ekip99-lead
+$ git switch --quiet main
+$ git commit --quiet --allow-empty -m test: direct push to main
+$ git push origin main
+remote: GitLab: You are not allowed to push code to protected branches on this project.
+To gitlab.kurum.test:egitim/ekip-99/saha-ekipman-portal.git
+ ! [remote rejected] main -> main (pre-receive hook declined)
+error: failed to push some refs to 'gitlab.kurum.test:egitim/ekip-99/saha-ekipman-portal.git'
+# beklenen hata olustu (cikis kodu 1): You are not allowed to push code to protected branches on this project
+$ git reset --quiet --hard origin/main
+$ git switch --quiet develop
+
+[1m### Arayuz: gitlab issue-ac 99 dev Katalogda stok durumu Saha personeli bir ekipmanın stokta olup olmadığını katalogda görebilmeli. Kabul kriteri: GET /api/products yanıtında her ekipman için inStock alanı bulunur. lab-02-a-issue[0m
+ Container belbim-lab-workstation-1  Running
+  goruntu: /lab/cikti/prova-20261124T154746Z/lab-02-a-issue-form.png
+  tamam  issue #1 acildi: Katalogda stok durumu
+  goruntu: /lab/cikti/prova-20261124T154746Z/lab-02-a-issue.png
+
+[1m### Adim 3-4: feature/3-stok-durumu, stok durumu alani[0m
+rol: ekip99-dev
+$ git switch develop
+Already on 'develop'
+Your branch is up to date with 'origin/develop'.
+$ git pull --ff-only
+Already up to date.
+$ git switch -c feature/3-stok-durumu
+Switched to a new branch 'feature/3-stok-durumu'
+$ git diff HEAD --stat | cat
+ src/common-contracts/ProductDto.cs               |  2 +-
+ src/product-service/Data/catalog.json            |  8 ++++----
+ tests/product-service.tests/CatalogStoreTests.cs | 22 ++++++++++++++++++++++
+ 3 files changed, 27 insertions(+), 5 deletions(-)
+$ dotnet test SahaPortal.sln
+  Determining projects to restore...
+  All projects are up-to-date for restore.
+  common-contracts -> /home/ekip99/saha-ekipman-portal/src/common-contracts/bin/Debug/net10.0/common-contracts.dll
+  product-service -> /home/ekip99/saha-ekipman-portal/src/product-service/bin/Debug/net10.0/product-service.dll
+  order-service -> /home/ekip99/saha-ekipman-portal/src/order-service/bin/Debug/net10.0/order-service.dll
+  product-service.tests -> /home/ekip99/saha-ekipman-portal/tests/product-service.tests/bin/Debug/net10.0/product-service.tests.dll
+  order-service.tests -> /home/ekip99/saha-ekipman-portal/tests/order-service.tests/bin/Debug/net10.0/order-service.tests.dll
+Test run for /home/ekip99/saha-ekipman-portal/tests/product-service.tests/bin/Debug/net10.0/product-service.tests.dll (.NETCoreApp,Version=v10.0)
+Test run for /home/ekip99/saha-ekipman-portal/tests/order-service.tests/bin/Debug/net10.0/order-service.tests.dll (.NETCoreApp,Version=v10.0)
+A total of 1 test files matched the specified pattern.
+A total of 1 test files matched the specified pattern.
+
+Passed!  - Failed:     0, Passed:     7, Skipped:     0, Total:     7, Duration: 120 ms - product-service.tests.dll (net10.0)
+VSTEST_ARTIFACTS_DIRECTORY environment variable was not found, falling back to a user-private temporary directory. This is most likely caused by an outdated Microsoft.NET.Test.Sdk package reference in the test project.
+
+Passed!  - Failed:     0, Passed:     4, Skipped:     0, Total:     4, Duration: 506 ms - order-service.tests.dll (net10.0)
+VSTEST_ARTIFACTS_DIRECTORY environment variable was not found, falling back to a user-private temporary directory. This is most likely caused by an outdated Microsoft.NET.Test.Sdk package reference in the test project.
+$ git add src tests
+$ git commit -m feat(catalog): add stock status
+[feature/3-stok-durumu 10b7c20] feat(catalog): add stock status
+ 3 files changed, 27 insertions(+), 5 deletions(-)
+$ git push -u origin feature/3-stok-durumu
+remote: 
+remote: To create a merge request for feature/3-stok-durumu, visit:        
+remote:   https://gitlab.kurum.test/egitim/ekip-99/saha-ekipman-portal/-/merge_requests/new?merge_request%5Bsource_branch%5D=feature%2F3-stok-durumu        
+remote: 
+To gitlab.kurum.test:egitim/ekip-99/saha-ekipman-portal.git
+ * [new branch]      feature/3-stok-durumu -> feature/3-stok-durumu
+branch 'feature/3-stok-durumu' set up to track 'origin/feature/3-stok-durumu'.
+
+[1m### Arayuz: gitlab mr-ac 99 dev feature/3-stok-durumu develop feat(catalog): add stock status 1 evet evet lab-02-a-mr[0m
+ Container belbim-lab-workstation-1  Running
+  tamam  MR sablonu kendiliginden geldi (.gitlab/merge_request_templates/Default.md)
+  goruntu: /lab/cikti/prova-20261124T154746Z/lab-02-a-mr-sablon.png
+  tamam  reviewer: ekip99-lead
+  goruntu: /lab/cikti/prova-20261124T154746Z/lab-02-a-mr-form.png
+  tamam  MR !1 acildi: feature/3-stok-durumu -> develop (squash: evet, kaynak branch silinsin: evet)
+  goruntu: /lab/cikti/prova-20261124T154746Z/lab-02-a-mr.png
+
+[1m### Arayuz: gitlab mr-yorum 99 lead feature/3-stok-durumu ProductDto.cs API testi bu alanı doğrulamıyor. ProductsApiTests içinde inStock değerini ve stokta olmayan bir ekipmanı da denetleyelim mi? lab-02-a-inceleme[0m
+ Container belbim-lab-workstation-1  Running
+  goruntu: /lab/cikti/prova-20261124T154746Z/lab-02-a-inceleme-yaziliyor.png
+  tamam  !1: ekip99-lead ProductDto.cs dosyasinda bir satira yorum yazdi (thread acik)
+  goruntu: /lab/cikti/prova-20261124T154746Z/lab-02-a-inceleme.png
+
+[1m### Arayuz: gitlab mr-engel 99 lead feature/3-stok-durumu Open threads must be resolved lab-02-a-merge-engeli[0m
+ Container belbim-lab-workstation-1  Running
+  tamam  !1: ekip99-lead merge edemiyor: "Open threads must be resolved"
+  goruntu: /lab/cikti/prova-20261124T154746Z/lab-02-a-merge-engeli.png
+
+[1m### Adim 6: reviewer yorumuna gore duzeltme[0m
+rol: ekip99-dev
+$ git switch feature/3-stok-durumu
+Already on 'feature/3-stok-durumu'
+Your branch is up to date with 'origin/feature/3-stok-durumu'.
+$ dotnet test SahaPortal.sln
+  Determining projects to restore...
+  All projects are up-to-date for restore.
+  common-contracts -> /home/ekip99/saha-ekipman-portal/src/common-contracts/bin/Debug/net10.0/common-contracts.dll
+  product-service -> /home/ekip99/saha-ekipman-portal/src/product-service/bin/Debug/net10.0/product-service.dll
+  order-service -> /home/ekip99/saha-ekipman-portal/src/order-service/bin/Debug/net10.0/order-service.dll
+  product-service.tests -> /home/ekip99/saha-ekipman-portal/tests/product-service.tests/bin/Debug/net10.0/product-service.tests.dll
+Test run for /home/ekip99/saha-ekipman-portal/tests/product-service.tests/bin/Debug/net10.0/product-service.tests.dll (.NETCoreApp,Version=v10.0)
+  order-service.tests -> /home/ekip99/saha-ekipman-portal/tests/order-service.tests/bin/Debug/net10.0/order-service.tests.dll
+A total of 1 test files matched the specified pattern.
+Test run for /home/ekip99/saha-ekipman-portal/tests/order-service.tests/bin/Debug/net10.0/order-service.tests.dll (.NETCoreApp,Version=v10.0)
+A total of 1 test files matched the specified pattern.
+
+Passed!  - Failed:     0, Passed:     8, Skipped:     0, Total:     8, Duration: 125 ms - product-service.tests.dll (net10.0)
+VSTEST_ARTIFACTS_DIRECTORY environment variable was not found, falling back to a user-private temporary directory. This is most likely caused by an outdated Microsoft.NET.Test.Sdk package reference in the test project.
+
+Passed!  - Failed:     0, Passed:     4, Skipped:     0, Total:     4, Duration: 519 ms - order-service.tests.dll (net10.0)
+VSTEST_ARTIFACTS_DIRECTORY environment variable was not found, falling back to a user-private temporary directory. This is most likely caused by an outdated Microsoft.NET.Test.Sdk package reference in the test project.
+$ git add tests
+$ git commit -m test(catalog): cover stock status in the products API
+[feature/3-stok-durumu d93fcb7] test(catalog): cover stock status in the products API
+ 1 file changed, 12 insertions(+), 1 deletion(-)
+$ git push
+remote: 
+remote: View merge request for feature/3-stok-durumu:        
+remote:   https://gitlab.kurum.test/egitim/ekip-99/saha-ekipman-portal/-/merge_requests/1        
+remote: 
+To gitlab.kurum.test:egitim/ekip-99/saha-ekipman-portal.git
+   10b7c20..d93fcb7  feature/3-stok-durumu -> feature/3-stok-durumu
+
+[1m### Arayuz: gitlab mr-thread-coz 99 dev feature/3-stok-durumu lab-02-a-thread-cozuldu[0m
+ Container belbim-lab-workstation-1  Running
+  tamam  !1: ekip99-dev 1 thread'i cozdu
+  goruntu: /lab/cikti/prova-20261124T154746Z/lab-02-a-thread-cozuldu.png
+
+[1m### Arayuz: gitlab mr-engel 99 dev feature/3-stok-durumu Ready to merge by members who can write to the target branch lab-02-a-developer-merge-edemez[0m
+ Container belbim-lab-workstation-1  Running
+  tamam  !1: ekip99-dev merge edemiyor: "Ready to merge by members who can write to the target branch"
+  goruntu: /lab/cikti/prova-20261124T154746Z/lab-02-a-developer-merge-edemez.png
+
+[1m### API: ekip99-dev merge etmeyi deniyor (reddedilmeli)[0m
+    MR !1 (ekip99-dev): user.can_merge=false, detailed_merge_status=mergeable
+    PUT .../merge_requests/1/merge (ekip99-dev) -> HTTP 401 401 Unauthorized
+    [32mtamam[0m  ekip99-dev merge edemiyor (beklenen)
+
+[1m### Arayuz: gitlab mr-merge 99 lead feature/3-stok-durumu lab-02-a-merge[0m
+ Container belbim-lab-workstation-1  Running
+  goruntu: /lab/cikti/prova-20261124T154746Z/lab-02-a-merge-oncesi.png
+  tamam  !1: ekip99-lead merge etti
+  goruntu: /lab/cikti/prova-20261124T154746Z/lab-02-a-merge.png
+
+[1m### Arayuz: gitlab sayfa 99 dev /-/issues/1 Katalogda stok durumu|Closed lab-02-a-issue-kapandi[0m
+ Container belbim-lab-workstation-1  Running
+  tamam  gorunuyor: Katalogda stok durumu
+  tamam  gorunuyor: Closed
+  goruntu: /lab/cikti/prova-20261124T154746Z/lab-02-a-issue-kapandi.png
+
+[1m### Adim 7: merge sonrasi[0m
+rol: ekip99-dev
+$ git switch develop
+Switched to branch 'develop'
+Your branch is up to date with 'origin/develop'.
+$ git pull --ff-only
+From gitlab.kurum.test:egitim/ekip-99/saha-ekipman-portal
+   d4e28d5..f7480e0  develop    -> origin/develop
+Updating d4e28d5..f7480e0
+Fast-forward
+ src/common-contracts/ProductDto.cs               |  2 +-
+ src/product-service/Data/catalog.json            |  8 ++++----
+ tests/product-service.tests/CatalogStoreTests.cs | 22 ++++++++++++++++++++++
+ tests/product-service.tests/ProductsApiTests.cs  | 13 ++++++++++++-
+ 4 files changed, 39 insertions(+), 6 deletions(-)
+$ git fetch --prune
+From gitlab.kurum.test:egitim/ekip-99/saha-ekipman-portal
+ - [deleted]         (none)     -> origin/feature/3-stok-durumu
+$ git branch -r | grep -v sablon/
+  origin/develop
+  origin/main
+# squash ile merge edilen branch'te 'git branch -d' uyari verir; yerel branch -D ile silinir
+$ git branch -D feature/3-stok-durumu
+Deleted branch feature/3-stok-durumu (was d93fcb7).
+$ git log --oneline --graph -n 8 origin/develop
+*   f7480e0 Merge branch 'feature/3-stok-durumu' into 'develop'
+|\  
+| * 140abf4 feat(catalog): add stock status
+|/  
+* d4e28d5 chore: add merge request template and CODEOWNERS
+*   0a88701 Merge branch 'feature/katalog-sarj-unitesi'
+|\  
+| *   8fd9500 Merge remote-tracking branch 'origin/lab/01b-rename' into feature/katalog-sarj-unitesi
+| |\  
+| | * 756affb feat(catalog): add fast charger
+| |/  
+|/|   
+| * b1968cf feat(catalog): add charging unit
+|/  
+* 174fe06 chore: starter project
+
+[1m### Egitmen: bootstrap/rol-degistir.sh 99[0m
+    ekip99-lead: Developer   ekip99-dev: Maintainer   (egitim/ekip-99)
+
+[1m### Rol degisimi: ikinci kucuk MR (web-ui stok durumu)[0m
+rol: ekip99-lead
+$ git switch develop
+Already on 'develop'
+Your branch is up to date with 'origin/develop'.
+$ git pull --ff-only
+Already up to date.
+$ git switch -c feature/3-stok-durumu-arayuz
+Switched to a new branch 'feature/3-stok-durumu-arayuz'
+$ cd src/web-ui && npm test 2>&1 | tail -n 8
+PASS src/components/CatalogList.test.jsx
+PASS src/api.test.js
+
+Test Suites: 5 passed, 5 total
+Tests:       15 passed, 15 total
+Snapshots:   0 total
+Time:        0.713 s, estimated 1 s
+Ran all test suites.
+$ git add src/web-ui
+$ git commit -m feat(web-ui): show stock status
+[feature/3-stok-durumu-arayuz 45f7d6a] feat(web-ui): show stock status
+ 2 files changed, 13 insertions(+), 3 deletions(-)
+$ git push -u origin feature/3-stok-durumu-arayuz
+remote: 
+remote: To create a merge request for feature/3-stok-durumu-arayuz, visit:        
+remote:   https://gitlab.kurum.test/egitim/ekip-99/saha-ekipman-portal/-/merge_requests/new?merge_request%5Bsource_branch%5D=feature%2F3-stok-durumu-arayuz        
+remote: 
+To gitlab.kurum.test:egitim/ekip-99/saha-ekipman-portal.git
+ * [new branch]      feature/3-stok-durumu-arayuz -> feature/3-stok-durumu-arayuz
+branch 'feature/3-stok-durumu-arayuz' set up to track 'origin/feature/3-stok-durumu-arayuz'.
+
+[1m### Arayuz: gitlab mr-ac 99 lead feature/3-stok-durumu-arayuz develop feat(web-ui): show stock status - evet evet lab-02-a-mr2[0m
+ Container belbim-lab-workstation-1  Running
+  tamam  MR sablonu kendiliginden geldi (.gitlab/merge_request_templates/Default.md)
+  goruntu: /lab/cikti/prova-20261124T154746Z/lab-02-a-mr2-sablon.png
+  tamam  reviewer: ekip99-dev
+  goruntu: /lab/cikti/prova-20261124T154746Z/lab-02-a-mr2-form.png
+  tamam  MR !2 acildi: feature/3-stok-durumu-arayuz -> develop (squash: evet, kaynak branch silinsin: evet)
+  goruntu: /lab/cikti/prova-20261124T154746Z/lab-02-a-mr2.png
+
+[1m### Arayuz: gitlab mr-engel 99 lead feature/3-stok-durumu-arayuz Ready to merge by members who can write to the target branch lab-02-a-rol-degisimi-lead-merge-edemez[0m
+ Container belbim-lab-workstation-1  Running
+  tamam  !2: ekip99-lead merge edemiyor: "Ready to merge by members who can write to the target branch"
+  goruntu: /lab/cikti/prova-20261124T154746Z/lab-02-a-rol-degisimi-lead-merge-edemez.png
+
+[1m### Arayuz: gitlab mr-onayla 99 dev feature/3-stok-durumu-arayuz lab-02-a-mr2-onay[0m
+ Container belbim-lab-workstation-1  Running
+  tamam  !2: ekip99-dev onayladi
+  goruntu: /lab/cikti/prova-20261124T154746Z/lab-02-a-mr2-onay.png
+
+[1m### Arayuz: gitlab mr-merge 99 dev feature/3-stok-durumu-arayuz lab-02-a-mr2-merge[0m
+ Container belbim-lab-workstation-1  Running
+  goruntu: /lab/cikti/prova-20261124T154746Z/lab-02-a-mr2-merge-oncesi.png
+  tamam  !2: ekip99-dev merge etti
+  goruntu: /lab/cikti/prova-20261124T154746Z/lab-02-a-mr2-merge.png
+
+[1m### Egitmen: bootstrap/rol-degistir.sh 99 asil[0m
+    ekip99-lead: Maintainer   ekip99-dev: Developer   (egitim/ekip-99)
+rol: ekip99-lead
+$ git switch develop
+Switched to branch 'develop'
+Your branch is up to date with 'origin/develop'.
+$ git pull --ff-only
+From gitlab.kurum.test:egitim/ekip-99/saha-ekipman-portal
+   f7480e0..d178d45  develop    -> origin/develop
+Updating f7480e0..d178d45
+Fast-forward
+ src/web-ui/src/components/CatalogList.jsx      |  2 ++
+ src/web-ui/src/components/CatalogList.test.jsx | 14 +++++++++++---
+ 2 files changed, 13 insertions(+), 3 deletions(-)
+$ git fetch --prune
+From gitlab.kurum.test:egitim/ekip-99/saha-ekipman-portal
+ - [deleted]         (none)     -> origin/feature/3-stok-durumu-arayuz
+$ git branch -D feature/3-stok-durumu-arayuz
+Deleted branch feature/3-stok-durumu-arayuz (was 45f7d6a).
+
+[1m### Checkpoint karsilastirmasi[0m
+# agac ayni: origin/develop == checkpoint/lab-02a (haric: .gitlab/CODEOWNERS)
+# agac ayni: origin/main == checkpoint/lab-02a-main (haric: .gitlab/CODEOWNERS)
+
+[32mLAB 02-a cozumu ekip-99 icin uygulandi.[0m

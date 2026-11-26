@@ -1,0 +1,56 @@
+
+[1m### Arayuz: gitlab issue-ac 01 dev Ortak sözleşmeler Nexus'ta NuGet paketi olarak Servisler common-contracts'ı kaynak olarak değil, Nexus'taki sürümlü paketten almalı. Kabul kriteri: paket Nexus'ta; servisler paketten restore ediyor; aynı sürüm ikinci kez yayınlanamıyor. lab-05-a-issue[0m
+ Container belbim-lab-workstation-1  Running
+  goruntu: lab-rehberleri/img/lab-05-a-issue-form.png
+  tamam  issue #6 acildi: Ortak sözleşmeler Nexus'ta NuGet paketi olarak
+  goruntu: lab-rehberleri/img/lab-05-a-issue.png
+
+[1m### Adim 1: PackageId (ekip sonekiyle) ve Version[0m
+rol: ekip01-dev
+$ git switch develop
+Already on 'develop'
+Your branch is up to date with 'origin/develop'.
+$ git pull --ff-only
+Already up to date.
+$ git switch -c feature/ortak-paket
+Switched to a new branch 'feature/ortak-paket'
+$ grep -n -E 'PackageId|<Version>|Description' src/common-contracts/common-contracts.csproj
+12:    <PackageId>Saha.Common.Contracts.Ekip01</PackageId>
+13:    <Version>1.0.0</Version>
+14:    <Description>Saha Ekipman Talep Portalı: servisler arası sözleşmeler (DTO'lar).</Description>
+
+[1m### Adim 2: dotnet pack; paketin icini incele[0m
+$ dotnet pack src/common-contracts -c Release -o out
+  Determining projects to restore...
+  Restored /home/ekip01/saha-ekipman-portal/src/common-contracts/common-contracts.csproj (in 31 ms).
+  common-contracts -> /home/ekip01/saha-ekipman-portal/src/common-contracts/bin/Release/net10.0/common-contracts.dll
+  The package Saha.Common.Contracts.Ekip01.1.0.0 is missing a readme. Go to https://aka.ms/nuget/authoring-best-practices/readme to learn why package readmes are important.
+  Successfully created package '/home/ekip01/saha-ekipman-portal/out/Saha.Common.Contracts.Ekip01.1.0.0.nupkg'.
+$ ls out/
+Saha.Common.Contracts.Ekip01.1.0.0.nupkg
+$ unzip -l out/Saha.Common.Contracts.Ekip01.1.0.0.nupkg
+Archive:  out/Saha.Common.Contracts.Ekip01.1.0.0.nupkg
+  Length      Date    Time    Name
+---------  ---------- -----   ----
+      491  2026-11-24 14:07   _rels/.rels
+      529  2026-11-24 14:07   Saha.Common.Contracts.Ekip01.nuspec
+    10240  2026-11-24 14:07   lib/net10.0/common-contracts.dll
+      459  2026-11-24 14:07   [Content_Types].xml
+      683  2026-11-24 14:07   package/services/metadata/core-properties/nuget.psmdcp
+---------                     -------
+    12402                     5 files
+$ unzip -p out/Saha.Common.Contracts.Ekip01.1.0.0.nupkg Saha.Common.Contracts.Ekip01.nuspec | grep -E '<id>|<version>|<dependencies|<group'
+    <id>Saha.Common.Contracts.Ekip01</id>
+    <version>1.0.0</version>
+    <dependencies>
+      <group targetFramework="net10.0" />
+
+[1m### Arayuz: nexus api-anahtari 01 lab-05-a-api-anahtari[0m
+ Container belbim-lab-workstation-1  Running
+HATA   api-anahtari: locator.fill: Timeout 30000ms exceeded.
+       Call log:
+         - waiting for locator('input[name="username"]')
+       
+       sayfa: https://nexus.kurum.test/#/login?returnTo=I3ByZXZpZXcvYnJvd3NlL3dlbGNvbWU%2FdGFiPW92ZXJ2aWV3
+       goruntu: lab-ortami/.cache/ui/hata-api-anahtari-1795529308496.png
+

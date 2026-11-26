@@ -1,0 +1,17 @@
+== GitLab (ekip-01)
+uye ekip01-dev 30
+uye ekip01-lead 40
+uye root 50
+ssh-anahtari ekip01-lead 01ba4719c80b (0)
+ssh-anahtari ekip01-dev 01ba4719c80b (0)
+proje yok
+== test VM (/opt/saha/ekip01)
+drwxr-xr-x 4096 1795535144 .
+drwxr-xr-x 4096 1795535274 ..
+== workstation (ekip01)
+ev .profile
+ev .ssh
+== Nexus (ekip-01)
+== test VM deploy kaydi (ekip-01)
+jenkins-anahtari 0
+== CI (ekip-01): GitLab baglantisi, Jenkins, SonarQube

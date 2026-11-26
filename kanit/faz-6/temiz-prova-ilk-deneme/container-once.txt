@@ -1,0 +1,11 @@
+belbim-lab-jenkins-agent-1 5bc55e71c4a8
+belbim-lab-jenkins-1 08d568939fe8
+belbim-lab-sonarqube-1 95933fa486ab
+belbim-lab-agent-docker-1 1c32d1c641b3
+belbim-lab-sonar-db-1 6b387880a1ad
+belbim-lab-workstation-1 b386bcc090a0
+belbim-lab-test-vm-1 ba19a8c768ed
+belbim-lab-dns-1 ae6376cdd53d
+belbim-lab-proxy-1 0f34746e71f1
+belbim-lab-nexus-1 7887af26c47a
+belbim-lab-gitlab-1 9c6cd6d61e43

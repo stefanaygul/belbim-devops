@@ -1,0 +1,73 @@
+
+[1m### Adim 3: 1.0.0'i Nexus hosted depoya push et[0m
+$ dotnet nuget push out/Saha.Common.Contracts.Ekip01.1.0.0.nupkg --source https://nexus.kurum.test/repository/nuget-hosted/ --api-key "$NEXUS_APIKEY"
+Pushing Saha.Common.Contracts.Ekip01.1.0.0.nupkg to 'https://nexus.kurum.test/repository/nuget-hosted/'...
+  PUT https://nexus.kurum.test/repository/nuget-hosted/
+  Created https://nexus.kurum.test/repository/nuget-hosted/ 63ms
+Your package was pushed.
+
+[1m### Arayuz: nexus paket 01 1.0.0 lab-05-a-nexus-paket[0m
+HATA   paket: expect(locator).toBeVisible() failed
+       
+       Locator: getByText('1.0.0', { exact: true }).first()
+       Expected: visible
+       Timeout: 5000ms
+       Error: element(s) not found
+       sayfa: https://nexus.kurum.test/#browse/browse:nuget-hosted:Saha.Common.Contracts.Ekip01
+       goruntu: lab-ortami/.cache/ui/hata-paket-1795529857124.png
+
+
+[1m### Adim 4: ayni surumu yeniden push et (reddedilmeli)[0m
+$ dotnet nuget push out/Saha.Common.Contracts.Ekip01.1.0.0.nupkg --source https://nexus.kurum.test/repository/nuget-hosted/ --api-key "$NEXUS_APIKEY"
+Pushing Saha.Common.Contracts.Ekip01.1.0.0.nupkg to 'https://nexus.kurum.test/repository/nuget-hosted/'...
+  PUT https://nexus.kurum.test/repository/nuget-hosted/
+  Conflict https://nexus.kurum.test/repository/nuget-hosted/ 56ms
+To skip already published packages, use the option --skip-duplicate
+error: Response status code does not indicate success: 409 (nuget-hosted/Saha.Common.Contracts.Ekip01/1.0.0 -  cannot be updated as asset already exists and redeploy is not allowed).
+# beklenen hata olustu: 409, yayinlanmis surum degistirilemez
+
+[1m### Adim 5: ProjectReference yerine PackageReference; Dockerfile'lar paketi Nexus'tan alir[0m
+$ grep -n 'common-contracts' src/order-service/order-service.csproj src/product-service/product-service.csproj src/*/Dockerfile
+src/order-service/order-service.csproj:17:    <ProjectReference Include="..\common-contracts\common-contracts.csproj" />
+src/product-service/product-service.csproj:16:    <ProjectReference Include="..\common-contracts\common-contracts.csproj" />
+src/order-service/Dockerfile:6:COPY src/common-contracts/ src/common-contracts/
+src/product-service/Dockerfile:6:COPY src/common-contracts/ src/common-contracts/
+$ git diff --stat
+ src/common-contracts/common-contracts.csproj | 2 +-
+ src/order-service/order-service.csproj       | 2 +-
+ src/product-service/product-service.csproj   | 2 +-
+ 3 files changed, 3 insertions(+), 3 deletions(-)
+$ grep -n 'Saha.Common.Contracts' src/order-service/order-service.csproj src/product-service/product-service.csproj
+src/order-service/order-service.csproj:17:    <PackageReference Include="Saha.Common.Contracts.Ekip01" Version="1.0.0" />
+src/product-service/product-service.csproj:16:    <PackageReference Include="Saha.Common.Contracts.Ekip01" Version="1.0.0" />
+$ grep -c 'common-contracts' src/order-service/Dockerfile src/product-service/Dockerfile || true
+src/order-service/Dockerfile:0
+src/product-service/Dockerfile:0
+
+[1m### Adim 6: onbellegi temizle; restore'un Nexus'tan geldigini gor[0m
+$ dotnet nuget locals all --clear
+Clearing NuGet HTTP cache: /home/ekip01/.local/share/NuGet/http-cache
+Clearing NuGet global packages folder: /home/ekip01/.nuget/packages/
+Clearing NuGet Temp cache: /tmp/NuGetScratchekip01
+Clearing NuGet plugins cache: /home/ekip01/.local/share/NuGet/plugin-cache
+Local resources cleared.
+$ dotnet restore SahaPortal.sln -v n | grep -i -E 'saha\.common\.contracts|Installed|error' | head -n 8
+           GET https://nexus.kurum.test/repository/nuget-group/v3/content/saha.common.contracts.ekip01/index.json
+           OK https://nexus.kurum.test/repository/nuget-group/v3/content/saha.common.contracts.ekip01/index.json 967ms
+           GET https://nexus.kurum.test/repository/nuget-group/v3/content/saha.common.contracts.ekip01/1.0.0/saha.common.contracts.ekip01.1.0.0.nupkg
+           OK https://nexus.kurum.test/repository/nuget-group/v3/content/saha.common.contracts.ekip01/1.0.0/saha.common.contracts.ekip01.1.0.0.nupkg 8ms
+         Installed Saha.Common.Contracts.Ekip01 1.0.0 from https://nexus.kurum.test/repository/nuget-group/index.json to /home/ekip01/.nuget/packages/saha.common.contracts.ekip01/1.0.0 with content hash b5syi0KB8mAdQi/tqWB31Ojv+iIsE/yXmOtHQlw/vch8cvekcI39tjvhPM6GbzYRHYnHW3AeF2ue1genf1bGrg==.
+         Installed Microsoft.Extensions.Configuration.UserSecrets 10.0.15 from https://nexus.kurum.test/repository/nuget-group/index.json to /home/ekip01/.nuget/packages/microsoft.extensions.configuration.usersecrets/10.0.15 with content hash P4gX89ewSSE4UElThXKUmapXpRb3RwaL2jDqvUy9wn30T757mxozGV+xb5H4Fdm01dMHXTzA/Zj1NUInltqCPg==.
+         Installed Swashbuckle.AspNetCore.SwaggerUI 11.0.1 from https://nexus.kurum.test/repository/nuget-group/index.json to /home/ekip01/.nuget/packages/swashbuckle.aspnetcore.swaggerui/11.0.1 with content hash Mu0j015xm7W/Axz6J6bXrh+/qEiyUGQUIGrWWvivv732yO1LtnmyV3zRwWB1dOFvlrU/CWUZqIYe1+hIcsCacg==.
+         Installed Microsoft.Extensions.Options 10.0.15 from https://nexus.kurum.test/repository/nuget-group/index.json to /home/ekip01/.nuget/packages/microsoft.extensions.options/10.0.15 with content hash vF3ghTChyyX3BDqRFUurk+fn8vZySFmWHm4vIeeOQbBrjnPqWrr5ceyCb1jrGpMasYdcK9IuJskLVQZWBfNxCg==.
+$ dotnet build SahaPortal.sln -c Release --no-restore 2>&1 | tail -n 3
+    0 Error(s)
+
+Time Elapsed 00:00:01.44
+$ dotnet test SahaPortal.sln -c Release --no-build 2>&1 | grep -E 'Passed!|Failed!'
+Passed!  - Failed:     0, Passed:     8, Skipped:     0, Total:     8, Duration: 129 ms - product-service.tests.dll (net10.0)
+Passed!  - Failed:     0, Passed:    17, Skipped:     0, Total:    17, Duration: 542 ms - order-service.tests.dll (net10.0)
+# Paket artik kaynaktan degil Nexus'tan: imaj da ayni yoldan
+$ docker build -q -f src/order-service/Dockerfile --build-arg MCR=$MCR -t ekip01-yerel/order-service:paket . && docker rmi -f ekip01-yerel/order-service:paket > /dev/null && echo 'order-service imaji paketle derlendi'
+sha256:0cd7e071efda6fbe07e6f1f35a22d548944d762487d817bd4d95597b8b2a9317
+order-service imaji paketle derlendi

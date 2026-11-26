@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <RootNamespace>Saha.Common.Contracts</RootNamespace>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <!-- NuGet paketi. Paket kimligi ekibe ozeldir: ekipler ayni hosted depoya yayinlar. -->
+  <PropertyGroup>
+    <PackageId>Saha.Common.Contracts.EkipNN</PackageId>
+    <Version>1.0.0</Version>
+    <Description>Saha Ekipman Talep Portalı: servisler arası sözleşmeler (DTO'lar).</Description>
+  </PropertyGroup>
+
+</Project>

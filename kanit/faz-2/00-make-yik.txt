@@ -1,0 +1,62 @@
+# Temiz kurulum oncesi silme (2026-11-23)
+
+## 1. deneme, 20:56: `make yik` basarisiz
+Docker iki container'i durduramadi; volume'lar silinmedi. Ardindan host yanit vermez
+hale geldi ve yeniden baslatildi (nedeni belirlenemedi).
+
+$ make yik   (onay: evet)
+Bu islem belbim-lab projesinin TUM container ve volume'larini siler:
+  belbim-lab_gitlab-logs
+  belbim-lab_gitlab-config
+  belbim-lab_workstation-docker
+  belbim-lab_gitlab-data
+  belbim-lab_workstation-home
+  belbim-lab_testvm-home
+  belbim-lab_testvm-hostkeys
+  belbim-lab_nexus-data
+  belbim-lab_testvm-docker
+  belbim-lab_testvm-saha
+ Container belbim-lab-workstation-1  Stopping
+ Container belbim-lab-test-vm-1  Stopping
+ Container belbim-lab-dns-1  Stopping
+ Container belbim-lab-proxy-1  Stopping
+ Container belbim-lab-gitlab-1  Stopping
+ Container belbim-lab-nexus-1  Stopping
+ Container belbim-lab-gitlab-1  Error while Stopping
+ Container belbim-lab-nexus-1  Error while Stopping
+ Container belbim-lab-dns-1  Stopped
+ Container belbim-lab-dns-1  Removing
+ Container belbim-lab-dns-1  Removed
+ Container belbim-lab-test-vm-1  Stopped
+ Container belbim-lab-test-vm-1  Removing
+ Container belbim-lab-test-vm-1  Removed
+ Container belbim-lab-proxy-1  Stopped
+ Container belbim-lab-proxy-1  Removing
+ Container belbim-lab-proxy-1  Removed
+ Container belbim-lab-workstation-1  Stopped
+ Container belbim-lab-workstation-1  Removing
+ Container belbim-lab-workstation-1  Removed
+Error response from daemon: cannot stop container: 3a391a88e046ffd272c045680cd61424ae036b1dab5ee6569f70c9b56eb47084: tried to kill container, but did not receive an exit event
+make: *** [yik] Error 1
+[cikis kodu: 2]
+
+$ docker volume ls (belbim-lab)
+10
+
+
+## 2. deneme, 21:12 (yeniden baslatmadan sonra): basarili
+$ docker compose --profile cekirdek --profile ci --profile araclar down --volumes --remove-orphans --timeout 120
+ Volume belbim-lab_gitlab-data  Removed
+ Volume belbim-lab_nexus-data  Removed
+ Volume belbim-lab_workstation-home  Removed
+ Volume belbim-lab_gitlab-logs  Removed
+ Volume belbim-lab_gitlab-config  Removed
+ Volume belbim-lab_testvm-hostkeys  Removed
+ Volume belbim-lab_testvm-home  Removed
+ Volume belbim-lab_testvm-saha  Removed
+ Volume belbim-lab_workstation-docker  Removed
+ Volume belbim-lab_testvm-docker  Removed
+ Network belbim-lab_lab  Removed
+
+$ docker ps -a --filter name=belbim-lab     -> bos
+$ docker volume ls -q | grep -c '^belbim-lab_'   -> 0

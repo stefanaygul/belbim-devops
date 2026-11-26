@@ -1,0 +1,17 @@
+# Jenkins ve SonarQube yeniden baslatildi: job, credential, build gecmisi ve analizler kalici mi?
+ Container belbim-lab-sonarqube-1  Restarting
+ Container belbim-lab-jenkins-1  Restarting
+ Container belbim-lab-jenkins-1  Started
+ Container belbim-lab-sonarqube-1  Started
+registry   bekleniyor  hazir (HTTP 401, 1s)
+jenkins    bekleniyor . hazir (HTTP 200, 12s)
+sonar      bekleniyor  hazir (HTTP 200, 1s)
+
+# agent yeniden baglandi (deneme 1)
+ekip-01 durumu yeniden baslatmadan once ve sonra AYNI (110 satir)
+47 gecti, 0 kaldi
+  [32mGECTI[0m  test sonuclari Jenkins'te: 40 gecti, 0 kaldi
+36 gecti, 0 kaldi
+31 gecti, 0 kaldi
+28 gecti, 0 kaldi
+[32mCI PROFILI: GECTI[0m

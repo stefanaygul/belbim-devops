@@ -1,0 +1,111 @@
+# Faz 1 kanit: merge conflict iki yonlu dogrulama (lab/01b-rename)
+# tarih: 2026-11-23 15:42 +03 | host: Darwin arm64 | dotnet 10.0.102 | git 2.50.1 | repo: portal-starter main@174fe06
+
+## 1. Katilimcinin degisikligi (LAB 01-B gorev 1-4)
+
+$ git switch -c feature/katalog-sarj-unitesi
+Switched to a new branch 'feature/katalog-sarj-unitesi'
+[cikis kodu: 0]
+
+$ git diff
+diff --git a/src/product-service/Data/catalog.json b/src/product-service/Data/catalog.json
+index cec9467..b810674 100644
+--- a/src/product-service/Data/catalog.json
++++ b/src/product-service/Data/catalog.json
+@@ -1,5 +1,6 @@
+ [
+   { "code": "ADP-01", "name": "Terminal adaptörü" },
+   { "code": "KBL-02", "name": "Bağlantı kablosu" },
+-  { "code": "STD-03", "name": "Cihaz standı" }
++  { "code": "STD-03", "name": "Cihaz standı" },
++  { "code": "SRJ-04", "name": "Şarj ünitesi" }
+ ]
+diff --git a/tests/product-service.tests/CatalogStoreTests.cs b/tests/product-service.tests/CatalogStoreTests.cs
+index f9d5d60..ab9ef21 100644
+--- a/tests/product-service.tests/CatalogStoreTests.cs
++++ b/tests/product-service.tests/CatalogStoreTests.cs
+@@ -11,7 +11,7 @@ public class CatalogStoreTests
+ 
+         var codes = catalog.GetAll().Select(p => p.Code).ToArray();
+ 
+-        Assert.Equal(["ADP-01", "KBL-02", "STD-03"], codes);
++        Assert.Equal(["ADP-01", "KBL-02", "STD-03", "SRJ-04"], codes);
+     }
+ 
+     [Fact]
+[cikis kodu: 0]
+
+$ dotnet test SahaPortal.sln -c Release
+Passed!  - Failed:     0, Passed:     5, Skipped:     0, Total:     5, Duration: 224 ms - product-service.tests.dll (net10.0)
+Passed!  - Failed:     0, Passed:     4, Skipped:     0, Total:     4, Duration: 863 ms - order-service.tests.dll (net10.0)
+
+$ git add src/product-service tests/product-service.tests
+[cikis kodu: 0]
+
+$ git commit -m feat(catalog): add charging unit
+[feature/katalog-sarj-unitesi 0aa8066] feat(catalog): add charging unit
+ 2 files changed, 3 insertions(+), 2 deletions(-)
+[cikis kodu: 0]
+
+## 2. Hata: hazir branch merge edilince conflict cikar
+
+$ git merge origin/lab/01b-rename
+Auto-merging src/product-service/Data/catalog.json
+CONFLICT (content): Merge conflict in src/product-service/Data/catalog.json
+Automatic merge failed; fix conflicts and then commit the result.
+[cikis kodu: 1]
+
+$ git status --short
+UU src/product-service/Data/catalog.json
+[cikis kodu: 0]
+
+$ cat src/product-service/Data/catalog.json
+[
+  { "code": "ADP-01", "name": "Terminal adaptörü" },
+  { "code": "KBL-02", "name": "Bağlantı kablosu" },
+  { "code": "STD-03", "name": "Cihaz standı" },
+<<<<<<< HEAD
+  { "code": "SRJ-04", "name": "Şarj ünitesi" }
+=======
+  { "code": "SRJ-04", "name": "Hızlı şarj" }
+>>>>>>> origin/lab/01b-rename
+]
+[cikis kodu: 0]
+
+$ dotnet test SahaPortal.sln -c Release   # isaretler dosyadayken
+Failed!  - Failed:     4, Passed:     1, Skipped:     0, Total:     5, Duration: 185 ms - product-service.tests.dll (net10.0)
+Passed!  - Failed:     0, Passed:     4, Skipped:     0, Total:     4, Duration: 605 ms - order-service.tests.dll (net10.0)
+
+## 3. Cozum: dogru hali sec, isaretleri sil, test et, merge'u tamamla
+
+$ cat src/product-service/Data/catalog.json
+[
+  { "code": "ADP-01", "name": "Terminal adaptörü" },
+  { "code": "KBL-02", "name": "Bağlantı kablosu" },
+  { "code": "STD-03", "name": "Cihaz standı" },
+  { "code": "SRJ-04", "name": "Şarj ünitesi" }
+]
+[cikis kodu: 0]
+
+$ git grep -nE ^(<<<<<<<|=======|>>>>>>>) -- src tests
+[cikis kodu: 1]
+
+$ git add src/product-service/Data/catalog.json
+[cikis kodu: 0]
+
+$ dotnet test SahaPortal.sln -c Release
+Passed!  - Failed:     0, Passed:     5, Skipped:     0, Total:     5, Duration: 188 ms - product-service.tests.dll (net10.0)
+Passed!  - Failed:     0, Passed:     4, Skipped:     0, Total:     4, Duration: 615 ms - order-service.tests.dll (net10.0)
+
+$ git commit --no-edit
+[feature/katalog-sarj-unitesi d82999c] Merge remote-tracking branch 'origin/lab/01b-rename' into feature/katalog-sarj-unitesi
+[cikis kodu: 0]
+
+$ git log --oneline --graph
+*   d82999c Merge remote-tracking branch 'origin/lab/01b-rename' into feature/katalog-sarj-unitesi
+|\  
+| * 756affb feat(catalog): add fast charger
+* | 0aa8066 feat(catalog): add charging unit
+|/  
+* 174fe06 chore: starter project
+[cikis kodu: 0]

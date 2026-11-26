@@ -1,0 +1,4 @@
+baslangic=01-a
+son=03-a
+paylasilan=1
+gorseller=/lab/cikti/prova-20261124T153636Z

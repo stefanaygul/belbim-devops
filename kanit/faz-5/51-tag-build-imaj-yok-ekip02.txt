@@ -1,0 +1,15 @@
+# test VM ekip02 once: (.env TAG, deploy-kayit.log satir sayisi) TAG=1.1.0 2 
+commit c6e6188 (main build'i yok; SHA imaji yok)
+tag v0.9.9-deneme -> c6e6188
+build: {"_class":"org.jenkinsci.plugins.workflow.job.WorkflowRun","building":false,"duration":313062,"number":1,"result":"FAILURE"}
++ echo gitlab.kurum.test:5050/egitim/ekip-02/saha-ekipman-portal/product-service:c6e6188 bekleniyor (main build'i) ...
+gitlab.kurum.test:5050/egitim/ekip-02/saha-ekipman-portal/product-service:c6e6188 bekleniyor (main build'i) ...
+40
++ echo HATA: gitlab.kurum.test:5050/egitim/ekip-02/saha-ekipman-portal/product-service:c6e6188 registry'de yok. Bu tag'in commit'i (c6e6188) için main build'i kırmızı ya da hiç çalışmadı; imaj yeniden derlenmez. main build'ini yeşile döndürüp bu tag 
+HATA: gitlab.kurum.test:5050/egitim/ekip-02/saha-ekipman-portal/product-service:c6e6188 registry'de yok. Bu tag'in commit'i (c6e6188) için main build'i kırmızı ya da hiç çalışmadı; imaj yeniden derlenmez. main build'ini yeşile döndürüp bu tag job'ını
+Stage "Deploy: test" skipped due to earlier failure(s)
+Stage "Smoke test" skipped due to earlier failure(s)
+Finished: FAILURE
+deneme tag ve branch silindi
+TAG=1.1.0 2 
+[exited with code 0]

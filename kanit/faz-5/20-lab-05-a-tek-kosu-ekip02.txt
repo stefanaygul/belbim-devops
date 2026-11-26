@@ -1,0 +1,239 @@
+
+[1m### Arayuz: gitlab issue-ac 02 dev Ortak sözleşmeler Nexus'ta NuGet paketi olarak Servisler common-contracts'ı kaynak olarak değil, Nexus'taki sürümlü paketten almalı. Kabul kriteri: paket Nexus'ta; servisler paketten restore ediyor; aynı sürüm ikinci kez yayınlanamıyor. lab-05-a-issue[0m
+ Container belbim-lab-workstation-1  Running
+  goruntu: lab-rehberleri/img/lab-05-a-issue-form.png
+  tamam  issue #8 acildi: Ortak sözleşmeler Nexus'ta NuGet paketi olarak
+  goruntu: lab-rehberleri/img/lab-05-a-issue.png
+
+[1m### Adim 1: PackageId (ekip sonekiyle) ve Version[0m
+rol: ekip02-dev
+$ git switch develop
+Already on 'develop'
+Your branch is up to date with 'origin/develop'.
+$ git pull --ff-only
+Already up to date.
+$ git switch -c feature/ortak-paket
+Switched to a new branch 'feature/ortak-paket'
+$ grep -n -E 'PackageId|<Version>|Description' src/common-contracts/common-contracts.csproj
+12:    <PackageId>Saha.Common.Contracts.Ekip02</PackageId>
+13:    <Version>1.0.0</Version>
+14:    <Description>Saha Ekipman Talep Portalı: servisler arası sözleşmeler (DTO'lar).</Description>
+
+[1m### Adim 2: dotnet pack; paketin icini incele[0m
+$ dotnet pack src/common-contracts -c Release -o out
+  Determining projects to restore...
+  Restored /home/ekip02/saha-ekipman-portal/src/common-contracts/common-contracts.csproj (in 31 ms).
+  common-contracts -> /home/ekip02/saha-ekipman-portal/src/common-contracts/bin/Release/net10.0/common-contracts.dll
+  The package Saha.Common.Contracts.Ekip02.1.0.0 is missing a readme. Go to https://aka.ms/nuget/authoring-best-practices/readme to learn why package readmes are important.
+  Successfully created package '/home/ekip02/saha-ekipman-portal/out/Saha.Common.Contracts.Ekip02.1.0.0.nupkg'.
+$ ls out/
+Saha.Common.Contracts.Ekip02.1.0.0.nupkg
+$ unzip -l out/Saha.Common.Contracts.Ekip02.1.0.0.nupkg
+Archive:  out/Saha.Common.Contracts.Ekip02.1.0.0.nupkg
+  Length      Date    Time    Name
+---------  ---------- -----   ----
+      491  2026-11-24 14:30   _rels/.rels
+      529  2026-11-24 14:30   Saha.Common.Contracts.Ekip02.nuspec
+    10240  2026-11-24 14:30   lib/net10.0/common-contracts.dll
+      459  2026-11-24 14:30   [Content_Types].xml
+      683  2026-11-24 14:30   package/services/metadata/core-properties/nuget.psmdcp
+---------                     -------
+    12402                     5 files
+$ unzip -p out/Saha.Common.Contracts.Ekip02.1.0.0.nupkg Saha.Common.Contracts.Ekip02.nuspec | grep -E '<id>|<version>|<dependencies|<group'
+    <id>Saha.Common.Contracts.Ekip02</id>
+    <version>1.0.0</version>
+    <dependencies>
+      <group targetFramework="net10.0" />
+
+[1m### Arayuz: nexus api-anahtari 02 lab-05-a-api-anahtari[0m
+ Container belbim-lab-workstation-1  Running
+  goruntu: lab-rehberleri/img/lab-05-a-api-anahtari-sayfa.png
+  goruntu: lab-rehberleri/img/lab-05-a-api-anahtari-parola.png
+  tamam  ekip02: NuGet API anahtari alindi (deger ekrana yazilmadi)
+  goruntu: lab-rehberleri/img/lab-05-a-api-anahtari.png
+
+[1m### Adim 3: 1.0.0'i Nexus hosted depoya push et[0m
+$ dotnet nuget push out/Saha.Common.Contracts.Ekip02.1.0.0.nupkg --source https://nexus.kurum.test/repository/nuget-hosted/ --api-key "$NEXUS_APIKEY"
+Pushing Saha.Common.Contracts.Ekip02.1.0.0.nupkg to 'https://nexus.kurum.test/repository/nuget-hosted/'...
+  PUT https://nexus.kurum.test/repository/nuget-hosted/
+  Created https://nexus.kurum.test/repository/nuget-hosted/ 61ms
+Your package was pushed.
+
+[1m### Arayuz: nexus paket 02 1.0.0 lab-05-a-nexus-paket[0m
+ Container belbim-lab-workstation-1  Running
+  tamam  nuget-hosted: Saha.Common.Contracts.Ekip02 1.0.0
+  goruntu: lab-rehberleri/img/lab-05-a-nexus-paket.png
+
+[1m### Adim 4: ayni surumu yeniden push et (reddedilmeli)[0m
+$ dotnet nuget push out/Saha.Common.Contracts.Ekip02.1.0.0.nupkg --source https://nexus.kurum.test/repository/nuget-hosted/ --api-key "$NEXUS_APIKEY"
+Pushing Saha.Common.Contracts.Ekip02.1.0.0.nupkg to 'https://nexus.kurum.test/repository/nuget-hosted/'...
+  PUT https://nexus.kurum.test/repository/nuget-hosted/
+  Conflict https://nexus.kurum.test/repository/nuget-hosted/ 56ms
+To skip already published packages, use the option --skip-duplicate
+error: Response status code does not indicate success: 409 (nuget-hosted/Saha.Common.Contracts.Ekip02/1.0.0 -  cannot be updated as asset already exists and redeploy is not allowed).
+# beklenen hata olustu: 409, yayinlanmis surum degistirilemez
+
+[1m### Adim 5: ProjectReference yerine PackageReference; Dockerfile'lar paketi Nexus'tan alir[0m
+$ grep -n 'common-contracts' src/order-service/order-service.csproj src/product-service/product-service.csproj src/*/Dockerfile
+src/order-service/order-service.csproj:17:    <ProjectReference Include="..\common-contracts\common-contracts.csproj" />
+src/product-service/product-service.csproj:16:    <ProjectReference Include="..\common-contracts\common-contracts.csproj" />
+src/order-service/Dockerfile:6:COPY src/common-contracts/ src/common-contracts/
+src/product-service/Dockerfile:6:COPY src/common-contracts/ src/common-contracts/
+$ git diff --stat
+ src/common-contracts/common-contracts.csproj | 2 +-
+ src/order-service/order-service.csproj       | 2 +-
+ src/product-service/product-service.csproj   | 2 +-
+ 3 files changed, 3 insertions(+), 3 deletions(-)
+$ grep -n 'Saha.Common.Contracts' src/order-service/order-service.csproj src/product-service/product-service.csproj
+src/order-service/order-service.csproj:17:    <PackageReference Include="Saha.Common.Contracts.Ekip02" Version="1.0.0" />
+src/product-service/product-service.csproj:16:    <PackageReference Include="Saha.Common.Contracts.Ekip02" Version="1.0.0" />
+$ grep -c 'common-contracts' src/order-service/Dockerfile src/product-service/Dockerfile || true
+src/order-service/Dockerfile:0
+src/product-service/Dockerfile:0
+
+[1m### Adim 6: onbellegi temizle; restore'un Nexus'tan geldigini gor[0m
+$ dotnet nuget locals all --clear
+Clearing NuGet HTTP cache: /home/ekip02/.local/share/NuGet/http-cache
+Clearing NuGet global packages folder: /home/ekip02/.nuget/packages/
+Clearing NuGet Temp cache: /tmp/NuGetScratchekip02
+Clearing NuGet plugins cache: /home/ekip02/.local/share/NuGet/plugin-cache
+Local resources cleared.
+$ dotnet restore SahaPortal.sln -v n | grep -i -E 'saha\.common\.contracts|Installed|error' | head -n 8
+           GET https://nexus.kurum.test/repository/nuget-group/v3/content/saha.common.contracts.ekip02/index.json
+           OK https://nexus.kurum.test/repository/nuget-group/v3/content/saha.common.contracts.ekip02/index.json 940ms
+           GET https://nexus.kurum.test/repository/nuget-group/v3/content/saha.common.contracts.ekip02/1.0.0/saha.common.contracts.ekip02.1.0.0.nupkg
+           OK https://nexus.kurum.test/repository/nuget-group/v3/content/saha.common.contracts.ekip02/1.0.0/saha.common.contracts.ekip02.1.0.0.nupkg 7ms
+         Installed Saha.Common.Contracts.Ekip02 1.0.0 from https://nexus.kurum.test/repository/nuget-group/index.json to /home/ekip02/.nuget/packages/saha.common.contracts.ekip02/1.0.0 with content hash Te+7+wyT2Tkf4kZgqYHfU/6U7aAy72OC1Ro0JGjUxnODdhCaTC0sWoGt+F03djQlTLVu7QzKfUz0iWQHoLwuBQ==.
+         Installed xunit.analyzers 1.18.0 from https://nexus.kurum.test/repository/nuget-group/index.json to /home/ekip02/.nuget/packages/xunit.analyzers/1.18.0 with content hash OtFMHN8yqIcYP9wcVIgJrq01AfTxijjAqVDy/WeQVSyrDC1RzBWeQPztL49DN2syXRah8TYnfvk035s7L95EZQ==.
+         Installed Microsoft.Extensions.Configuration.UserSecrets 10.0.15 from https://nexus.kurum.test/repository/nuget-group/index.json to /home/ekip02/.nuget/packages/microsoft.extensions.configuration.usersecrets/10.0.15 with content hash P4gX89ewSSE4UElThXKUmapXpRb3RwaL2jDqvUy9wn30T757mxozGV+xb5H4Fdm01dMHXTzA/Zj1NUInltqCPg==.
+         Installed Microsoft.Extensions.Logging.Debug 10.0.15 from https://nexus.kurum.test/repository/nuget-group/index.json to /home/ekip02/.nuget/packages/microsoft.extensions.logging.debug/10.0.15 with content hash vPvEpc4hq9maNykhz/PyCREgm82TvUJTzSM9Y3vXwGYS7AGSXvC7HkXiA9KM1nFhuHP9w4mHS7ZAhIUTxCwigA==.
+$ dotnet build SahaPortal.sln -c Release --no-restore 2>&1 | tail -n 3
+    0 Error(s)
+
+Time Elapsed 00:00:01.53
+$ dotnet test SahaPortal.sln -c Release --no-build 2>&1 | grep -E 'Passed!|Failed!'
+Passed!  - Failed:     0, Passed:     8, Skipped:     0, Total:     8, Duration: 135 ms - product-service.tests.dll (net10.0)
+Passed!  - Failed:     0, Passed:    17, Skipped:     0, Total:    17, Duration: 539 ms - order-service.tests.dll (net10.0)
+# Paket artik kaynaktan degil Nexus'tan: imaj da ayni yoldan
+$ docker build -q -f src/order-service/Dockerfile --build-arg MCR=$MCR -t ekip02-yerel/order-service:paket . && docker rmi -f ekip02-yerel/order-service:paket > /dev/null && echo 'order-service imaji paketle derlendi'
+sha256:03096888d980b1072f0e7d4f11cc0533bf5e6cb8ee01c5f530bf8599e49901a7
+order-service imaji paketle derlendi
+
+[1m### Adim 7: commit, push (MR arayuzde)[0m
+rol: ekip02-dev
+$ git add src/common-contracts/common-contracts.csproj src/order-service src/product-service
+$ git status --short
+M  src/common-contracts/common-contracts.csproj
+M  src/order-service/Dockerfile
+M  src/order-service/order-service.csproj
+M  src/product-service/Dockerfile
+M  src/product-service/product-service.csproj
+$ git commit -q -m build(contracts): consume common contracts as a NuGet package
+$ git push -q -u origin feature/ortak-paket
+remote: 
+remote: To create a merge request for feature/ortak-paket, visit:        
+remote:   https://gitlab.kurum.test/egitim/ekip-02/saha-ekipman-portal/-/merge_requests/new?merge_request%5Bsource_branch%5D=feature%2Fortak-paket        
+remote: 
+$ git log --oneline -n 1
+2e83827 build(contracts): consume common contracts as a NuGet package
+
+[1m### CI durumu: build feature/ortak-paket SUCCESS Passed!|Finished:[0m
+    GitLab  : feature/ortak-paket son commit'i 2e838276
+    Jenkins : ekip-02/saha-portal-ekip02/feature/ortak-paket #1 -> SUCCESS (8 sn), derlenen commit 2e838276 (ayni SHA)
+    GitLab  : commit status jenkins = success (ref feature/ortak-paket) -> https://jenkins.kurum.test/job/ekip-02/job/saha-portal-ekip02/job/feature%252Fortak-paket/1/display/redirect
+    Jenkins konsolu (#1):
+      | Passed!  - Failed:     0, Passed:     8, Skipped:     0, Total:     8, Duration: 120 ms - product-service.tests.dll (net10.0)
+      | Passed!  - Failed:     0, Passed:    17, Skipped:     0, Total:    17, Duration: 518 ms - order-service.tests.dll (net10.0)
+      | Finished: SUCCESS
+    [32mtamam[0m  feature/ortak-paket: build SUCCESS, GitLab commit status jenkins=success
+
+[1m### Arayuz: gitlab mr-ac 02 dev feature/ortak-paket develop build(contracts): consume common contracts as a NuGet package 6 evet evet lab-05-a-mr[0m
+ Container belbim-lab-workstation-1  Running
+  tamam  MR sablonu kendiliginden geldi (.gitlab/merge_request_templates/Default.md)
+  goruntu: lab-rehberleri/img/lab-05-a-mr-sablon.png
+  tamam  reviewer: ekip02-lead
+  goruntu: lab-rehberleri/img/lab-05-a-mr-form.png
+  tamam  MR !5 acildi: feature/ortak-paket -> develop (squash: evet, kaynak branch silinsin: evet)
+  goruntu: lab-rehberleri/img/lab-05-a-mr.png
+
+[1m### CI durumu: mr feature/ortak-paket mergeable[0m
+    MR !5 (feature/ortak-paket): detailed_merge_status=mergeable, head_pipeline=success, sha=2e838276
+    MR'in son commit'i 2e838276 icin commit status: jenkins=success
+    [32mtamam[0m  MR !5: mergeable
+
+[1m### Arayuz: gitlab mr-merge 02 lead feature/ortak-paket lab-05-a-merge develop[0m
+ Container belbim-lab-workstation-1  Running
+  goruntu: lab-rehberleri/img/lab-05-a-merge-oncesi.png
+  tamam  !5: ekip02-lead merge etti
+  goruntu: lab-rehberleri/img/lab-05-a-merge.png
+
+[1m### CI durumu: build develop SUCCESS Quality gate|digest: |Finished:[0m
+    GitLab  : develop son commit'i ff762d28
+    Jenkins : ekip-02/saha-portal-ekip02/develop #2 -> SUCCESS (19 sn), derlenen commit ff762d28 (ayni SHA)
+    GitLab  : commit status jenkins = success (ref develop) -> https://jenkins.kurum.test/job/ekip-02/job/saha-portal-ekip02/job/develop/2/display/redirect
+    Jenkins konsolu (#2):
+      | SonarQube task 'ef084ced-0d5c-40f7-a838-6a5278e6c855' completed. Quality gate is 'OK'
+      | ff762d2: digest: sha256:48b057c2412b30cb8d316ef7c2b189a51f88f3e9a34e55a04c8af4e4b58ee63a size: 856
+      | ff762d2: digest: sha256:698b2cdf0bd5051141a1f69bafcf067c2b600df7e5e92ebf47bc68f1d37b6a09 size: 856
+      | ff762d2: digest: sha256:cab4d75bce830a97bc48e5963a9694e67191fb210d89c35aa6677b2100145c62 size: 856
+      | Finished: SUCCESS
+    [32mtamam[0m  develop: build SUCCESS, GitLab commit status jenkins=success
+
+[1m### CI durumu: sonar OK[0m
+    SonarQube: saha-portal-ekip02 son analiz commit ff762d28 (develop'un son commit'i)
+    Quality Gate: OK
+      kosul new_violations: OK  deger=0  esik=GT 0
+    olcumler: {"coverage":"72.7","new_lines":"0","new_violations":"0","ncloc":"538","new_lines_to_cover":"0"}
+    [32mtamam[0m  Quality Gate OK (beklenen)
+
+[1m### CI durumu: imaj var[0m
+    order-service:ff762d2 var (sha256:698b2cdf0bd5…)
+    product-service:ff762d2 var (sha256:48b057c2412b…)
+    web-ui:ff762d2 var (sha256:cab4d75bce83…)
+    [32mtamam[0m  commit ff762d2 icin imaj: var (beklenen)
+
+[1m### Arayuz: gitlab sayfa 02 dev /-/issues/6 Closed lab-05-a-issue-kapandi[0m
+ Container belbim-lab-workstation-1  Running
+  tamam  gorunuyor: Closed
+  goruntu: lab-rehberleri/img/lab-05-a-issue-kapandi.png
+
+[1m### Merge sonrasi[0m
+rol: ekip02-dev
+$ git switch develop
+Switched to branch 'develop'
+Your branch is up to date with 'origin/develop'.
+$ git pull --ff-only
+From gitlab.kurum.test:egitim/ekip-02/saha-ekipman-portal
+   65da295..ff762d2  develop    -> origin/develop
+Updating 65da295..ff762d2
+Fast-forward
+ src/common-contracts/common-contracts.csproj | 7 +++++++
+ src/order-service/Dockerfile                 | 1 -
+ src/order-service/order-service.csproj       | 2 +-
+ src/product-service/Dockerfile               | 1 -
+ src/product-service/product-service.csproj   | 2 +-
+ 5 files changed, 9 insertions(+), 4 deletions(-)
+$ git fetch --prune
+From gitlab.kurum.test:egitim/ekip-02/saha-ekipman-portal
+ - [deleted]         (none)     -> origin/feature/ortak-paket
+$ git branch -D feature/ortak-paket
+Deleted branch feature/ortak-paket (was 2e83827).
+$ git log --oneline --graph -n 4 origin/develop
+*   ff762d2 Merge branch 'feature/ortak-paket' into 'develop'
+|\  
+| * 2e83827 build(contracts): consume common contracts as a NuGet package
+|/  
+*   65da295 Merge branch 'feature/siparis-ozeti-testleri' into 'develop'
+|\  
+| * 767a7c3 test(order): cover the order summary
+|/  
+
+[1m### Checkpoint karsilastirmasi[0m
+# agac ayni: origin/develop == checkpoint/lab-05a (haric: .gitlab/CODEOWNERS Jenkinsfile ci/analyze.sh src/common-contracts/common-contracts.csproj src/order-service/order-service.csproj src/product-service/product-service.csproj)
+# Jenkinsfile: checkpoint/lab-05a ile ayni (NN yerine 02)
+# ci/analyze.sh: checkpoint/lab-05a ile ayni (NN yerine 02)
+# src/common-contracts/common-contracts.csproj: checkpoint/lab-05a ile ayni (NN yerine 02)
+# src/order-service/order-service.csproj: checkpoint/lab-05a ile ayni (NN yerine 02)
+# src/product-service/product-service.csproj: checkpoint/lab-05a ile ayni (NN yerine 02)
+
+[32mLAB 05-a cozumu ekip-02 icin uygulandi.[0m
